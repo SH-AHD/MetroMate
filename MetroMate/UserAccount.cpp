@@ -1,4 +1,8 @@
 #include "UserAccount.h"
+
+#include "SubscriptionDetails.h"
+#include <ctype.h>//lower case
+
 #include<iostream>
 #include <string>
 #include <unordered_map>
@@ -24,7 +28,7 @@ bool UserAccount::Register(unordered_map<string, UserAccount>& users, UserAccoun
 {
 	if (!VailEmail(Email))
 	{
-		while (VailEmail(Email) == false)
+		while (VailEmail(Email) == false || Email == "Admin@gmail.com")
 		{
 			cout << "the email is not vaild check it and try again" << endl;
 			cout << "Email:";
@@ -73,3 +77,88 @@ bool UserAccount::logIn(string email, string password, unordered_map<string, Use
 		return true;
 }
 
+void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<std::string, SubscriptionDetails> subscription_plans, unordered_map<int, string> subscriptions_names)
+{
+
+
+
+	// Please select your subscription plan or view details
+	/*1 - Students card
+		2 - Public yearly card
+		3 - public monthly card
+		3 - Cash wallet
+		4 - More details*/
+		//if he chosed more details-> iterator in hash table
+	int key;
+	string chosenSubscribtionName;
+	SubscriptionDetails chosenSubscription;
+
+
+	if (subscription_plans.empty()) {
+		cout << "no subscriptions available ";
+	}
+	else {
+		cout << "available subscriptions: " << endl;
+		for (const auto& pair : subscriptions_names) {
+			cout << "Key: " << pair.first << ", name: " << pair.second << endl;
+		}
+		cout << "choose subscription key" << endl;
+
+		cin >> key;
+
+		//find subscription name from hash table of their keys
+		chosenSubscribtionName = subscriptions_names[key];
+
+		//picking a subscription plan
+		chosenSubscription = subscription_plans[chosenSubscribtionName];
+
+		if (chosenSubscribtionName == "Cash_wallet") {
+			while (true) {
+				cout << "do you want to put amount of money in wallet (y/n)" << endl;
+				char answer;
+				cin >> answer;
+				if (tolower(answer) == 'y') {
+					int cashMoney;
+					do {
+						cout << "please put money in wallet (multiple of 10)" << endl;
+						cin >> cashMoney;
+					} while (cashMoney % 10 != 0);
+					chosenSubscription.cashAmount += cashMoney;
+					user.chosenSubscription = chosenSubscription;
+					break;
+				}
+				else if (tolower(answer) == 'n') {
+					user.chosenSubscription = chosenSubscription;
+					break;
+				}
+				else {
+					cout << "please enter y for yes or n for no" << endl;
+				}
+			}
+
+
+		}
+		else {
+			// initial and target destination??
+			string firstDestination;
+			string targetDestination;
+			cout << "enter your first and target destination";
+			cin >> firstDestination >> targetDestination;
+
+			//cout all paths
+			//"calculating the shortest path...."
+			// Please select the path of your choosing (knowing that --- is the shortest path to your destination)
+			int chosenPath;
+			cout << "choose your path";
+			cin >> chosenPath;
+
+			//chosenPath= what he chosed
+
+			//calculate price according to the path
+			chosenSubscription.calcPrice(chosenPath);
+			user.chosenSubscription = chosenSubscription;
+
+			user.availableTrips = chosenSubscription.numberOfTrips;
+		}
+	}
+}
