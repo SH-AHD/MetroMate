@@ -6,6 +6,9 @@
 #include<string>
 #include <fstream>
 #include <ctype.h>//lower case
+//for time
+#include <chrono>
+#include <ctime>
 using namespace std;
 
 void SubscriptionDetails::DisplayData(string name)

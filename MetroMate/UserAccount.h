@@ -4,7 +4,11 @@
 #include<unordered_map>
 #include <ctype.h>//lower case
 #include<string>
+//for time
+#include <chrono>
+#include <ctime>
 using namespace std;
+
 class UserAccount
 {
 public:
@@ -13,6 +17,7 @@ public:
 	string Name;
 	string Address;
 	int Phone;
+	tm startDate;
 
 	SubscriptionDetails chosenSubscription;
 	int availableTrips;
@@ -27,5 +32,13 @@ public:
 	bool Register(unordered_map<string, UserAccount>& users, UserAccount user);
 	bool VailEmail(string email);
 	bool logIn(string email, string password, unordered_map<string, UserAccount>& user);
+};
+
+class DateTime {
+public:
+
+	tm current_date();
+	bool is_valid_date(tm date);
+
 };
 

@@ -3,9 +3,15 @@
 #include "SubscriptionDetails.h"
 #include <ctype.h>//lower case
 
+#include "DateTime.h"
+
 #include<iostream>
 #include <string>
 #include <unordered_map>
+//for time
+#include <chrono>
+#include <ctime>
+
 unordered_map<string, UserAccount>Users;
 using namespace std;
 UserAccount::UserAccount(string email, string pass, string Name, string Address, int Phone)
@@ -77,7 +83,7 @@ bool UserAccount::logIn(string email, string password, unordered_map<string, Use
 		return true;
 }
 
-void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<std::string, SubscriptionDetails> subscription_plans, unordered_map<int, string> subscriptions_names)
+void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, SubscriptionDetails> subscription_plans, unordered_map<int, string> subscriptions_names)
 {
 
 
@@ -158,7 +164,36 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<std::str
 			chosenSubscription.calcPrice(chosenPath);
 			user.chosenSubscription = chosenSubscription;
 
+			//calculating start date
+			DateTime Date;
+			user.startDate=Date.current_date();
+			 
+				 
 			user.availableTrips = chosenSubscription.numberOfTrips;
 		}
 	}
+}
+
+
+tm DateTime::current_date() {
+	auto now = std::chrono::system_clock::now();
+	std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+	static std::tm date;
+	localtime_s(&date, &now_c);
+	date.tm_year += 1900;
+	date.tm_mon += 1;
+	return date;
+}
+bool DateTime::is_valid_date(std::tm date) {
+	if (date.tm_year == -1) {
+		return false;
+	}
+	if (date.tm_mon < 0 || date.tm_mon > 11) {
+		return false;
+	}
+	if (date.tm_mday < 1 || date.tm_mday > 31) {
+		return false;
+	}
+	// Additional checks can be added for the range of tm_mday based on tm_mon
+	return true;
 }
