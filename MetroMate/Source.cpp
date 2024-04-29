@@ -16,27 +16,25 @@
 #include <ctime>
 using namespace std;
 
+
+void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names);
+void User(bool isAdmin, UserAccount user);
+//subscription file
 vector<string> split(const string& str, char delimiter);
-void writeToFile(const unordered_map<string, SubscriptionDetails>& data, const string& filename);
-unordered_map<string, SubscriptionDetails> readFromFile(const string& filename, unordered_map<int, string>& subscriptions_names);
+void writeToSubscriptionFile(const unordered_map<string, SubscriptionDetails>& data, const string& filename);
+unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string& filename, unordered_map<int, string>& subscriptions_names);
 
 
-//tm* current_date() {
-//	auto now = chrono::system_clock::now();
-//	time_t now_c = chrono::system_clock::to_time_t(now);
-//	tm* now_tm = localtime(&now_c);
-//	return now_tm;
-//}
 
 int main() {
 	unordered_map<string, SubscriptionDetails> subscription_plans;//name and details
 	unordered_map<int, string> subscriptions_names;//to have id and name only
 	unordered_map<string, UserAccount> users;
 	
-	string filename = "subscriptions.csv";
-	subscription_plans = readFromFile(filename, subscriptions_names);
+	string SubscriptionFileName = "subscriptions.csv";
+	subscription_plans = readFromSubscriptionFile(SubscriptionFileName, subscriptions_names);
 	
-	DateTime Date;
+	
 
 	bool outerLoop = true;
 	while (outerLoop) {
@@ -100,148 +98,9 @@ int main() {
 			
 			
 			//logic of program
-			//logined as admin or user with "userName" above
-			if (isAdmin) {
-				//admin
-				bool isAdminLoop = true;
-				int answer;
-
-				//for subscription
-				string subscriptionName;
-				SubscriptionDetails newSubscriptions;//we will need it when creating
-
-
-				while (isAdminLoop) {
-					cout<<"enter number of operation you want to perform:\n 1. User Management \n 2. Metro Management \n 3. Subscription Plan Management \n 4. View All Ride Logs \n 5. Station Management \n 6. Fare Management \n  any other number to exit"<<endl;
-					cin >> answer;
-					switch (answer)
-					{
-					case 1:
-						break;
-					case 2:
-						break;
-					case 3:
-						int funcChoice;
-						cout << "enter the number of the function you want to perform\n 1- creat subscription \n 2- modify subscription \n 3- remove subscription \n    press any key to go back";
-						// 1-create
-						// 2-modify
-						// 3-remove
-						cin >> funcChoice;
-
-						
-						switch (funcChoice)
-						{
-						case 1:
-							//create
-							newSubscriptions.Create();
-
-							//adding it to hash table
-							subscription_plans.insert(make_pair(newSubscriptions.name, newSubscriptions));
-							subscriptions_names.insert(make_pair(subscription_plans.size(), newSubscriptions.name));//1-student,2-public...
-							break;
-
-						case 2:
-							//modify subscription
-							newSubscriptions.Modify(subscription_plans, subscriptions_names);
-
-							break;
-						case 3:
-							int key;
-							//remove subscription 
-							for (const auto& pair : subscriptions_names) {
-								cout << "Key: " << pair.first << ", name: " << pair.second << endl;
-							}
-							cout << "choose subscription key" << endl;
-							cin >> key;
-							subscriptionName = subscriptions_names[key];
-							subscription_plans.erase(subscriptionName);
-							break;
-						default:
-							isAdminLoop = false;
-						}
-						break;
-					case 4:
-						break;
-					case 5:
-						break;
-					case 6:
-						break;
-					default:
-						break;
-					}
-					
-				}
-
-
-			}
-			else if (!isAdmin) {
-				//checking subscription time
-				if (Date.current_date().tm_mon - user.startDate.tm_mon>=user.chosenSubscription.valid_duration && Date.is_valid_date( user.startDate)) {
-					cout << "please renew your subscription: \n enter y if you want to renew \n enter n if you want to exit from subscription"<<endl;
-					char answer;
-					cin >> answer;
-					if (answer == 'y') {
-						user.startDate = Date.current_date();
-						user.availableTrips = user.chosenSubscription.numberOfTrips;
-					}
-					else if (answer == 'n') {
-						SubscriptionDetails emptySubscription;
-						user.chosenSubscription = emptySubscription;
-					}
-				}
-
-
-				//manage subscription
-				//choose what action you want to perform
-				bool isNotAdminLoop = true;
-				while (isNotAdminLoop) {
-					int manageChoice;
-					cout << "if you want to: \n view active subscription type 1 \n renew subscription type 2  \n upgrade subscription type 3";
-					cin >> manageChoice;
-					string firstDestination;
-					string targetDestination;
-					switch (manageChoice)
-					{
-					case 1:
-						user.chosenSubscription.DisplayData(user.chosenSubscription.name);
-						break;
-					case 2:
-						//renew
-						user.availableTrips = user.chosenSubscription.numberOfTrips;
-						user.startDate = Date.current_date();
-
-						break;
-					case 3:
-						//make him choose a new stage
-
-						// initial and target destination??
-						cout << "enter your first and target destination";
-						cin >> firstDestination >> targetDestination;
-
-						//cout all paths
-						//"calculating the shortest path...."
-						// Please select the path of your choosing (knowing that --- is the shortest path to your destination)
-						int chosenPath;
-						cout << "choose your path";
-						cin >> chosenPath;
-
-						//chosenPath= what he chosed
-
-						//calculate price according to the path
-						user.chosenSubscription.calcPrice(chosenPath);
-						user.availableTrips = user.chosenSubscription.numberOfTrips;
-
-						break;
-
-					default:
-						isNotAdminLoop = false;
-						break;
-					}
-				}
-
-
-
-			}
+			//logined as (admin) or ( user with "email" above)
+			Admin(isAdmin, subscription_plans, subscriptions_names);
+			User(isAdmin, user);
 
 
 			//outerLoop = false;
@@ -254,14 +113,167 @@ int main() {
 
 	}
 
-	ifstream file(filename);
+	ifstream file(SubscriptionFileName);
 	file.clear();
-	writeToFile(subscription_plans, filename);
+	writeToSubscriptionFile(subscription_plans, SubscriptionFileName);
 	
 	return 0;
 }
 
-void writeToFile(const unordered_map<string, SubscriptionDetails>& data, const string& filename) {
+
+void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names)
+{
+	if (isAdmin) {
+		//admin
+		bool isAdminLoop = true;
+		int answer;
+
+		//for subscription
+		string subscriptionName;
+		SubscriptionDetails newSubscriptions;//we will need it when creating
+
+
+		while (isAdminLoop) {
+			cout << "enter number of operation you want to perform:\n 1. User Management \n 2. Metro Management \n 3. Subscription Plan Management \n 4. View All Ride Logs \n 5. Station Management \n 6. Fare Management \n  any other number to exit" << endl;
+			cin >> answer;
+			switch (answer)
+			{
+			case 1:
+				break;
+			case 2:
+				break;
+			case 3:
+				int funcChoice;
+				cout << "enter the number of the function you want to perform\n 1- creat subscription \n 2- modify subscription \n 3- remove subscription \n    press any key to go back";
+				// 1-create
+				// 2-modify
+				// 3-remove
+				cin >> funcChoice;
+
+
+				switch (funcChoice)
+				{
+				case 1:
+					//create
+					newSubscriptions.Create();
+
+					//adding it to hash table
+					subscription_plans.insert(make_pair(newSubscriptions.name, newSubscriptions));
+					subscriptions_names.insert(make_pair(subscription_plans.size(), newSubscriptions.name));//1-student,2-public...
+					break;
+
+				case 2:
+					//modify subscription
+					newSubscriptions.Modify(subscription_plans, subscriptions_names);
+
+					break;
+				case 3:
+					int key;
+					//remove subscription 
+					for (const auto& pair : subscriptions_names) {
+						cout << "Key: " << pair.first << ", name: " << pair.second << endl;
+					}
+					cout << "choose subscription key" << endl;
+					cin >> key;
+					subscriptionName = subscriptions_names[key];
+					subscription_plans.erase(subscriptionName);
+					break;
+				default:
+					isAdminLoop = false;
+				}
+				break;
+			case 4:
+				break;
+			case 5:
+				break;
+			case 6:
+				break;
+			default:
+				break;
+			}
+
+		}
+
+
+	}
+}
+
+void User(bool isAdmin, UserAccount user)
+{
+	if (!isAdmin) {
+		DateTime Date;
+		//checking subscription time
+		if (Date.current_date().tm_mon - user.startDate.tm_mon >= user.chosenSubscription.valid_duration && Date.is_valid_date(user.startDate)) {
+			cout << "please renew your subscription: \n enter y if you want to renew \n enter n if you want to exit from subscription" << endl;
+			char answer;
+			cin >> answer;
+			if (answer == 'y') {
+				user.startDate = Date.current_date();
+				user.availableTrips = user.chosenSubscription.numberOfTrips;
+			}
+			else if (answer == 'n') {
+				SubscriptionDetails emptySubscription;
+				user.chosenSubscription = emptySubscription;
+			}
+		}
+
+
+		//manage subscription
+		//choose what action you want to perform
+		bool isUserLoop = true;
+		while (isUserLoop) {
+			int manageChoice;
+			cout << "if you want to: \n view active subscription type 1 \n renew subscription type 2  \n upgrade subscription type 3";
+			cin >> manageChoice;
+			string firstDestination;
+			string targetDestination;
+			switch (manageChoice)
+			{
+			case 1:
+				user.chosenSubscription.DisplayData(user.chosenSubscription.name);
+				break;
+			case 2:
+				//renew
+				user.availableTrips = user.chosenSubscription.numberOfTrips;
+				user.startDate = Date.current_date();
+
+				break;
+			case 3:
+				//make him choose a new stage
+
+				// initial and target destination??
+				cout << "enter your first and target destination";
+				cin >> firstDestination >> targetDestination;
+
+				//cout all paths
+				//"calculating the shortest path...."
+				// Please select the path of your choosing (knowing that --- is the shortest path to your destination)
+				int chosenPath;
+				cout << "choose your path";
+				cin >> chosenPath;
+
+				//chosenPath= what he chosed
+
+				//calculate price according to the path
+				user.chosenSubscription.calcPrice(chosenPath);
+				user.availableTrips = user.chosenSubscription.numberOfTrips;
+
+				break;
+
+			default:
+				isUserLoop = false;
+				break;
+			}
+		}
+
+
+
+	}
+}
+
+
+//subscription file
+void writeToSubscriptionFile(const unordered_map<string, SubscriptionDetails>& data, const string& filename) {
 	std::ofstream file(filename);
 	if (!file.is_open()) {
 		// Handle error opening file
@@ -275,7 +287,6 @@ void writeToFile(const unordered_map<string, SubscriptionDetails>& data, const s
 	}
 	file.close();
 }
-
 vector<string> split(const string& str, char delimiter) {
 	vector<string> tokens;
 	stringstream ss(str);
@@ -285,7 +296,7 @@ vector<string> split(const string& str, char delimiter) {
 	}
 	return tokens;
 }
-unordered_map<string, SubscriptionDetails> readFromFile(const string& filename, unordered_map<int, string>& subscriptions_names) {
+unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string& filename, unordered_map<int, string>& subscriptions_names) {
 	ifstream file(filename);
 	if (!file.is_open()) {
 		//throw std::runtime_error("Error opening file: " + filename);
