@@ -61,13 +61,16 @@ void SubscriptionDetails::Create()
 	if (name != "Cash_wallet") {
 		cout << "enter subscription valid duration" << endl;
 		cin >> valid_duration;
-		for (int i = 0; i < 4; i++) {
-			cout << "enter subscription price for stage " << i + 1 << endl;
-			cin >> stagesPrices[i];
-		}
+		
+		cout << "enter the available number of trips " << endl;
+		cin >> numberOfTrips;
 	}
-	cout << "enter the available number of trips " << endl;
-	cin >> numberOfTrips;
+	for (int i = 0; i < zonesPrices.size(); i++) {
+		cout << "enter subscription price for zone " << i + 1 << endl;
+		cin >> zonesPrices[i];
+	}
+	
+	
 
 }
 
@@ -127,6 +130,10 @@ void SubscriptionDetails::remove(unordered_map<string, SubscriptionDetails>& sub
 	subscriptionName = subscriptions_names[key];
 	subscription_plans.erase(subscriptionName);
 }
+
+
+
+
 
 string SubscriptionDetails::toString() const {
 	string ss;

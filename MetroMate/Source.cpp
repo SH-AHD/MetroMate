@@ -17,8 +17,9 @@
 using namespace std;
 
 
-void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names);
+void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<vector<string>>& zones);
 void User(bool isAdmin, UserAccount user);
+void SetZones(vector<vector<string>>& zones);
 //subscription file
 vector<string> split(const string& str, char delimiter);
 void writeToSubscriptionFile(const unordered_map<string, SubscriptionDetails>& data, const string& filename);
@@ -34,7 +35,7 @@ int main() {
 	string SubscriptionFileName = "subscriptions.csv";
 	subscription_plans = readFromSubscriptionFile(SubscriptionFileName, subscriptions_names);
 	
-	
+	vector<vector<string>>zones;
 
 	bool outerLoop = true;
 	while (outerLoop) {
@@ -99,7 +100,7 @@ int main() {
 			
 			//logic of program
 			//logined as (admin) or ( user with "email" above)
-			Admin(isAdmin, subscription_plans, subscriptions_names);
+			Admin(isAdmin, subscription_plans, subscriptions_names,zones);
 			User(isAdmin, user);
 
 
@@ -121,7 +122,7 @@ int main() {
 }
 
 
-void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names)
+void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<vector<string>>& zones)
 {
 	if (isAdmin) {
 		//admin
@@ -134,7 +135,7 @@ void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscripti
 
 
 		while (isAdminLoop) {
-			cout << "enter number of operation you want to perform:\n 1. User Management \n 2. Metro Management \n 3. Subscription Plan Management \n 4. View All Ride Logs \n 5. Station Management \n 6. Fare Management \n  any other number to exit" << endl;
+			cout << "enter number of operation you want to perform:\n 1. User Management \n 2. Metro Management \n 3. Subscription Plan Management \n 4. View All Ride Logs \n 5. Station Management \n 6. Fare Management \n 7. Set Zones \n  any other number to exit" << endl;
 			cin >> answer;
 			switch (answer)
 			{
@@ -144,7 +145,7 @@ void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscripti
 				break;
 			case 3:
 				int funcChoice;
-				cout << "enter the number of the function you want to perform\n 1- creat subscription \n 2- modify subscription \n 3- remove subscription \n    press any key to go back";
+				cout << "enter the number of the function you want to perform\n 1- create subscription \n 2- modify subscription \n 3- remove subscription \n    press any key to go back";
 				// 1-create
 				// 2-modify
 				// 3-remove
@@ -179,16 +180,20 @@ void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscripti
 					subscription_plans.erase(subscriptionName);
 					break;
 				default:
-					isAdminLoop = false;
+					break;
 				}
-				break;
+				
 			case 4:
 				break;
 			case 5:
 				break;
 			case 6:
 				break;
+			case 7:
+				SetZones(zones);
+				break;
 			default:
+				isAdminLoop = false;
 				break;
 			}
 
@@ -271,7 +276,29 @@ void User(bool isAdmin, UserAccount user)
 	}
 }
 
+void SetZones(vector<vector<string>>& zones)
+{
+	while (true) {
+		int zoneNum;
+		vector<string> targetZone;
+		cout << "enter number of zone you want to put its stations \n press 0 if you want to exit" << endl;
+		cin >> zoneNum;
+		if (zoneNum == 0)
+			break;
 
+		targetZone = zones[zoneNum - 1];//zone 1 as zones[0]
+		while (true) {
+			cout << "enter station name in that zone \n press 0 if you want to exit (no more stations)  ";
+			string stationName;
+			cin >> stationName;
+			if (stationName == "0")
+				break;
+
+			targetZone.push_back(stationName);
+		}
+		zones.push_back(targetZone);
+	}
+}
 //subscription file
 void writeToSubscriptionFile(const unordered_map<string, SubscriptionDetails>& data, const string& filename) {
 	std::ofstream file(filename);
