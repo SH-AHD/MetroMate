@@ -85,7 +85,7 @@ bool UserAccount::logIn(string email, string password, unordered_map<string, Use
 		return true;
 }
 
-void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, SubscriptionDetails> subscription_plans, unordered_map<int, string> subscriptions_names)
+void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, SubscriptionDetails> subscription_plans, unordered_map<int, string> subscriptions_names , vector<vector<string>> zones)
 {
 
 
@@ -101,6 +101,9 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 	string chosenSubscribtionName;
 	SubscriptionDetails chosenSubscription;
 
+
+	int index = 1;//looping in the path
+	list<queue <pair< station, int>>> availablePaths;
 
 	if (subscription_plans.empty()) {
 		cout << "no subscriptions available ";
@@ -147,31 +150,114 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 
 		}
 		else {
-			// initial and target destination??
 			string firstDestination;
 			string targetDestination;
-			cout << "enter your first and target destination";
-			cin >> firstDestination >> targetDestination;
+			cout << "enter your first station"<<endl;
+			cin >> firstDestination ;
+			cout << "enter your target  station" << endl;
+			cin >> targetDestination;
 
-			//cout all paths
-			//"calculating the shortest path...."
-			// Please select the path of your choosing (knowing that --- is the shortest path to your destination)
-			int chosenPath;
-			cout << "choose your path";
-			cin >> chosenPath;
+			int answer;
+			cout << "press \n 1. if you want to subscripe by stages \n 2. if you want to subscripe by zones " << endl;
+			cin >> answer;
 
-			//chosenPath= what he chosed
+			//print all avaliable paths
+			for (auto it = availablePaths.begin(); it != availablePaths.end(); ++it) {
+				cout << "path " << index << " : ";
 
-			//calculate price according to the path
-			chosenSubscription.calcPrice(chosenPath);
+				pair<station, int> front = it->front();
+				cout << front.first.name << " , ";
+				it->push(it->front());
+				it->pop();
+
+				// path must not have repeated values to make this code work
+				while (it->front().first.name != front.first.name && availablePaths.size() != 1) {
+					cout << it->front().first.name << " , ";
+					it->push(it->front());
+					it->pop();
+				}
+				index++;
+			}
+
+
+			if (answer == 1) {
+
+				//making him choose
+				cout << "enter the index of the path you want " << endl;
+				cin >> index;
+				if (index - 1 < 0 || index - 1 >= availablePaths.size()) {
+					cout << "no index like this" << endl;
+				}
+				else {
+					auto it = availablePaths.begin();
+					advance(it, index - 1);//go to this index
+					queue <pair< station, int>> chosenPath = *it;
+
+					cout << "your price is : " << chosenSubscription.calcPrice(chosenPath,0,true) << " every " << chosenSubscription.valid_duration;
+
+				}
+
+			}
+			else if (answer == 2) {
+				for (int i = 0; i < zones.size();i++) {
+					cout << "zone " << i + 1 << " : \n";
+					for (int j = 0; j < zones[i].size(); j++) {
+						cout << "station " << i + 1 << " : "<< zones[i][j]<<endl;
+
+					}
+				}
+				int zoneChoice;
+				cout << "enter zone number you want to subscripe \n";
+				cin >> zoneChoice;
+				bool stationInZone = false;
+				do {
+
+				
+					cout << "enter the index of the path you want " << endl;
+					cin >> index;
+					if (index - 1 < 0 || index - 1 >= availablePaths.size()) {
+						cout << "no index like this" << endl;
+					}
+					else {
+						auto it = availablePaths.begin();
+						advance(it, index - 1);//go to this index
+						queue <pair< station, int>> chosenPath = *it;
+
+						queue <pair< station, int>> tmp =chosenPath;
+						
+						while (!tmp.empty()) {
+							for (int j = 0; j < zones[zoneChoice].size(); j++) {
+								if (tmp.front().first.name != zones[zoneChoice][j]) {
+									stationInZone = false;
+								}
+								else {
+									stationInZone = true;
+									break;
+								}
+
+							}
+							if (!stationInZone) {
+								cout << "the chosen path not exist in your zone please choose your path again" << endl;
+								break;
+							}
+							tmp.pop();
+
+						}
+
+						if(stationInZone)
+							cout << "your price is : " << chosenSubscription.calcPrice(chosenPath,zoneChoice,false) << " every " << chosenSubscription.valid_duration;
+
+					}
+				} while (!stationInZone);
+			}
+			
 			user.chosenSubscription = chosenSubscription;
+			user.availableTrips = user.chosenSubscription.numberOfTrips;
 
 			//calculating start date
 			DateTime Date;
 			user.startDate=Date.current_date();
 			 
-				 
-			user.availableTrips = chosenSubscription.numberOfTrips;
 		}
 	}
 }

@@ -26,31 +26,49 @@ void SubscriptionDetails::DisplayData(string name)
 		cout << "your path" << path << endl;
 	}
 }
-void SubscriptionDetails::calcStage(int chosenPath )
+void SubscriptionDetails::calcStage(queue <pair< station, int>> chosenPath)
 {
-	
-	stage = 4;
-	path = chosenPath;
-}
-double SubscriptionDetails::calcPrice(int chosenPath) {
-	
-	calcStage(chosenPath);
-	switch (stage)
-	{
-	case 1: price = stagesPrices[0];
-		return stagesPrices[0];
-		//stagesPrices[i] already defined (for each stage) by admin in "subscription_plans hash table"
-		break;
-	case 2: price = stagesPrices[1];
-		return stagesPrices[1];
-		break;
-	case 3: price = stagesPrices[2];
-		return stagesPrices[2];
-		break;
-	case 4: price = stagesPrices[3];
-		return stagesPrices[3];
-		break;
+	int pathSize = chosenPath.size();
+	if (pathSize > 0 && pathSize < 10) {
+		stage = 1;
 	}
+	else if (pathSize > 9 && pathSize < 17) {
+		stage = 2;
+	}
+	else if (pathSize > 16 && pathSize < 24) {
+		stage = 3;
+	}
+	else if (pathSize > 23) {
+		stage = 4;
+	}
+	//path = chosenPath;
+}
+double SubscriptionDetails::calcPrice(queue <pair< station, int>> chosenPath,int zoneNum, bool isStage) {
+	
+	if (isStage) {
+		calcStage(chosenPath);
+		switch (stage)
+		{
+		case 1: price = stagesPrices[0];
+			return stagesPrices[0];
+			//stagesPrices[i] already defined (for each stage) by admin in "subscription_plans hash table"
+			break;
+		case 2: price = stagesPrices[1];
+			return stagesPrices[1];
+			break;
+		case 3: price = stagesPrices[2];
+			return stagesPrices[2];
+			break;
+		case 4: price = stagesPrices[3];
+			return stagesPrices[3];
+			break;
+		}
+	}
+	else {
+		price = zonesPrices[zoneNum-1];
+		return price;
+	}
+	
 }
 void SubscriptionDetails::displayFixedData() {
 	cout << "valid duration:  " << endl << valid_duration << endl;

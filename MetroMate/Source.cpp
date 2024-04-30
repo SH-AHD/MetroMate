@@ -8,17 +8,20 @@
 #include<unordered_map>
 #include<vector>
 #include<string>
+#include<list>
+#include<queue>
 #include <fstream>
 #include <sstream>
 #include <stdexcept> 
 //for time
 #include <chrono>
 #include <ctime>
+
 using namespace std;
 
 
 void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<vector<string>>& zones);
-void User(bool isAdmin, UserAccount user);
+void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<vector<string>>& zones);
 void SetZones(vector<vector<string>>& zones);
 //subscription file
 vector<string> split(const string& str, char delimiter);
@@ -73,7 +76,7 @@ int main() {
 			
 			if (!isAdmin) {
 				//have to choose in regster only
-				user.PurchaceSubscription(user, subscription_plans, subscriptions_names);
+				user.PurchaceSubscription(user, subscription_plans, subscriptions_names, zones);
 			}
 			
 		case 2:
@@ -101,7 +104,7 @@ int main() {
 			//logic of program
 			//logined as (admin) or ( user with "email" above)
 			Admin(isAdmin, subscription_plans, subscriptions_names,zones);
-			User(isAdmin, user);
+			User(isAdmin, user, subscription_plans, subscriptions_names, zones);
 
 			break;
 		default:
@@ -201,7 +204,7 @@ void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscripti
 	}
 }
 
-void User(bool isAdmin, UserAccount user)
+void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<vector<string>>& zones)
 {
 	if (!isAdmin) {
 		DateTime Date;
@@ -230,6 +233,8 @@ void User(bool isAdmin, UserAccount user)
 			cin >> manageChoice;
 			string firstDestination;
 			string targetDestination;
+			int index = 1;//looping in path
+			list<queue <pair< station, int>>> availablePaths;
 			switch (manageChoice)
 			{
 			case 1:
@@ -242,25 +247,8 @@ void User(bool isAdmin, UserAccount user)
 
 				break;
 			case 3:
-				//make him choose a new stage
-
-				// initial and target destination??
-				cout << "enter your first and target destination";
-				cin >> firstDestination >> targetDestination;
-
-				//cout all paths
-				//"calculating the shortest path...."
-				// Please select the path of your choosing (knowing that --- is the shortest path to your destination)
-				int chosenPath;
-				cout << "choose your path";
-				cin >> chosenPath;
-
-				//chosenPath= what he chosed
-
-				//calculate price according to the path
-				user.chosenSubscription.calcPrice(chosenPath);
-				user.availableTrips = user.chosenSubscription.numberOfTrips;
-
+				//ubgrade
+				user.PurchaceSubscription(user, subscription_plans, subscriptions_names, zones);
 				break;
 
 			default:

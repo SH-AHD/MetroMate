@@ -34,8 +34,8 @@ public:
 		//don't delete it
 	}
 	void DisplayData(string name);
-	void calcStage(int chosenPath );
-	double calcPrice(int chosenPath);
+	void calcStage(queue <pair< station, int>> chosenPath);
+	double calcPrice(queue <pair< station, int>> chosenPath ,int zoneNum, bool isStage);
 	void displayFixedData();
 	void Create();
 	void Modify(unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names);
