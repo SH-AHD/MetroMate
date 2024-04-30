@@ -1,6 +1,8 @@
 #pragma once
 #include<string>
 #include<unordered_map>
+#include"station.h"
+#include<queue>
 //#include "User.h"
 using namespace std;
 class SubscriptionDetails
@@ -32,8 +34,7 @@ public:
 		//don't delete it
 	}
 	void DisplayData(string name);
-	//void PurchaceSunscription(User user, unordered_map<std::string, SubscriptionDetails> subscription_plans, unordered_map<int, string> subscriptions_names);
-	void calcStage(int chosenPath);
+	void calcStage(int chosenPath );
 	double calcPrice(int chosenPath);
 	void displayFixedData();
 	void Create();

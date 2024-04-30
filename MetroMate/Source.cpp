@@ -69,7 +69,8 @@ int main() {
 			else {
 				break;
 			}
-
+			
+			
 			if (!isAdmin) {
 				//have to choose in regster only
 				user.PurchaceSubscription(user, subscription_plans, subscriptions_names);
@@ -97,14 +98,11 @@ int main() {
 			}
 			
 			
-			
 			//logic of program
 			//logined as (admin) or ( user with "email" above)
 			Admin(isAdmin, subscription_plans, subscriptions_names,zones);
 			User(isAdmin, user);
 
-
-			//outerLoop = false;
 			break;
 		default:
 			outerLoop = false;

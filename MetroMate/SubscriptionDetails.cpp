@@ -1,5 +1,8 @@
 #include "SubscriptionDetails.h"
 #include "UserAccount.h"
+//#include"station.h"
+#include<queue>
+
 #include<iostream>
 #include<unordered_map>
 #include<vector>
@@ -23,12 +26,14 @@ void SubscriptionDetails::DisplayData(string name)
 		cout << "your path" << path << endl;
 	}
 }
-void SubscriptionDetails::calcStage(int chosenPath)
+void SubscriptionDetails::calcStage(int chosenPath )
 {
+	
 	stage = 4;
 	path = chosenPath;
 }
 double SubscriptionDetails::calcPrice(int chosenPath) {
+	
 	calcStage(chosenPath);
 	switch (stage)
 	{
