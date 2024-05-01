@@ -85,24 +85,24 @@ bool UserAccount::logIn(string email, string password, unordered_map<string, Use
 		return true;
 }
 
-void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, SubscriptionDetails> subscription_plans, unordered_map<int, string> subscriptions_names , vector<vector<string>> zones)
+void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, SubscriptionDetails> subscription_plans, unordered_map<int, string> subscriptions_names , vector<pair<vector<string>, double>> zones)
 {
 
 
 
-	// Please select your subscription plan or view details
+	// select your subscription plan 
 	/*1 - Students card
 		2 - Public yearly card
 		3 - public monthly card
 		3 - Cash wallet
-		4 - More details*/
-		//if he chosed more details-> iterator in hash table
+	*/
+		
 	int key;
 	string chosenSubscribtionName;
 	SubscriptionDetails chosenSubscription;
 
 
-	int index = 1;//looping in the path
+	unsigned int index = 1;//looping in the path
 	list<queue <pair< station, int>>> availablePaths;
 
 	if (subscription_plans.empty()) {
@@ -158,8 +158,7 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 			cin >> targetDestination;
 
 			int answer;
-			cout << "press \n 1. if you want to subscripe by stages \n 2. if you want to subscripe by zones " << endl;
-			cin >> answer;
+			
 
 			//print all avaliable paths
 			for (auto it = availablePaths.begin(); it != availablePaths.end(); ++it) {
@@ -179,7 +178,8 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 				index++;
 			}
 
-
+			cout << "\npress \n 1. if you want to subscripe by stages \n 2. if you want to subscripe by zones " << endl;
+			cin >> answer;
 			if (answer == 1) {
 
 				//making him choose
@@ -192,17 +192,18 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 					auto it = availablePaths.begin();
 					advance(it, index - 1);//go to this index
 					queue <pair< station, int>> chosenPath = *it;
-
+					chosenSubscription.chosenPath = chosenPath;
 					cout << "your price is : " << chosenSubscription.calcPrice(chosenPath,0,true) << " every " << chosenSubscription.valid_duration;
 
 				}
 
 			}
 			else if (answer == 2) {
-				for (int i = 0; i < zones.size();i++) {
+				for (unsigned int i = 0; i < zones.size();i++) {
 					cout << "zone " << i + 1 << " : \n";
-					for (int j = 0; j < zones[i].size(); j++) {
-						cout << "station " << i + 1 << " : "<< zones[i][j]<<endl;
+					cout << "its price :" << chosenSubscription.availableZones[i].second<<endl;
+					for (unsigned int j = 0; j < zones[i].first.size(); j++) {
+						cout << "station " << i + 1 << " : "<< zones[i].first[j]<<endl;
 
 					}
 				}
@@ -226,8 +227,8 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 						queue <pair< station, int>> tmp =chosenPath;
 						
 						while (!tmp.empty()) {
-							for (int j = 0; j < zones[zoneChoice].size(); j++) {
-								if (tmp.front().first.name != zones[zoneChoice][j]) {
+							for (unsigned int j = 0; j < zones[zoneChoice].first.size(); j++) {
+								if (tmp.front().first.name != zones[zoneChoice].first[j]) {
 									stationInZone = false;
 								}
 								else {
@@ -265,8 +266,8 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 
 tm DateTime::current_date() {
 	auto now = std::chrono::system_clock::now();
-	std::time_t now_c = std::chrono::system_clock::to_time_t(now);
-	static std::tm date;
+	time_t now_c = std::chrono::system_clock::to_time_t(now);
+	static tm date;
 	localtime_s(&date, &now_c);
 	date.tm_year += 1900;
 	date.tm_mon += 1;
@@ -282,6 +283,7 @@ bool DateTime::is_valid_date(std::tm date) {
 	if (date.tm_mday < 1 || date.tm_mday > 31) {
 		return false;
 	}
+	
 	// Additional checks can be added for the range of tm_mday based on tm_mon
 	return true;
 }
