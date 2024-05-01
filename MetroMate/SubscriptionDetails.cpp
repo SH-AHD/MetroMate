@@ -183,12 +183,12 @@ string SubscriptionDetails::toString() const{
 		ss += to_string(stagesPrices[i]) + ",";
 	}*/
 	ss += "\n";
-	for (int i = 0; i < availableStages.size(); i++) {
+	for (unsigned int i = 0; i < availableStages.size(); i++) {
 		ss += to_string(availableStages[i].first) + ","+ to_string(availableStages[i].second.first) + ","+ to_string(availableStages[i].second.second) + ",";
 	}
 	ss += "\n";
-	for (int i = 0; i < availableZones.size(); i++) {
-		for (int j = 0; j < availableZones[i].first.size(); j++) {
+	for (unsigned int i = 0; i < availableZones.size(); i++) {
+		for (unsigned int j = 0; j < availableZones[i].first.size(); j++) {
 			ss += availableZones[i].first[j] + ",";
 			if (j == availableZones[i].first.size() - 1)
 				ss += "+";//if it was the last value in the inside vector

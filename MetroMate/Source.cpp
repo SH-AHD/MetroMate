@@ -556,10 +556,10 @@ unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string
 					// Extract and convert attributes to appropriate types
 					try {
 						if (attributes.size() >= 3) {
-							for (int i = 0; i < attributes.size() / 3; i++) {
+							for (unsigned int i = 0; i < attributes.size() / 3; i++) {
 
 								pair<double, pair<int, int>> tmp;
-								for (int i = 0; i < attributes.size() / 3; i++) {
+								for (unsigned int i = 0; i < attributes.size() / 3; i++) {
 									//because availableStages has 3 attributes
 									tmp.first = stod(attributes[(i * 3)]);// 0 _ _    3 _ _     6 _ _
 									tmp.second.first = stoi(attributes[(i * 3) + 1]);// _ 1 _    _ 4 _   _ 7 _
