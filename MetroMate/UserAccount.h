@@ -7,7 +7,17 @@
 //for time
 #include <chrono>
 #include <ctime>
+//s
+//#include "date/date.h"
+#include <sstream>
+
+
 using namespace std;
+using namespace std::chrono;
+
+//s
+using namespace std::chrono;
+//using namespace date;
 
 class UserAccount
 {
@@ -40,5 +50,14 @@ public:
 	tm current_date();
 	bool is_valid_date(tm date);
 
+
+	//s
+	tm dateInput();
+	system_clock::time_point timeInput();
+	long calculateDateDifference(tm date1, tm date2);
+	long calculateTimeDifferenceHours(system_clock::time_point time1, system_clock::time_point time2);
+	long calculateTimeDifferenceMinutes(system_clock::time_point time1, system_clock::time_point time2);
+	void dateDay(string date);
+	string inputDateString(string inputDate);
 };
 

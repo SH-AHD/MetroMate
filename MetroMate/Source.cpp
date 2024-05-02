@@ -2,11 +2,15 @@
 #include "SubscriptionDetails.h"
 #include "SubscriptionDetails.cpp"
 #include"UserAccount.h"
-#include"UserAccount.cpp"
+//#include"UserAccount.cpp"
+#include"TrainManagement.h"
+//#include"TrainManagement.cpp"
 //#include"DateTime.h"
 #include<iostream>
-#include<unordered_map>
+#include <unordered_map>
 #include<vector>
+#include<deque>
+#include <random>
 #include<string>
 #include <fstream>
 #include <sstream>
@@ -14,8 +18,12 @@
 //for time
 #include <chrono>
 #include <ctime>
-using namespace std;
+//#include "date/date.h"
 
+
+using namespace std;
+using namespace std::chrono;
+//using namespace date;
 
 void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<vector<string>>& zones);
 void User(bool isAdmin, UserAccount user);
@@ -25,7 +33,10 @@ vector<string> split(const string& str, char delimiter);
 void writeToSubscriptionFile(const unordered_map<string, SubscriptionDetails>& data, const string& filename);
 unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string& filename, unordered_map<int, string>& subscriptions_names);
 
-
+//unordered_map < system_clock::time_point, deque<Train>>& stationSchedule;
+//Station station;
+Line lines;
+deque<Train> trains;
 
 int main() {
 	unordered_map<string, SubscriptionDetails> subscription_plans;//name and details
@@ -389,3 +400,11 @@ unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string
 	}
 	return data;
 }
+
+//
+//int main() {
+//	Train t;
+//	trains.push_back(t);
+//	cout << "hi ? ";
+//	 trains[0].displayTrainInfo();
+//}

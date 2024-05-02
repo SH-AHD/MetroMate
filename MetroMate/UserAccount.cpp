@@ -186,6 +186,7 @@ tm DateTime::current_date() {
 	date.tm_mon += 1;
 	return date;
 }
+
 bool DateTime::is_valid_date(std::tm date) {
 	if (date.tm_year == -1) {
 		return false;
@@ -198,4 +199,189 @@ bool DateTime::is_valid_date(std::tm date) {
 	}
 	// Additional checks can be added for the range of tm_mday based on tm_mon
 	return true;
+}
+
+////s
+//tm  DateTime::dateInput() {
+//	tm date = {};   // initialize struct with zeros
+//	cout << "Enter date \"DD-MM_YYYY\": ";
+//	cin >> get_time(&date, "%d-%m-%Y");
+//	if (cin.fail()) {
+//		cerr << "Error: Invalid input format." << endl;
+//	}
+//	return date;
+//}
+//
+//system_clock::time_point   DateTime::timeInput() {
+//	tm intime = {}; // initialize struct with zeros
+//	cout << "Enter time (HH:MM:SS): ";
+//	cin >> get_time(&intime, "%H:%M:%S");
+//	auto time = system_clock::from_time_t(std::mktime(&intime));
+//	if (cin.fail()) {
+//		cerr << "Error: Invalid input format." << endl;
+//	}
+//	return time;
+//}
+//
+//long   DateTime::calculateDateDifference(tm date1, tm date2) {
+//	// Convert dates to time points
+//	system_clock::time_point tp1 = system_clock::from_time_t(std::mktime(&date1));
+//	system_clock::time_point tp2 = system_clock::from_time_t(std::mktime(&date2));
+//
+//	// Calculate the duration between the two time_points
+//	auto duration = tp2 - tp1;
+//
+//	// Convert the duration to days
+//	auto days = std::chrono::duration_cast<std::chrono::hours>(duration).count() / 24;
+//
+//	return days;
+//}
+//
+//void DateTime::dateDay(string date) {
+//	
+//		
+//		cin>> istringstream in{ date};
+//		/*cin >> get_time(&date, "%d-%m-%Y");
+//		if (cin.fail()) {
+//			cerr << "Error: Invalid input format." << endl;
+//		}*/
+//		
+//		sys_days dd;
+//		in >> chrono::parse("%d/%m/%Y", dd);
+//		cout << "Day of the week is " << weekday{ dd } << '\n';
+//		//cout << "Day of the year is " << dd - sys_days{ year_month_day{dd}.year() / 1 / 0 } << '\n';
+//	
+//}
+//
+//long   DateTime::calculateTimeDifferenceHours(system_clock::time_point time1, system_clock::time_point time2) {
+//	auto duration = time2 - time1;
+//
+//	// Convert the duration to hours
+//	auto hours = std::chrono::duration_cast<std::chrono::hours>(duration).count();
+//
+//	return hours;
+//}
+//
+//long   DateTime::calculateTimeDifferenceMinutes(system_clock::time_point time1, system_clock::time_point time2) {
+//	auto duration = time2 - time1;
+//
+//	// Convert the duration to hours
+//	auto minutes = std::chrono::duration_cast<std::chrono::minutes>(duration).count();
+//
+//	return minutes;
+//}
+//
+//string DateTime::inputDateString(string inputDate){
+//
+//	cout << "Enter a string in the format (DD-MM-YYYY): ";
+//	std::getline(cin, inputDate);
+//
+//	// Create a string stream to parse the input
+//	std::istringstream iss(inputDate);
+//
+//	int day, month, year;
+//	char delimiter;
+//
+//	// Attempt to extract the day, month, and year from the input string
+//	if (iss >> day >> delimiter >> month >> delimiter >> year) {
+//		// Check if the delimiter is correct and if the values are within valid ranges
+//		if (delimiter == '-' && day >= 1 && day <= 31 && month >= 1 && month <= 12 && year >= 0) {
+//			//cout << "Input is valid. Day: " << day << ", Month: " << month << ", Year: " << year << std::endl;
+//			return inputDate;
+//		}
+//		else {
+//			cout << "Invalid input format." << endl;
+//		}
+//	}
+//	else {
+//		cout << "Error reading input." << endl;
+//	}
+//}
+
+
+tm DateTime::dateInput() {
+	tm date = {};   // initialize struct with zeros
+	cout << "Enter date \"DD-MM-YYYY\": ";
+	cin >> get_time(&date, "%d-%m-%Y");
+	if (cin.fail()) {
+		cerr << "Error: Invalid input format." << endl;
+	}
+	return date;
+}
+
+system_clock::time_point DateTime::timeInput() {
+	tm intime = {}; // initialize struct with zeros
+	cout << "Enter time (HH:MM:SS): ";
+	cin >> get_time(&intime, "%H:%M:%S");
+	auto time = system_clock::from_time_t(std::mktime(&intime));
+	if (cin.fail()) {
+		cerr << "Error: Invalid input format." << endl;
+	}
+	return time;
+}
+
+long DateTime::calculateDateDifference(tm date1, tm date2) {
+	// Convert dates to time points
+	system_clock::time_point tp1 = system_clock::from_time_t(std::mktime(&date1));
+	system_clock::time_point tp2 = system_clock::from_time_t(std::mktime(&date2));
+
+	// Calculate the duration between the two time_points
+	auto duration = tp2 - tp1;
+
+	// Convert the duration to days
+	auto days = std::chrono::duration_cast<std::chrono::hours>(duration).count() / 24;
+
+	return days;
+}
+
+void DateTime::dateDay(string date) {
+	istringstream in{ date };
+	sys_days dd;
+	in >> parse("%d/%m/%Y", dd);
+	cout << "Day of the week is " << weekday{ dd } << '\n';
+}
+
+long DateTime::calculateTimeDifferenceHours(system_clock::time_point time1, system_clock::time_point time2) {
+	auto duration = time2 - time1;
+
+	// Convert the duration to hours
+	auto hours = std::chrono::duration_cast<std::chrono::hours>(duration).count();
+
+	return hours;
+}
+
+long DateTime::calculateTimeDifferenceMinutes(system_clock::time_point time1, system_clock::time_point time2) {
+	auto duration = time2 - time1;
+
+	// Convert the duration to minutes
+	auto minutes = std::chrono::duration_cast<std::chrono::minutes>(duration).count();
+
+	return minutes;
+}
+
+string DateTime::inputDateString(string inputDate) {
+	cout << "Enter a string in the format (DD-MM-YYYY): ";
+	std::getline(cin, inputDate);
+
+	// Create a string stream to parse the input
+	std::istringstream iss(inputDate);
+
+	int day, month, year;
+	char delimiter;
+
+	// Attempt to extract the day, month, and year from the input string
+	if (iss >> day >> delimiter >> month >> delimiter >> year) {
+		// Check if the delimiter is correct and if the values are within valid ranges
+		if (delimiter == '-' && day >= 1 && day <= 31 && month >= 1 && month <= 12 && year >= 0) {
+			return inputDate;
+		}
+		else {
+			cout << "Invalid input format." << endl;
+		}
+	}
+	else {
+		cout << "Error reading input." << endl;
+	}
+
+	return "";
 }
