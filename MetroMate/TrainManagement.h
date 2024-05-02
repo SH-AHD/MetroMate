@@ -151,10 +151,10 @@ public:
 
 class Train {
 private:
-    int ID;
-    int lineID;
+    int ID=0;
+    int lineID=0;
     bool isBrokenDown = false;
-    string status;
+    string status="Running";
     int currentTripIndex = 0;
 
 public:
@@ -174,6 +174,7 @@ public:
     void setCurrentTripIndex(int index);
     int getCurrentTripIndex();
     void incrementTripIndex();
+    void setTrainInfo();
     void displayTrainInfo();
     void displaySchedule(string date);
 };
@@ -188,6 +189,7 @@ public:
 
 class Line {
 public:
+    int lineID=0;
     Line();
     deque<Train> trains;
 

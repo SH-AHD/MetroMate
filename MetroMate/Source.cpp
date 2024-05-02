@@ -25,6 +25,35 @@ using namespace std;
 using namespace std::chrono;
 
 
+//int main() {
+//	Train t;
+//	Line l;
+//	
+//	t.setTrainInfo();
+//	
+//	//t.displayTrainInfo();
+//	/*DateTime::outputTimePoint(*/ 
+//	//cout<<t.calculateETA("10", "10:40");
+//	Schedule s, a, h;
+//	t.setTrainSchedule(h);
+//	t.displaySchedule("4-4-2024");
+//	s.setDestinationStation("r");
+//	l.addTrain(t);
+//	l.displayTrains();
+//	t.setLineID(1);
+//	l.editTrainSchedule(1, t, s);
+//	l.findScheduleIndex(t, "r");
+//	l.simulateTrainBreakdown(t, "r");
+//	s.getDelay();
+//	t.getStatus();
+//	t.setTrainSchedule(a);
+//	t.adjustNextTripDepartureTime();
+//	a.getDelay();
+//	l.removeTrain(t);
+//}
+
+
+
 void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones, vector<pair<double, pair<int, int>>>& stages);
 void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones);
 void SetZones(vector<pair<vector<string>, double>>& zones);
@@ -665,11 +694,6 @@ unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string
 	return data;
 }
 
-//
-//int main() {
-//	Train t;
-//	trains.push_back(t);
-//	cout << "hi ? ";
-//	 trains[0].displayTrainInfo();
-//}
+
+
 
