@@ -105,7 +105,7 @@
 //};
 
 
-
+#pragma once
 #include <iostream>
 #include <deque>
 #include <unordered_map>
@@ -118,6 +118,11 @@
 
 using namespace std;
 using namespace std::chrono;
+
+class Train;
+class Schedule;
+class Line;
+
 
 class Schedule {
 private:
@@ -159,26 +164,27 @@ public:
     int getTrainID();
     string getStatus();
     int getLineID();
-    Schedule getTrainSchedule();
+    vector<Schedule> getTrainSchedule();
     void setTrainID(int trainID);
     void setStatus(string status);
     void setLineID(int lineID);
     void setTrainSchedule(Schedule tschedule);
-    minutes calculateETA(system_clock::time_point departureTime, system_clock::time_point arrivalTime);
+    minutes calculateETA(string departureTime, string arrivalTime);
     void adjustNextTripDepartureTime();
     void setCurrentTripIndex(int index);
+    int getCurrentTripIndex();
     void incrementTripIndex();
     void displayTrainInfo();
-    void displaySchedule();
+    void displaySchedule(string date);
 };
 
-class Metro {
-public:
-    unordered_map<int, deque<Train>&> lines;
-
-
-    deque<Train> getLineTrains(int lineID);
-};
+//class Metro {
+//public:
+//    unordered_map<int, deque<Train>&> lines;
+//
+//
+//    deque<Train> getLineTrains(int lineID);
+//};
 
 class Line {
 public:
@@ -189,7 +195,8 @@ public:
     void removeTrain(Train removedTrain);
     void addTrainSchedule(Train train, Schedule schedule);
     void editTrainSchedule(int lineID, Train train, Schedule newSchedule);
-    void simulateTrainBreakdown(Train brokenTrain);
+    void simulateTrainBreakdown(Train brokenTrain, string stationName);
+    size_t findScheduleIndex(Train train, string stationName);
     void displayTrains();
 };
 
