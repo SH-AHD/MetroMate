@@ -325,16 +325,16 @@ deque<Train> Metro::getLineTrains(int lineID) { return lines[lineID]; }
 //    this->stationSchedule = stationSchedule;
 //}
 
-Station::Station(unordered_map<system_clock::time_point, deque<Train>>& schedule)
-    : stationSchedule(schedule) {
+// Station::Station(unordered_map<system_clock::time_point, deque<Train>>& schedule)
+//     : stationSchedule(schedule) {
    
-}
+// }
 
-void Station::findTrips(system_clock::time_point tripTime) {
-    for (auto& trainPair : stationSchedule) {
-        if (trainPair.second.getTrainSchedule().getArrivalTime() == tripTime) {
-            cout << trainPair.second.getTrainID();
-        }
-    }
-}
+// void Station::findTrips(system_clock::time_point tripTime) {
+//     for (auto& trainPair : stationSchedule) {
+//         if (trainPair.second.getTrainSchedule().getArrivalTime() == tripTime) {
+//             cout << trainPair.second.getTrainID();
+//         }
+//     }
+// }
 
