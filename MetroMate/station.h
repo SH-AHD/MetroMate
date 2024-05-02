@@ -13,4 +13,8 @@ public:
 	station() {
 
 	}
+
+ unordered_map<system_clock::time_point&, deque<Train>>& stationSchedule;
+
+    void findTrips(system_clock::time_point tripTime);
 };
