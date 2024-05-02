@@ -193,17 +193,8 @@ public:
     void displayTrains();
 };
 
-class Station {
-    unordered_map<system_clock::time_point&, deque<Train>>& stationSchedule;
-  /*  string name;
-    int lineNumber;
+// class Station {
+//     unordered_map<system_clock::time_point&, deque<Train>>& stationSchedule;
 
-    station(string n, int num) {
-        name = n;
-        lineNumber = num;
-    }
-    station() {
-
-    }*/
-    void findTrips(system_clock::time_point tripTime);
-};
+//     void findTrips(system_clock::time_point tripTime);
+// };
