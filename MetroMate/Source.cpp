@@ -12,22 +12,24 @@
 #include<deque>
 #include <random>
 #include<string>
+#include<list>
+#include<queue>
 #include <fstream>
 #include <sstream>
 #include <stdexcept> 
 //for time
 #include <chrono>
 #include <ctime>
-//#include "date/date.h"
-
-
 using namespace std;
 using namespace std::chrono;
 //using namespace date;
 
-void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<vector<string>>& zones);
-void User(bool isAdmin, UserAccount user);
-void SetZones(vector<vector<string>>& zones);
+//int main();
+
+void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones, vector<pair<double, pair<int, int>>>& stages);
+void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones);
+void SetZones(vector<pair<vector<string>, double>>& zones);
+void manageStages(vector<pair<double, pair<int, int>>>& stages,int choice);
 //subscription file
 vector<string> split(const string& str, char delimiter);
 void writeToSubscriptionFile(const unordered_map<string, SubscriptionDetails>& data, const string& filename);
@@ -39,6 +41,7 @@ Line lines;
 deque<Train> trains;
 
 int main() {
+
 	unordered_map<string, SubscriptionDetails> subscription_plans;//name and details
 	unordered_map<int, string> subscriptions_names;//to have id and name only
 	unordered_map<string, UserAccount> users;
@@ -46,7 +49,8 @@ int main() {
 	string SubscriptionFileName = "subscriptions.csv";
 	subscription_plans = readFromSubscriptionFile(SubscriptionFileName, subscriptions_names);
 	
-	vector<vector<string>>zones;
+	vector<pair<vector<string>, double>>zones;//zone[1][station1]
+	vector<pair<double, pair<int, int>>> stages; // <price , <min_stations,max_stations>> for 4 stages
 
 	bool outerLoop = true;
 	while (outerLoop) {
@@ -80,10 +84,11 @@ int main() {
 			else {
 				break;
 			}
-
+			
+			
 			if (!isAdmin) {
 				//have to choose in regster only
-				user.PurchaceSubscription(user, subscription_plans, subscriptions_names);
+				user.PurchaceSubscription(user, subscription_plans, subscriptions_names, zones);
 			}
 			
 		case 2:
@@ -108,14 +113,11 @@ int main() {
 			}
 			
 			
-			
 			//logic of program
 			//logined as (admin) or ( user with "email" above)
-			Admin(isAdmin, subscription_plans, subscriptions_names,zones);
-			User(isAdmin, user);
+			Admin(isAdmin, subscription_plans, subscriptions_names,zones,stages);
+			User(isAdmin, user, subscription_plans, subscriptions_names, zones);
 
-
-			//outerLoop = false;
 			break;
 		default:
 			outerLoop = false;
@@ -133,7 +135,7 @@ int main() {
 }
 
 
-void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<vector<string>>& zones)
+void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones , vector<pair<double, pair<int, int>>>& stages)
 {
 	if (isAdmin) {
 		//admin
@@ -146,7 +148,7 @@ void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscripti
 
 
 		while (isAdminLoop) {
-			cout << "enter number of operation you want to perform:\n 1. User Management \n 2. Metro Management \n 3. Subscription Plan Management \n 4. View All Ride Logs \n 5. Station Management \n 6. Fare Management \n 7. Set Zones \n  any other number to exit" << endl;
+			cout << "enter number of operation you want to perform:\n 1. User Management \n 2. Metro Management \n 3. Subscription Plan Management \n 4. View All Ride Logs \n 5. Station Management \n 6. Fare Management  \n  any other number to exit" << endl;
 			cin >> answer;
 			switch (answer)
 			{
@@ -157,17 +159,14 @@ void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscripti
 			case 3:
 				int funcChoice;
 				cout << "enter the number of the function you want to perform\n 1- create subscription \n 2- modify subscription \n 3- remove subscription \n    press any key to go back";
-				// 1-create
-				// 2-modify
-				// 3-remove
+				
 				cin >> funcChoice;
-
 
 				switch (funcChoice)
 				{
 				case 1:
 					//create
-					newSubscriptions.Create();
+					newSubscriptions.Create(zones,stages);
 
 					//adding it to hash table
 					subscription_plans.insert(make_pair(newSubscriptions.name, newSubscriptions));
@@ -199,9 +198,21 @@ void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscripti
 			case 5:
 				break;
 			case 6:
-				break;
-			case 7:
-				SetZones(zones);
+				cout << "press 1. to manage zones 2. to manage stages";
+				int choice;
+				cin >> choice;
+				switch (choice)
+				{
+				case 1:
+					SetZones(zones);
+					break;
+				case 2:
+					manageStages(stages, choice);
+					break;
+				default:
+					break;
+				}
+				
 				break;
 			default:
 				isAdminLoop = false;
@@ -214,7 +225,7 @@ void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscripti
 	}
 }
 
-void User(bool isAdmin, UserAccount user)
+void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones)
 {
 	if (!isAdmin) {
 		DateTime Date;
@@ -243,6 +254,8 @@ void User(bool isAdmin, UserAccount user)
 			cin >> manageChoice;
 			string firstDestination;
 			string targetDestination;
+			int index = 1;//looping in path
+			list<queue <pair< station, int>>> availablePaths;
 			switch (manageChoice)
 			{
 			case 1:
@@ -255,25 +268,8 @@ void User(bool isAdmin, UserAccount user)
 
 				break;
 			case 3:
-				//make him choose a new stage
-
-				// initial and target destination??
-				cout << "enter your first and target destination";
-				cin >> firstDestination >> targetDestination;
-
-				//cout all paths
-				//"calculating the shortest path...."
-				// Please select the path of your choosing (knowing that --- is the shortest path to your destination)
-				int chosenPath;
-				cout << "choose your path";
-				cin >> chosenPath;
-
-				//chosenPath= what he chosed
-
-				//calculate price according to the path
-				user.chosenSubscription.calcPrice(chosenPath);
-				user.availableTrips = user.chosenSubscription.numberOfTrips;
-
+				//ubgrade
+				user.PurchaceSubscription(user, subscription_plans, subscriptions_names, zones);
 				break;
 
 			default:
@@ -287,27 +283,185 @@ void User(bool isAdmin, UserAccount user)
 	}
 }
 
-void SetZones(vector<vector<string>>& zones)
+void SetZones(vector<pair<vector<string>, double>>& zones)
 {
 	while (true) {
-		int zoneNum;
+		unsigned int zoneNum;
 		vector<string> targetZone;
-		cout << "enter number of zone you want to put its stations \n press 0 if you want to exit" << endl;
-		cin >> zoneNum;
-		if (zoneNum == 0)
-			break;
+		int choice;
+		cout << "press 1. if you want to add zone \n 2. edit zone\n";
+		cin >> choice;
+		if (choice == 1){
+			//add zone
+			double price;
+			while (true) {
+				cout << "enter station name in zone"<< zones.size()+1<<" \n press 0 if you want to exit (no more stations)  ";
+					string stationName;
+					cin >> stationName;
+					for (unsigned int i = 0; i < zones.size(); i++) {
+						for (unsigned int j = 0; j < zones[i].first.size(); j++) {
+							if (zones[i].first[j] == stationName) {
+								cout << "station is already in another zone";
+								continue;
+							}
+						}
+					}
+					cout << "enter zone price in zone" << zones.size() + 1<<endl;
+					cin >> price;
+					if (stationName == "0")
+						break;
 
-		targetZone = zones[zoneNum - 1];//zone 1 as zones[0]
-		while (true) {
-			cout << "enter station name in that zone \n press 0 if you want to exit (no more stations)  ";
-			string stationName;
-			cin >> stationName;
-			if (stationName == "0")
-				break;
-
-			targetZone.push_back(stationName);
+					targetZone.push_back(stationName);
+			}
+			if(!targetZone.empty())
+				zones.push_back(make_pair(targetZone,price));
 		}
-		zones.push_back(targetZone);
+		else if (choice == 2) {
+			//edit zone
+			bool validZone = false;
+			while (true) {
+				cout << "enter number of zone you want to edit \n press 0 if you want to exit" << endl;
+				cin >> zoneNum;
+				if (zoneNum == 0) {
+					//chosed to exit
+					validZone = false;
+					break;
+				}
+
+
+				if (zoneNum > 0 && zoneNum < zones.size() + 1) {
+					validZone = true;
+					targetZone = zones[zoneNum - 1].first;//zone 1 as zones[0]
+					break;
+				}
+				else {
+					cout << "not valid zone num \n";
+					validZone = false;
+				}
+
+			}
+
+			while (validZone) {
+				cout << "press \n 1. to delete that zone \n2. delete station in that zone \n3. add station in that zone\n4. change that zone price";
+				cin >> choice;
+				if (choice == 1) {
+					//delete zone
+					vector<pair<vector<string>, double>> ::iterator deletedZone;
+					deletedZone = zones.begin();
+					//zones.erase(zoneNum - 1);
+					while (*deletedZone != zones[zoneNum - 1]) {
+						deletedZone++;
+					}
+					zones.erase(deletedZone);
+				}
+				else if (choice == 2) {
+					//delete station
+					for (unsigned int i = 0; i < targetZone.size(); i++) {
+						cout << "station index " << i + 1 << " : " << targetZone[i];
+					}
+					cout << "enter station index you want to delete \n press 0 if you want to exit (no more stations)  ";
+					unsigned int stationIndex;
+					cin >> stationIndex;
+					if (stationIndex == 0)
+						break;
+
+					if (stationIndex > 0 && stationIndex < targetZone.size() + 1) {
+						vector<string> ::iterator it;
+						it = targetZone.begin();
+						//zones[zoneNum].erase(stationIndex - 1);
+						while (*it != targetZone[stationIndex - 1]) {
+							it++;
+						}
+						zones[zoneNum-1].first.erase(it);
+
+					}
+				}
+				else if (choice == 3) {
+					//add station
+					while (true) {
+						cout << "enter station name in zone" << zoneNum << " \n press 0 if you want to exit (no more stations)  ";
+						string stationName;
+						cin >> stationName;
+						for (unsigned int i = 0; i < zones.size(); i++) {
+							for (unsigned int j = 0; j < zones[i].first.size(); j++) {
+								if (zones[i].first[j] == stationName) {
+									cout << "station is already in another zone";
+									continue;
+								}
+							}
+						}
+						if (stationName == "0")
+							break;
+
+						zones[zoneNum-1].first.push_back(stationName);
+					}
+				}
+				else if (choice == 4) {
+					//edit zone price
+					double price;
+					while (true) {
+						cout << "enter zone new price" << zoneNum << " \n press 0 if you want to exit";
+						cin >> price;
+						if (price == 0)
+							break;
+
+						zones[zoneNum - 1].second = price;
+					}
+				}
+				else {
+					break;
+				}
+				
+			}
+		}
+		else {
+			break;
+		}
+		
+		
+	}
+}
+void manageStages(vector<pair<double, pair<int, int>>>& stages, int choice)
+{
+	cout << "1. if you want to add stage \n2. if you want to edit stage\n any thing to exit";
+	cin >> choice;
+	pair<double, pair<int, int>> tmpStage;
+	if (choice == 1) {
+		cout << "you will add details of stage " << stages.size() + 1 << " : \n enter its price : \n";
+		cin >> tmpStage.first;
+		cout << "enter its min stations : \n";
+		cin >> tmpStage.second.first;
+		cout << "enter its max stations : \n";
+		cin >> tmpStage.second.second;
+		stages.push_back(tmpStage);
+	}
+	else if (choice == 2) {
+		for (unsigned int i = 0; i < stages.size(); i++) {
+			cout << "stage " << i + 1 << " : price = " << stages[i].first << ", min stations : " << stages[i].second.first << ", max stations : " << stages[i].second.second << endl;
+		}
+		cout << "enter stage number : ";
+		int stageNum;
+		cin >> stageNum;
+
+		cout << "1. if you want to change price \n2. min stations\n 3. max stations";
+		cin >> choice;
+		switch (choice)
+		{
+		case 1:
+			cout << "enter new price\n";
+			cin >> stages[stageNum - 1].first;
+			break;
+		case 2:
+			cout << "enter new min stations\n";
+			cin >> stages[stageNum - 1].second.first;
+			break;
+		case 3:
+			cout << "enter new max stations\n";
+			cin >> stages[stageNum - 1].second.first;
+			break;
+		default:
+			break;
+		}
 	}
 }
 //subscription file
@@ -315,6 +469,7 @@ void writeToSubscriptionFile(const unordered_map<string, SubscriptionDetails>& d
 	std::ofstream file(filename);
 	if (!file.is_open()) {
 		// Handle error opening file
+		cout << "not open";
 		return;
 	}
 
@@ -335,69 +490,181 @@ vector<string> split(const string& str, char delimiter) {
 	return tokens;
 }
 unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string& filename, unordered_map<int, string>& subscriptions_names) {
+	
 	ifstream file(filename);
 	if (!file.is_open()) {
 		//throw std::runtime_error("Error opening file: " + filename);
-		//cout << "nofile";
+		cout << "nofile"; perror(("Error opening file: " + filename).c_str());
 	}
 
 	unordered_map<string, SubscriptionDetails> data;
 	string line;
+	int lineNum=1;
 	if (file.good()) {
 		while (getline(file, line)) {
 			stringstream ss(line);
 			string key;
-			string attributeStr; // String containing all comma-separated attributes
+			string attributeStr; // Stringall comma-separated attributes
 
-			if (getline(ss, key, ',') && getline(ss, attributeStr)) {
-				vector<string> attributes = split(attributeStr, ',');
+			if (lineNum == 1) {
 
-				// Check for minimum number of attributes (assuming range)
-				if (attributes.size() < 6) {
-					std::cerr << "Error: Invalid line format (too few attributes) in \"" << filename << "\"\n";
-					// Optionally, log the specific line content for debugging
-					// std::cerr << "  Line content: " << line << std::endl;
-					continue;
-				}
+				if (getline(ss, key, ',') && getline(ss, attributeStr)) {
+					vector<string> attributes = split(attributeStr, ',');
 
-				// Extract and convert attributes to appropriate types
-				try {
-					double price = stod(attributes[0]);
-					int valid_duration = stoi(attributes[1]);
 
-					int cashAmount = (attributes.size() >= 3) ? stoi(attributes[2]) : 0; // Handle optional cashAmount
-
-					int stagesPrices[4];
-					// Loop through all attributes for stage prices (assuming 4)
-					for (int i = 0; i < 4; ++i) {
-						if (i < attributes.size()) {
-							stagesPrices[i] = stoi(attributes[i + 3]);
-						}
-						else {
-							// Handle missing stage prices (set default or throw exception)
-							stagesPrices[i] = 0; // Or throw an exception if critical
-						}
+					// Check for minimum number of attributes (assuming range)
+					if (attributes.size() < 5) {
+						std::cerr << "Error: Invalid line format (too few attributes) in \"" << filename << "\"\n";
+						continue;
 					}
 
-					int stage = (attributes.size() >= 8) ? stoi(attributes[7]) : 0; // Handle optional stage
+					// Extract and convert attributes to appropriate types
+					try {
+						SubscriptionDetails details;
+						details.price = stod(attributes[0]);
+						details.valid_duration = stoi(attributes[1]);
+						details.cashAmount = (attributes.size() >= 3) ? stoi(attributes[2]) : 0; // Handle optional cashAmount
+						details.name = attributes[attributes.size() - 2];
+						details.numberOfTrips = stoi(attributes[attributes.size() - 1]);// Assuming numberOfTrips is last
 
-					int path = stoi(attributes[attributes.size() - 3]); // Assuming path is before last
-					string name = attributes[attributes.size() - 2]; // Assuming name is last
-					int numberOfTrips = stoi(attributes[attributes.size() - 1]);
-					// Create a SubscriptionDetails object from parsed data
-					SubscriptionDetails details(price, valid_duration, cashAmount, stagesPrices, stage, name, path, numberOfTrips);
-					// Add the object to the map
-					data[key] = details;
 
-					subscriptions_names.insert(make_pair(data.size(), details.name));
-				}
-				catch (const invalid_argument& e) {
-					cerr << "Error: Non-numeric value in \"" << filename << "\"\n";
-					continue;
+						// Add the object to the hash table
+						data[key] = details;
+
+						subscriptions_names.insert(make_pair(data.size(), details.name));
+					}
+					catch (const invalid_argument& e) {
+						cerr << "Error: Non-numeric value in \"" << filename << "\"\n";
+						continue;
+					}
 				}
 			}
+			else if (lineNum == 2) {
+				
+				if (getline(ss, attributeStr)) {
+					vector<string> attributes = split(attributeStr, ',');
+
+					// Check for minimum number of attributes (assuming range)
+					if (attributes.size() < 3) {
+						data[key].availableStages.push_back(make_pair(0, make_pair(0, 0)));
+						//continue;
+					}
+
+					// Extract and convert attributes to appropriate types
+					try {
+						if (attributes.size() >= 3) {
+							for (unsigned int i = 0; i < attributes.size() / 3; i++) {
+
+								pair<double, pair<int, int>> tmp;
+								for (unsigned int i = 0; i < attributes.size() / 3; i++) {
+									//because availableStages has 3 attributes
+									tmp.first = stod(attributes[(i * 3)]);// 0 _ _    3 _ _     6 _ _
+									tmp.second.first = stoi(attributes[(i * 3) + 1]);// _ 1 _    _ 4 _   _ 7 _
+									tmp.second.second = stoi(attributes[(i * 3) + 2]);// _ _ 2    _ _ 5   _ _ 8
+									data[key].availableStages.push_back(tmp);
+								}
+							}
+						}
+						
+					}
+					catch (const invalid_argument& e) {
+						cerr << "Error: Non-numeric value in \"" << filename << "\"\n";
+						continue;
+					}
+				}
+			}
+			else if (lineNum == 3) {
+				string v;
+				string num;
+			    while (getline(ss, v, '+') && getline(ss, num,'+')) {
+					vector<string> firstVector = split(v, ',');
+					//vector<string> attributes = split(attributeStr, ',');
+					
+
+
+					// Check for minimum number of attributes (assuming range)
+					//1 for num
+					if (firstVector.size()+1 < 2) {
+						std::cerr << "Error: Invalid line format (too few attributes) in \"" << filename << "\"\n";
+						continue;
+					}
+
+					// Extract and convert attributes to appropriate types
+					try {
+						data[key].availableZones.push_back(make_pair(firstVector, stod(num)));
+					}
+					catch (const invalid_argument& e) {
+						cerr << "Error: Non-numeric value in \"" << filename << "\"\n";
+						continue;
+					}
+				}
+			}
+			else if (lineNum == 4) {
+				
+				if (getline(ss,attributeStr)) {
+					vector<string> attributes = split(attributeStr, ',');
+					//vector<string> attributes = split(attributeStr, ',');
+
+
+
+					// Check for minimum number of attributes (assuming range)
+					if (attributes.size() < 3) {
+						std::cerr << "Error: Invalid line format (too few attributes) in \"" << filename << "\"\n";
+						continue;
+					}
+
+					// Extract and convert attributes to appropriate types
+					try {
+						data[key].chosenStage.first = stod(attributes[0]);
+						data[key].chosenStage.second.first = stoi(attributes[1]);
+						data[key].chosenStage.second.first = stoi(attributes[2]);
+					}
+					catch (const invalid_argument& e) {
+						cerr << "Error: Non-numeric value in \"" << filename << "\"\n";
+						continue;
+					}
+				}
+			}
+			else if (lineNum == 5) {
+				string classStationString;
+				string num;
+				while (getline(ss, classStationString, '+') && getline(ss, num, '+')) {
+					vector<string> classStation = split(classStationString, ',');
+					//vector<string> attributes = split(attributeStr, ',');
+
+
+
+					// Check for minimum number of attributes (assuming range)
+					/*if (attributes.size() < 3) {
+						std::cerr << "Error: Invalid line format (too few attributes) in \"" << filename << "\"\n";
+						continue;
+					}*/
+					pair< station, int> tmp;
+					// Extract and convert attributes to appropriate types
+					try {
+						tmp.first.name = classStation[0];
+						tmp.first.lineNumber = stoi(classStation[1]);
+						tmp.second = stoi(num);
+						data[key].chosenPath.push(tmp);
+					}
+					catch (const invalid_argument& e) {
+						cerr << "Error: Non-numeric value in \"" << filename << "\"\n";
+						continue;
+					}
+				}
+			}
+
+
+			lineNum++;
+			if (lineNum % 6 == 0) {
+				lineNum = 1;
+			}
 		}
+	
+	
+
 	}
+	
 	return data;
 }
 

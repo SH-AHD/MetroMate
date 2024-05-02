@@ -1,5 +1,8 @@
 #include "SubscriptionDetails.h"
 #include "UserAccount.h"
+//#include"station.h"
+#include<queue>
+
 #include<iostream>
 #include<unordered_map>
 #include<vector>
@@ -20,41 +23,43 @@ void SubscriptionDetails::DisplayData(string name)
 	else {
 		cout << "price: " << price << endl;
 		cout << "valid duration: " << valid_duration << endl;
-		cout << "your path" << path << endl;
+		//scout << "your path" << path << endl;
 	}
 }
-void SubscriptionDetails::calcStage(int chosenPath)
+void SubscriptionDetails::calcStage(queue <pair< station, int>> chosenPath)
 {
-	stage = 4;
-	path = chosenPath;
-}
-double SubscriptionDetails::calcPrice(int chosenPath) {
-	calcStage(chosenPath);
-	switch (stage)
-	{
-	case 1: price = stagesPrices[0];
-		return stagesPrices[0];
-		//stagesPrices[i] already defined (for each stage) by admin in "subscription_plans hash table"
-		break;
-	case 2: price = stagesPrices[1];
-		return stagesPrices[1];
-		break;
-	case 3: price = stagesPrices[2];
-		return stagesPrices[2];
-		break;
-	case 4: price = stagesPrices[3];
-		return stagesPrices[3];
-		break;
+	int pathSize = chosenPath.size();
+	for (unsigned int i = 0; i < availableStages.size(); i++) {
+		if (pathSize > availableStages[i].second.first && pathSize < availableStages[i].second.first) {
+			chosenStage = availableStages[i];
+			break;
+		}
 	}
+}
+double SubscriptionDetails::calcPrice(queue <pair< station, int>> chosenPath,int zoneNum, bool isStage) {
+	
+	if (isStage) {
+		calcStage(chosenPath);
+		price = chosenStage.first;//price
+		return price;
+	}
+	else {
+		price = availableZones[zoneNum-1].second;
+		return price;
+	}
+	
 }
 void SubscriptionDetails::displayFixedData() {
 	cout << "valid duration:  " << endl << valid_duration << endl;
-	for (int i = 0; i < 4; i++) {
-		cout << "price for stage " << i + 1 << " : " << stagesPrices[i] << endl;
+	for (unsigned int i = 0; i < availableStages.size(); i++) {
+		cout << "price for stage " << i + 1 << " : " << availableStages[i].first << endl;
+	}
+	for (unsigned int i = 0; i < availableZones.size(); i++) {
+		cout << "price for zone " << i + 1 << " : " << availableZones[i].second << endl;
 	}
 }
 
-void SubscriptionDetails::Create()
+void SubscriptionDetails::Create(vector<pair<vector<string>, double>> zones, vector<pair<double, pair<int, int>>> stages)
 {
 	cout << "enter subscription name";
 	cin >> name;
@@ -64,11 +69,26 @@ void SubscriptionDetails::Create()
 		
 		cout << "enter the available number of trips " << endl;
 		cin >> numberOfTrips;
+
+		availableZones = zones;//we will change price only
+		for (unsigned int i = 0; i < zones.size(); i++) {
+			cout << "enter subscription price for zone " << i + 1 << endl;
+			cin >> availableZones[i].second;
+		}
+
+		availableStages = stages;//we will change price only not min and max stations
+		for (unsigned int i = 0; i < stages.size(); i++) {
+			cout << "enter subscription price for stage " << i + 1 << endl;
+			cin >> availableStages[i].first;
+		}
+
+
 	}
-	for (int i = 0; i < zonesPrices.size(); i++) {
-		cout << "enter subscription price for zone " << i + 1 << endl;
-		cin >> zonesPrices[i];
+	else {
+		availableStages = stages;
+		availableZones = zones;
 	}
+	
 	
 	
 
@@ -89,18 +109,38 @@ void SubscriptionDetails::Modify(unordered_map<string, SubscriptionDetails>& sub
 		}
 		cin >> key;
 		subscriptionName = subscriptions_names[key];
-		//display chosen subscribtion's 
+
+		//display chosen subscribtion's details
 		subscription_plans[subscriptionName].displayFixedData();
-		//choose 1-modify subscription's fare
-		//2- modify subscription's valid duration
-		//3- modify number of trips available
+
+		cout << "choose 1-modify subscription's fare \n 2- modify subscription's valid duration \n 3- modify number of trips available";
 		int modChoice;
 		cin >> modChoice;
 		if (modChoice == 1)
 		{
+			cout << "1. subscription's new fare of stage \n3. subscription's new fare of zone";
+			cin >> modChoice;
+			switch (modChoice)
+			{
+			case 1:
+				for (unsigned int i = 0; i < availableStages.size(); i++) {
+					cout << "enter subscription's new fare of stage" << i + 1 << endl;
+					cin >> subscription_plans[subscriptionName].availableStages[i].first;
+				}
+				break;
+			case 2:
+				for (unsigned int i = 0; i < availableZones.size(); i++) {
+					cout << "enter subscription's new fare of zone" << i + 1 << endl;
+					cin >> subscription_plans[subscriptionName].availableZones[i].second;
+				}
+				break;
+			default:
+				break;
+			}
+
 			for (int i = 0; i < 4; i++) {
 				cout << "enter subscription's new fare of stage" << i + 1 << endl;
-				cin >> subscription_plans[subscriptionName].stagesPrices[i];
+				cin >> subscription_plans[subscriptionName].availableStages[i].first;
 			}
 
 		}
@@ -135,13 +175,38 @@ void SubscriptionDetails::remove(unordered_map<string, SubscriptionDetails>& sub
 
 
 
-string SubscriptionDetails::toString() const {
+string SubscriptionDetails::toString() const{
 	string ss;
 	// You can modify the format string to control output appearance
-	ss = to_string(price) + "," + to_string(valid_duration) + "," + to_string(cashAmount) + ",";
-	for (int i = 0; i < 4; i++) {
+	ss = to_string(price) + "," + to_string(valid_duration) + "," + to_string(cashAmount) + ","+ "," + name + "," + to_string(numberOfTrips)+"\n";
+	/*for (int i = 0; i < 4; i++) {
 		ss += to_string(stagesPrices[i]) + ",";
+	}*/
+	ss += "\n";
+	for (unsigned int i = 0; i < availableStages.size(); i++) {
+		ss += to_string(availableStages[i].first) + ","+ to_string(availableStages[i].second.first) + ","+ to_string(availableStages[i].second.second) + ",";
 	}
-	ss += to_string(stage) + "," + to_string(path) + "," + name + "," + to_string(numberOfTrips);
+	ss += "\n";
+	for (unsigned int i = 0; i < availableZones.size(); i++) {
+		for (unsigned int j = 0; j < availableZones[i].first.size(); j++) {
+			ss += availableZones[i].first[j] + ",";
+			if (j == availableZones[i].first.size() - 1)
+				ss += "+";//if it was the last value in the inside vector
+			/*else
+				ss += ",";*/
+		}
+		ss += to_string(availableZones[i].second) + "+";
+	}
+	ss += "\n";
+	ss += to_string(chosenStage.first) + "," + to_string(chosenStage.second.first) + "," + to_string(chosenStage.second.second) + ",";
+	ss += "\n";
+	queue <pair< station, int>> tmp = chosenPath;
+	while (!tmp.empty()) {
+		ss += tmp.front().first.name + ","+ to_string(tmp.front().first.lineNumber)+",";
+		ss += "+";
+		ss += to_string(tmp.front().second) + "+";
+		tmp.pop();
+	}
+	cout << "write done";
 	return ss;
 }

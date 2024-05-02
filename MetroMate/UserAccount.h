@@ -32,7 +32,7 @@ public:
 	SubscriptionDetails chosenSubscription;
 	int availableTrips;
 
-	void PurchaceSubscription(UserAccount& user, unordered_map<std::string, SubscriptionDetails> subscription_plans, unordered_map<int, string> subscriptions_names);
+	void PurchaceSubscription(UserAccount& user, unordered_map<std::string, SubscriptionDetails> subscription_plans, unordered_map<int, string> subscriptions_names , vector<pair<vector<string>, double>> zones);
 
 	UserAccount() {
 		//dont delete it
