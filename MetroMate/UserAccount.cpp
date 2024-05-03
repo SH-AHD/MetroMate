@@ -47,7 +47,8 @@ bool UserAccount::Register(unordered_map<string, UserAccount>& users, UserAccoun
 
 	users.insert(make_pair(Email, user));
 	//	Users[Email] = UserAccount(Email, Password, Name, Address, Phone);
-	cout << "succesful Registertion";
+	cout << "succesful Registertion" << endl;
+	LogedUser = true;
 	//	Users[Email] = UserAccount(Email, Password, Name, Address, Phone);
 	return true;
 
@@ -69,9 +70,10 @@ bool UserAccount::VailEmail(string email)
 	return true;
 }
 
-bool UserAccount::logIn(string email, string password, unordered_map<string, UserAccount>& users)
+bool UserAccount::logIn(bool& isAdmin, UserAccount& theLog, string email, string password, unordered_map<string, UserAccount>& users)
 {
 	if (email == "Admin@gmail.com") {
+		isAdmin = true;
 		return true;
 	}
 	if (users.count(email) == 0)
@@ -83,7 +85,69 @@ bool UserAccount::logIn(string email, string password, unordered_map<string, Use
 		return false;
 	}
 	else
-		return true;
+		theLog = user;
+	LogedUser = true;
+	return true;
+}
+
+
+void  UserAccount::ChangePassword(string& NewPass)
+{
+	Password = NewPass;
+}
+
+
+void  UserAccount::updateInfo(UserAccount& use)
+{
+	cout << "what the information you want to update:\n1.Name\n2.Adderss\n3.Phone\n4.All your information" << endl;
+	int choice, phone;
+	string name, address;
+	cin >> choice;
+	if (choice == 1)
+	{
+		cout << "enter the new name:";
+		cin >> name;
+		use.Name = name;
+	}
+	else if (choice == 2)
+	{
+		cout << "enter the new address:";
+		cin >> address;
+		use.Address = address;
+	}
+	else if (choice == 3)
+	{
+		cout << "enter the new Phone number:";
+		cin >> phone;
+		use.Phone = phone;
+
+	}
+	else
+	{
+		cout << "enter the new name:";
+		cin >> name;
+		use.Name = name;
+		cout << "enter the new address:";
+		cin >> address;
+	use.Address = address;
+		cout << "enter the new Phone number:";
+		cin >> phone;
+		use.Phone = phone;
+	}
+}
+
+
+void UserAccount::LogOut(UserAccount& current)
+{
+	LogedUser = false;
+	UserAccount emptyUser;
+	current = emptyUser;
+}
+
+void UserAccount::displayAccount()
+{
+	cout << this->Name << '\t' << this->Email << '\t' << this->Address << '\t' << this->Phone<<endl;
+	
 }
 
 void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, SubscriptionDetails> subscription_plans, unordered_map<int, string> subscriptions_names , vector<pair<vector<string>, double>> zones)
@@ -107,7 +171,7 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 	list<queue <pair< station, int>>> availablePaths;
 
 	if (subscription_plans.empty()) {
-		cout << "no subscriptions available ";
+		cout << "no subscriptions available "<<endl;
 	}
 	else {
 		cout << "available subscriptions: " << endl;

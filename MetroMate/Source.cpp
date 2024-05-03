@@ -7,7 +7,7 @@
 #include"TrainManagement.cpp"
 
 
-#include<iostream>
+#include <iostream>
 #include <unordered_map>
 #include<vector>
 #include<deque>
@@ -78,71 +78,83 @@ int main() {
 	vector<pair<vector<string>, double>>zones;//zone[1][station1]
 	vector<pair<double, pair<int, int>>> stages; // <price , <min_stations,max_stations>> for 4 stages
 
+	//variables needed for register:
+	string name, email, address, password;
+	int phone;
+	//for login:
+	bool isAdmin = false;
+	UserAccount currentUser;
+
 	bool outerLoop = true;
 	while (outerLoop) {
-		cout << "if you want to register press 1 \n if you want to login press 2  \n press any thing to logout";
+		cout << "welcome to the metro system" << endl;
+		cout << "---------------------------" << endl;
+		cout << "chose what you want to do:" << endl;
+		cout << "1.Rigester\n2.log in" << endl;
 		int firstChoice;
 		cin >> firstChoice;
 
 		bool registerSucess = false;
-		
-		//variables needed for register:
-		string userName;
-		//for login:
-		UserAccount user;
-		string email="f", password;
-		bool isAdmin = true;
-		switch (firstChoice) {
+		switch (firstChoice)
+		{
 		case 1:
-
-			
-			cout << "please enter your email , if you want to exit press 0" << endl;
-			cin >> user.Email;
-			if (user.Email != "0") {
-				registerSucess = user.Register(users, user);
-				cout << "please enter your password " << endl;
-				cin >> user.Password;
-				if (user.Email == "Admin@gmail.com")
-					isAdmin = true;
-				else
-					isAdmin = false;
-			}
-			else {
-				break;
-			}
-			
-			
-			if (!isAdmin) {
-				//have to choose in regster only
-				user.PurchaceSubscription(user, subscription_plans, subscriptions_names, zones);
-			}
-			
+		{
+			cout << "Register" << endl;
+			cout << "--------" << endl;
+			cout << "Name:";
+			cin >> name;
+			cout << "Email:";
+			cin >> email;
+			cout << "Phone Number:";
+			cin >> phone;
+			cout << "Address:";
+			cin >> address;
+			cout << "Password:";
+			cin >> password;
+			UserAccount user(email, password, name, address, phone);
+			user.Register(users, user);
+			currentUser = user;
+			currentUser.PurchaceSubscription(currentUser, subscription_plans, subscriptions_names, zones);
+			currentUser.displayAccount();
+			cout << "enter the new pass:";
+			string h;
+			cin >> h;
+			currentUser.ChangePassword(h);
+		//	currentUser.updateInfo(currentUser);
+			break;
+		}
 		case 2:
-			
-			if (!registerSucess) {
-				do {
-					cout << "if you want to exit press 0\nenter your email: " << endl;
-					cin >> email;
-					cout << "enter your password: " << endl;
-					cin >> password;
-				} while (!user.logIn(email, password, users) && email != "0");
-
-				if (user.Email == "Admin@gmail.com")
-					isAdmin = true;
-				else
-					isAdmin = false;
-
-				registerSucess = false;
-
-				if (email == "0")
-					break;
+		{
+			cout << "please enter the email and password of your account:\n";
+			cout << "Email: ";
+			cin >> email;
+			cout << "Password: ";
+			cin >> password;
+			UserAccount userLog(email, password);
+			if (userLog.logIn(isAdmin, currentUser, email, password, users))
+			{
+				if (isAdmin == true)
+				{
+					cout << "Login successful"<<endl;
+					Admin(isAdmin, subscription_plans, subscriptions_names, zones, stages);
+				}
+				else if(isAdmin==false)
+				{
+					cout << "Login successful" << endl;
+					currentUser.displayAccount();
+				}
 			}
-			
+
+
+			else
+				cout << "Login failed";
+			break;
+		}
 			
 			//logic of program
 			//logined as (admin) or ( user with "email" above)
 			Admin(isAdmin, subscription_plans, subscriptions_names,zones,stages);
-			User(isAdmin, user, subscription_plans, subscriptions_names, zones);
+			User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones);
 
 			break;
 		default:

@@ -28,6 +28,7 @@ public:
 	string Address;
 	int Phone;
 	tm startDate;
+	bool LogedUser;
 
 	SubscriptionDetails chosenSubscription;
 	int availableTrips;
@@ -41,7 +42,11 @@ public:
 	UserAccount(string Email, string Password, string Name, string Address, int Phone);
 	bool Register(unordered_map<string, UserAccount>& users, UserAccount user);
 	bool VailEmail(string email);
-	bool logIn(string email, string password, unordered_map<string, UserAccount>& user);
+	bool logIn(bool& isAdmin, UserAccount& theLog, string email, string password, unordered_map<string, UserAccount>& user);
+	void ChangePassword(string& NewPass);
+	void updateInfo(UserAccount& use);
+	void LogOut(UserAccount& current);
+	void displayAccount();
 };
 
 //class DateTime {
