@@ -353,33 +353,55 @@ void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDeta
 		//choose what action you want to perform
 		bool isUserLoop = true;
 		while (isUserLoop) {
-			int manageChoice;
-			cout << "if you want to: \n view active subscription type 1 \n renew subscription type 2  \n upgrade subscription type 3";
-			cin >> manageChoice;
+			int answer;
+			cout << "press the number of the functionality you want \n 1- Manage Subscription \n 2- Check-In/Check-Out for Rides \n 3- View Ride History \n 4-Update Personal Information \n";
+			cin >> answer;
+
+			//needed variables in manage subscribtion 
 			string firstDestination;
 			string targetDestination;
 			int index = 1;//looping in path
 			list<queue <pair< station, int>>> availablePaths;
-			switch (manageChoice)
+
+
+			switch (answer)
 			{
 			case 1:
-				user.chosenSubscription.DisplayData(user.chosenSubscription.name);
+				int manageChoice;
+				cout << "if you want to: \n view active subscription type 1 \n renew subscription type 2  \n upgrade subscription type 3";
+				cin >> manageChoice;
+				
+				switch (manageChoice)
+				{
+				case 1:
+					user.chosenSubscription.DisplayData(user.chosenSubscription.name);
+					break;
+				case 2:
+					//renew
+					user.availableTrips = user.chosenSubscription.numberOfTrips;
+					user.startDate = Date.current_date();
+
+					break;
+				case 3:
+					//ubgrade
+					user.PurchaceSubscription(user, subscription_plans, subscriptions_names, zones);
+					break;
+
+				default:
+					isUserLoop = false;
+					break;
+				}
 				break;
 			case 2:
-				//renew
-				user.availableTrips = user.chosenSubscription.numberOfTrips;
-				user.startDate = Date.current_date();
-
 				break;
 			case 3:
-				//ubgrade
-				user.PurchaceSubscription(user, subscription_plans, subscriptions_names, zones);
 				break;
-
+			case 4:
+				break;
 			default:
-				isUserLoop = false;
 				break;
 			}
+			
 		}
 
 
