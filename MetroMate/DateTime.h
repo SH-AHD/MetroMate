@@ -1,21 +1,33 @@
-//#include <iostream>
-//#include<chrono>
-//#include<ctime>
-//using namespace std;
-//class DateTime {
-//public:
-//	
-//	//tm* current_date() {
-//	//	auto now = chrono::system_clock::now();
-//	//	time_t now_c = chrono::system_clock::to_time_t(now);
-//	//	tm* Date= localtime_s(&now_c);
-//	//	Date->tm_year = 1900 + Date->tm_year;
-//	//	Date->tm_mon = 1 + Date->tm_mon;
-//	//	//for day : tm_mday
-//	//	return Date;
-//	//}
-//	std::tm* current_date();
-//
-//
-//};
-//
+#pragma once
+#include<iostream>
+//for time
+#include <chrono>
+#include <ctime>
+#include <sstream> // Include for istringstream
+#include <iomanip> // Include for parse
+#include <chrono>  // Include for sys_days and weekday
+
+
+
+using namespace std;
+using namespace std::chrono;
+
+class DateTime {
+public:
+
+	tm current_date();
+	bool is_valid_date(tm date);
+
+
+	//s
+	tm dateInput();
+	system_clock::time_point timeInput();
+	static system_clock::time_point timeInputString(string timeStr);
+
+	long calculateDateDifference(tm date1, tm date2);
+	long calculateTimeDifferenceHours(system_clock::time_point time1, system_clock::time_point time2);
+	long calculateTimeDifferenceMinutes(system_clock::time_point time1, system_clock::time_point time2);
+	//void dateDay(string date);
+	string inputDateString(string inputDate);
+	static void outputTimePoint(system_clock::time_point timePoint);
+};
