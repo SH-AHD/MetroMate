@@ -44,7 +44,6 @@ unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string
 
 
 int main() {
-
 	unordered_map<string, SubscriptionDetails> subscription_plans;//name and details
 	unordered_map<int, string> subscriptions_names;//to have id and name only
 	unordered_map<string, UserAccount> users;
