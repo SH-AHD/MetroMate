@@ -178,33 +178,32 @@ void SubscriptionDetails::remove(unordered_map<string, SubscriptionDetails>& sub
 string SubscriptionDetails::toString() const{
 	string ss;
 	// You can modify the format string to control output appearance
-	ss = to_string(price) + "," + to_string(valid_duration) + "," + to_string(cashAmount) + ","+ "," + name + "," + to_string(numberOfTrips)+"\n";
+	ss = to_string(price) + "," + to_string(valid_duration) + "," + to_string(cashAmount) + ","+ name + "," + to_string(numberOfTrips);
 	/*for (int i = 0; i < 4; i++) {
 		ss += to_string(stagesPrices[i]) + ",";
 	}*/
-	ss += "\n";
+	ss += ","+ to_string(availableStages.size()) + ",";
 	for (unsigned int i = 0; i < availableStages.size(); i++) {
-		ss += to_string(availableStages[i].first) + ","+ to_string(availableStages[i].second.first) + ","+ to_string(availableStages[i].second.second) + ",";
+
+		ss +=to_string(availableStages[i].first) + "," + to_string(availableStages[i].second.first) + "," + to_string(availableStages[i].second.second) + ",";
 	}
-	ss += "\n";
+	ss += to_string(availableZones.size())+",";
 	for (unsigned int i = 0; i < availableZones.size(); i++) {
+		ss += to_string(availableZones[i].first.size()) + ",";
 		for (unsigned int j = 0; j < availableZones[i].first.size(); j++) {
 			ss += availableZones[i].first[j] + ",";
-			if (j == availableZones[i].first.size() - 1)
-				ss += "+";//if it was the last value in the inside vector
-			/*else
-				ss += ",";*/
+			
 		}
-		ss += to_string(availableZones[i].second) + "+";
+		ss += to_string(availableZones[i].second) + ",";
 	}
-	ss += "\n";
-	ss += to_string(chosenStage.first) + "," + to_string(chosenStage.second.first) + "," + to_string(chosenStage.second.second) + ",";
-	ss += "\n";
+	
+	ss +=to_string(chosenStage.first) + "," + to_string(chosenStage.second.first) + "," + to_string(chosenStage.second.second) + ",";
+	
 	queue <pair< station, int>> tmp = chosenPath;
+	ss += to_string(chosenPath.size())+",";
 	while (!tmp.empty()) {
 		ss += tmp.front().first.name + ","+ to_string(tmp.front().first.lineNumber)+",";
-		ss += "+";
-		ss += to_string(tmp.front().second) + "+";
+		ss += to_string(tmp.front().second) + ",";
 		tmp.pop();
 	}
 	cout << "write done";
