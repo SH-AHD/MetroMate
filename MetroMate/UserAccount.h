@@ -43,8 +43,8 @@ public:
 	bool Register(unordered_map<string, UserAccount>& users, UserAccount user);
 	bool VailEmail(string email);
 	bool logIn(bool& isAdmin, UserAccount& theLog, string email, string password, unordered_map<string, UserAccount>& user);
-	void ChangePassword(string& NewPass);
-	void updateInfo(UserAccount& use);
+	void ChangePassword(UserAccount& user, string NewPass);
+	void updateInfo(UserAccount& user);
 	void LogOut(UserAccount& current);
 	void displayAccount();
 };

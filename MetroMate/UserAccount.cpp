@@ -33,6 +33,7 @@ UserAccount::UserAccount(string email, string passw)
 
 bool UserAccount::Register(unordered_map<string, UserAccount>& users, UserAccount user)
 {
+//	ofstream _file;
 	if (!VailEmail(Email))
 	{
 		while (VailEmail(Email) == false || Email == "Admin@gmail.com")
@@ -43,7 +44,17 @@ bool UserAccount::Register(unordered_map<string, UserAccount>& users, UserAccoun
 
 		}
 	}
-
+	//_file.open("Users Data.txt");
+	//for (auto& pair : users) {
+		//UserAccount& value = pair.second;
+		//_file << "Name: " << value.Name << endl;
+		//_file << "Email: " << value.Email << endl;
+		//_file << "Phone Number: " << value.Phone << endl;
+		//_file << "Address: " << value.Address << endl;
+		//_file << "Password: " << value.Password << endl;
+		//_file << "------------------------" << endl;
+//	}
+	//_file.close();
 
 	users.insert(make_pair(Email, user));
 	//	Users[Email] = UserAccount(Email, Password, Name, Address, Phone);
@@ -91,13 +102,13 @@ bool UserAccount::logIn(bool& isAdmin, UserAccount& theLog, string email, string
 }
 
 
-void  UserAccount::ChangePassword(string& NewPass)
+void  UserAccount::ChangePassword(UserAccount& user,string NewPass)
 {
-	Password = NewPass;
+	user.Password = NewPass;
 }
 
 
-void  UserAccount::updateInfo(UserAccount& use)
+void  UserAccount::updateInfo(UserAccount& user)
 {
 	cout << "what the information you want to update:\n1.Name\n2.Adderss\n3.Phone\n4.All your information" << endl;
 	int choice, phone;
@@ -107,32 +118,32 @@ void  UserAccount::updateInfo(UserAccount& use)
 	{
 		cout << "enter the new name:";
 		cin >> name;
-		use.Name = name;
+		user.Name = name;
 	}
 	else if (choice == 2)
 	{
 		cout << "enter the new address:";
 		cin >> address;
-		use.Address = address;
+		user.Address = address;
 	}
 	else if (choice == 3)
 	{
 		cout << "enter the new Phone number:";
 		cin >> phone;
-		use.Phone = phone;
+		user.Phone = phone;
 
 	}
 	else
 	{
 		cout << "enter the new name:";
 		cin >> name;
-		use.Name = name;
+		user.Name = name;
 		cout << "enter the new address:";
 		cin >> address;
-	use.Address = address;
+		user.Address = address;
 		cout << "enter the new Phone number:";
 		cin >> phone;
-		use.Phone = phone;
+		user.Phone = phone;
 	}
 }
 

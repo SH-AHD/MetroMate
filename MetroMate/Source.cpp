@@ -52,8 +52,8 @@ using namespace std::chrono;
 //	l.removeTrain(t);
 //}
 
-
-
+void saveData(unordered_map<string, UserAccount>& users);
+void ModifyUsers(bool& isAdmine, unordered_map<string, UserAccount>&users);
 void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones, vector<pair<double, pair<int, int>>>& stages);
 void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones);
 void SetZones(vector<pair<vector<string>, double>>& zones);
@@ -65,13 +65,10 @@ unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string
 
 Line lines;
 deque<Train> trains;
-
+unordered_map<string, UserAccount> users;
 int main() {
-
 	unordered_map<string, SubscriptionDetails> subscription_plans;//name and details
 	unordered_map<int, string> subscriptions_names;//to have id and name only
-	unordered_map<string, UserAccount> users;
-	
 	string SubscriptionFileName = "subscriptions.csv";
 	subscription_plans = readFromSubscriptionFile(SubscriptionFileName, subscriptions_names);
 	
@@ -99,6 +96,7 @@ int main() {
 		{
 		case 1:
 		{
+			
 			cout << "Register" << endl;
 			cout << "--------" << endl;
 			cout << "Name:";
@@ -116,11 +114,8 @@ int main() {
 			currentUser = user;
 			currentUser.PurchaceSubscription(currentUser, subscription_plans, subscriptions_names, zones);
 			currentUser.displayAccount();
-			cout << "enter the new pass:";
-			string h;
-			cin >> h;
-			currentUser.ChangePassword(h);
 		//	currentUser.updateInfo(currentUser);
+			saveData(users);
 			break;
 		}
 		case 2:
@@ -173,6 +168,75 @@ int main() {
 }
 
 
+void saveData(unordered_map<string, UserAccount>& users)
+{
+	ofstream outputFile;
+	outputFile.open("UsersData.txt", std::ios::app);
+
+	// Iterate over the hash table and write each key-value pair to the file
+	for (const auto& entry : users) {
+		const string& email = entry.first;
+		const UserAccount& user = entry.second;
+
+		// Write user data to the file
+		outputFile << "Email: " << email << endl;
+		outputFile << "Name: " << user.Name << endl;
+		outputFile << "Phone Number: " << user.Phone << endl;
+		outputFile << "Address: " << user.Address << endl;
+		outputFile << "Password: " << user.Password << endl;
+		outputFile << "------------------------" << endl;
+	}
+
+	outputFile.close();
+}
+
+
+void ModifyUsers(bool& isAdmin, unordered_map<string, UserAccount>& users)
+{
+	int c;
+	
+	do
+	{
+		cout << "what is action you want to do\n1.view all the accounts\n2. edit a user account\n3.delete a user account\n enter 0 if you want to exit\n";
+
+		string loop;
+		cin >> c;
+		if (c == 1)
+		{
+			for (const auto& pair : users) {
+				const UserAccount& value = pair.second;
+				cout << value.Name << '\t' << value.Email << '\t' << value.Phone << endl;
+			}
+		}
+		else if (c == 2)
+		{
+			cout << "enter the email of the account you want to edit in:\n";
+			string mail;
+			cin >> mail;
+			if (users.count(mail) == 0)
+				cout << "there is no account in the system like this\n";
+			UserAccount finded = users.at(mail);
+			finded.displayAccount();
+			finded.updateInfo(finded);
+		}
+		else if (c == 3)
+		{
+			cout << "enter the email of the account you want to delete:\n";
+			string mail;
+			cin >> mail;
+			if (users.count(mail) == 0)
+				cout << "there is no account in the system like this\n";
+			users.erase(mail);
+			if (users.count(mail) == 0)
+				cout << "The account no longer exists\n";
+		}
+		else
+			break;
+	} while (c != 0);
+}
+
+
+
 void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones , vector<pair<double, pair<int, int>>>& stages)
 {
 	if (isAdmin) {
@@ -186,7 +250,7 @@ void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscripti
 
 
 		while (isAdminLoop) {
-			cout << "enter number of operation you want to perform:\n 1. User Management \n 2. Metro Management \n 3. Subscription Plan Management \n 4. View All Ride Logs \n 5. Station Management \n 6. Fare Management  \n  any other number to exit" << endl;
+			cout << "enter number of operation you want to perform:\n 1. User Management \n 2. Metro Management \n 3. Subscription Plan Management \n 4. View All Ride Logs \n 5. Station Management \n 6. Fare Management  \n 7.User Management \n any other number to exit" << endl;
 			cin >> answer;
 			switch (answer)
 			{
@@ -250,7 +314,8 @@ void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscripti
 				default:
 					break;
 				}
-				
+			case 7:
+				ModifyUsers(isAdmin, users);
 				break;
 			default:
 				isAdminLoop = false;
