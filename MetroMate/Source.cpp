@@ -5,7 +5,8 @@
 #include"UserAccount.cpp"
 #include"TrainManagement.h"
 #include"TrainManagement.cpp"
-
+#include"station.h"
+#include"station.cpp"
 
 #include <iostream>
 #include <unordered_map>
@@ -319,27 +320,27 @@ void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscripti
 				cout << "type the time period required:\n d for day \n w for week \n m for month \n y for year " << endl;
 				cin >> timePeriod;
 
-				//for (int itrator = 0; itrator < stationsList.size(); itrator++) {
-				//	if (stName == stationsList[itrator].getName()) {
-				//		switch (stFunct)
-				//		{
-				//		case 1:
-				//			//number of sold tickets
-				//			cout << stationsList[itrator].getSoldTickets(timePeriod, date.current_date()) << endl;
-				//			break;
-				//		case 2:
-				//			//total income
-				//			cout << stationsList[itrator].getTotalIncome(timePeriod, date.current_date()) << endl;
-				//			break;
-				//		case 3:
-				//			//number of passengers
-				//			cout << stationsList[itrator].getTotalPassengers(timePeriod, date.current_date()) << endl;
-				//			break;
-				//		}
+				for (unsigned int itrator = 0; itrator < stationsList.size(); itrator++) {
+					if (stName == stationsList[itrator].getName()) {
+						switch (stFunct)
+						{
+						case 1:
+							//number of sold tickets
+							cout << stationsList[itrator].getSoldTickets(timePeriod, date.current_date()) << endl;
+							break;
+						case 2:
+							//total income
+							cout << stationsList[itrator].getTotalIncome(timePeriod, date.current_date()) << endl;
+							break;
+						case 3:
+							//number of passengers
+							cout << stationsList[itrator].getTotalPassengers(timePeriod, date.current_date()) << endl;
+							break;
+						}
 
-				//		break;
-				//	}
-				//}
+						break;
+					}
+				}
 			
 				  break;
 			case 6:
@@ -495,7 +496,7 @@ void SetZones(vector<pair<vector<string>, double>>& zones)
 				while (zoneIt !=zones.end())
 				{
 					cout << "zone " << i + 1 << " : \n";
-					for (int j = 0; j < zoneIt->first.size(); j++) {
+					for (unsigned int j = 0; j < zoneIt->first.size(); j++) {
 						cout <<"station "<<j+1<<": " << zoneIt->first[j]<<endl;
 					}
 					cout << "zone price " << zoneIt->second << "\n";
@@ -716,14 +717,14 @@ unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string
 					details.numberOfTrips = stoi(attributes[4]);// Assuming numberOfTrips is last
 
 					int vectorSize=0;
-					int startIndex=6;
+					unsigned int startIndex=6;
 					if (attributes.size() > 5) {
 						vectorSize = stoi(attributes[5]);
 					}
 					
 					
 					pair<double, pair<int, int>> tmp;
-					for (unsigned int i = 0; i < vectorSize; i++) {
+					for ( int i = 0; i < vectorSize; i++) {
 						//because availableStages has 3 attributes
 						tmp.first = stod(attributes[startIndex]);// 0 _ _    3 _ _     6 _ _
 						tmp.second.first = stoi(attributes[startIndex + 1]);// _ 1 _    _ 4 _   _ 7 _
@@ -741,10 +742,10 @@ unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string
 					int innerVectorSize;
 					vector<pair<vector<string>, double>> tmpZones;
 					pair<vector<string>, double> tmpZonesPairs;
-					for (unsigned int i = 0; i < vectorSize; i++) {
+					for ( int i = 0; i < vectorSize; i++) {
 						innerVectorSize = stoi(attributes[startIndex]);
 						startIndex++;
-						for (unsigned int j = 0; j < innerVectorSize; j++) {
+						for ( int j = 0; j < innerVectorSize; j++) {
 							tmpZonesPairs.first.push_back(attributes[startIndex]);
 							startIndex++;
 
@@ -785,7 +786,6 @@ unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string
 					subscriptions_names.insert(make_pair(data.size(), details.name));
 				}
 				catch (const invalid_argument& e) {
-					perror;
 					cerr << "Error: Non-numeric value in \"" << filename << "\"\n";
 					continue;
 				}
