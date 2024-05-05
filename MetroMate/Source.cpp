@@ -54,7 +54,9 @@ using namespace std::chrono;
 
 void saveData(unordered_map<string, UserAccount>& users);
 void ModifyUsers(bool& isAdmine, unordered_map<string, UserAccount>&users);
-void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones, vector<pair<double, pair<int, int>>>& stages);
+void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans,
+	unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones,
+	vector<pair<double, pair<int, int>>>& stages, vector<station> stationsList, DateTime date); 
 void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones);
 void SetZones(vector<pair<vector<string>, double>>& zones);
 void manageStages(vector<pair<double, pair<int, int>>>& stages,int choice);
@@ -75,6 +77,8 @@ int main() {
 	vector<pair<vector<string>, double>>zones;//zone[1][station1]
 	vector<pair<double, pair<int, int>>> stages; // <price , <min_stations,max_stations>> for 4 stages
 
+	vector<station> stationsList;
+	DateTime date;
 	//variables needed for register:
 	string name, email, address, password;
 	int phone;
@@ -131,7 +135,7 @@ int main() {
 				if (isAdmin == true)
 				{
 					cout << "Login successful"<<endl;
-					Admin(isAdmin, subscription_plans, subscriptions_names, zones, stages);
+					Admin(isAdmin, subscription_plans, subscriptions_names, zones, stages, stationsList, date);
 				}
 				else if(isAdmin==false)
 				{
@@ -148,7 +152,7 @@ int main() {
 			
 			//logic of program
 			//logined as (admin) or ( user with "email" above)
-			Admin(isAdmin, subscription_plans, subscriptions_names,zones,stages);
+		   Admin(isAdmin, subscription_plans, subscriptions_names, zones, stages, stationsList, date);
 			User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones);
 
 			break;
@@ -237,12 +241,18 @@ void ModifyUsers(bool& isAdmin, unordered_map<string, UserAccount>& users)
 
 
 
-void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones , vector<pair<double, pair<int, int>>>& stages)
-{
+void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones,
+	vector<pair<double, pair<int, int>>>& stages, vector<station> stationsList, DateTime date) {
+	//DateTime date;
 	if (isAdmin) {
 		//admin
 		bool isAdminLoop = true;
 		int answer;
+
+		//for station management
+		string stName;
+		int stFunct;
+		char timePeriod;
 
 		//for subscription
 		string subscriptionName;
@@ -297,8 +307,41 @@ void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscripti
 				
 			case 4:
 				break;
-			case 5:
-				break;
+			case 5: 
+				//station management
+
+				cout << "Enter the station's name in which you want to access it's data" << endl;
+				cin >> stName;
+
+				cout << "choose what you want to view:\n 1-number of sold tickets \n 2-total income \n 3-number of passengers " << endl;
+				cin >> stFunct;
+
+				cout << "type the time period required:\n d for day \n w for week \n m for month \n y for year " << endl;
+				cin >> timePeriod;
+
+				//for (int itrator = 0; itrator < stationsList.size(); itrator++) {
+				//	if (stName == stationsList[itrator].getName()) {
+				//		switch (stFunct)
+				//		{
+				//		case 1:
+				//			//number of sold tickets
+				//			cout << stationsList[itrator].getSoldTickets(timePeriod, date.current_date()) << endl;
+				//			break;
+				//		case 2:
+				//			//total income
+				//			cout << stationsList[itrator].getTotalIncome(timePeriod, date.current_date()) << endl;
+				//			break;
+				//		case 3:
+				//			//number of passengers
+				//			cout << stationsList[itrator].getTotalPassengers(timePeriod, date.current_date()) << endl;
+				//			break;
+				//		}
+
+				//		break;
+				//	}
+				//}
+			
+				  break;
 			case 6:
 				cout << "press 1. to manage zones 2. to manage stages";
 				int choice;
@@ -644,14 +687,13 @@ unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string
 
 	unordered_map<string, SubscriptionDetails> data;
 	string line;
-	int lineNum=1;
 	if (file.good()) {
 		while (getline(file, line)) {
 			
 			stringstream ss(line);
 			string key;
 			string attributeStr; // Stringall comma-separated attributes
-
+			
 			if (getline(ss, key, ',') && getline(ss, attributeStr)) {
 				vector<string> attributes = split(attributeStr, ',');
 				/*for (int i = 0; i < attributes.size(); i++) {
@@ -673,18 +715,12 @@ unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string
 					details.name = attributes[3];
 					details.numberOfTrips = stoi(attributes[4]);// Assuming numberOfTrips is last
 
-					int vectorSize;
-					int startIndex;
+					int vectorSize=0;
+					int startIndex=6;
 					if (attributes.size() > 5) {
 						vectorSize = stoi(attributes[5]);
-						startIndex = 6;
 					}
-					else {
-						
-						data[key] = details;
-						subscriptions_names.insert(make_pair(data.size(), details.name));
-						break;
-					}
+					
 					
 					pair<double, pair<int, int>> tmp;
 					for (unsigned int i = 0; i < vectorSize; i++) {
@@ -696,14 +732,10 @@ unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string
 						details.availableStages.push_back(tmp);
 					}
 
+					vectorSize = 0;
 					if (attributes.size() > startIndex) {
 						vectorSize = stoi(attributes[startIndex]);
 						startIndex++;
-					}
-					else {
-						data[key] = details;
-						subscriptions_names.insert(make_pair(data.size(), details.name));
-						break;
 					}
 					
 					int innerVectorSize;
@@ -729,21 +761,12 @@ unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string
 						details.chosenStage.second.second = stoi(attributes[++startIndex]);
 						startIndex++;
 					}
-					else {
-						data[key] = details;
-						subscriptions_names.insert(make_pair(data.size(), details.name));
-						break;
-					}
-
-					int queueSize;
+					
+					int queueSize=0;
+					
 					if (attributes.size() > startIndex) {
 						queueSize = stoi(attributes[startIndex]);
 						startIndex++;
-					}
-					else {
-						data[key] = details;
-						subscriptions_names.insert(make_pair(data.size(), details.name));
-						break;
 					}
 					queue <pair< station, int>> tmpQueue;
 					pair< station, int> tmpPair;
@@ -762,6 +785,7 @@ unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string
 					subscriptions_names.insert(make_pair(data.size(), details.name));
 				}
 				catch (const invalid_argument& e) {
+					perror;
 					cerr << "Error: Non-numeric value in \"" << filename << "\"\n";
 					continue;
 				}

@@ -1,8 +1,12 @@
+
 #pragma once
+
+
 #include "SubscriptionDetails.h"
 #include "DateTime.h"
 #include<iostream>
 #include<unordered_map>
+#include<vector>
 #include <ctype.h>//lower case
 #include<string>
 //for time

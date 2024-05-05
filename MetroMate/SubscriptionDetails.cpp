@@ -182,6 +182,7 @@ string SubscriptionDetails::toString() const{
 	/*for (int i = 0; i < 4; i++) {
 		ss += to_string(stagesPrices[i]) + ",";
 	}*/
+	
 	ss += ","+ to_string(availableStages.size()) + ",";
 	for (unsigned int i = 0; i < availableStages.size(); i++) {
 
@@ -199,13 +200,17 @@ string SubscriptionDetails::toString() const{
 	
 	ss +=to_string(chosenStage.first) + "," + to_string(chosenStage.second.first) + "," + to_string(chosenStage.second.second) + ",";
 	
+	
 	queue <pair< station, int>> tmp = chosenPath;
-	ss += to_string(chosenPath.size())+",";
-	while (!tmp.empty()) {
-		ss += tmp.front().first.name + ","+ to_string(tmp.front().first.lineNumber)+",";
-		ss += to_string(tmp.front().second) + ",";
-		tmp.pop();
+	if (!chosenPath.empty()) {
+		ss += to_string(chosenPath.size()) + ",";
+		while (!tmp.empty()) {
+			ss += tmp.front().first.name + "," + to_string(tmp.front().first.lineNumber) + ",";
+			ss += to_string(tmp.front().second) + ",";
+			tmp.pop();
+		}
 	}
+	
 	cout << "write done";
 	return ss;
 }
