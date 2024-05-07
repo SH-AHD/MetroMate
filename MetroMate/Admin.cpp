@@ -136,7 +136,7 @@ void Admin::HomePage(MetroMate metro) {
 			cout << "Enter the name of the station that you want to delete : ";
 			string stationName;
 			cin >> stationName;
-			metro.removeStation(lineId, stationName);
+			metro.removeStation(lineId, stationName, successfulEdit);
 			if (successfulEdit) {
 				cout << "Station " << stationName << " removed successfully.\n";
 			}
