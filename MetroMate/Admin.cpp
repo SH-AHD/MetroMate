@@ -506,9 +506,12 @@ void Admin::ModifyUsers(bool& isAdmin, unordered_map<string, UserAccount>& users
 			cin >> mail;
 			if (users.count(mail) == 0)
 				cout << "there is no account in the system like this\n";
-			UserAccount finded = users.at(mail);
-			finded.displayAccount();
-			finded.updateInfo(finded);
+			else
+			{
+				UserAccount finded = users.at(mail);
+				finded.displayAccount();
+				finded= finded.updateInfo(finded.Email, users);
+			}
 		}
 		else if (c == 3)
 		{

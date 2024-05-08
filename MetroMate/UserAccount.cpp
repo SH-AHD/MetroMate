@@ -45,26 +45,12 @@ bool UserAccount::Register(unordered_map<string, UserAccount>& users, UserAccoun
 		}
 		
 	}
-	//_file.open("Users Data.txt");
-	//for (auto& pair : users) {
-		//UserAccount& value = pair.second;
-		//_file << "Name: " << value.Name << endl;
-		//_file << "Email: " << value.Email << endl;
-		//_file << "Phone Number: " << value.Phone << endl;
-		//_file << "Address: " << value.Address << endl;
-		//_file << "Password: " << value.Password << endl;
-		//_file << "------------------------" << endl;
-//	}
-	//_file.close();
-
 	users.insert(make_pair(Email, user));
 	//	Users[Email] = UserAccount(Email, Password, Name, Address, Phone);
 	cout << "succesful Registertion" << endl;
 	LogedUser = true;
 	//	Users[Email] = UserAccount(Email, Password, Name, Address, Phone);
 	return true;
-
-
 }
 bool UserAccount::VailEmail(string email)
 {
@@ -112,8 +98,10 @@ void  UserAccount::ChangePassword(UserAccount& user,string NewPass)
 }
 
 
-void  UserAccount::updateInfo(UserAccount& user)
+UserAccount  UserAccount::updateInfo(string key,unordered_map<string,UserAccount>&users)
 {
+
+	UserAccount& user = users[key];
 	cout << "what the information you want to update:\n1.Name\n2.Adderss\n3.Phone\n4.All your information" << endl;
 	int choice, phone;
 	string name, address;
@@ -137,7 +125,7 @@ void  UserAccount::updateInfo(UserAccount& user)
 		user.Phone = phone;
 
 	}
-	else
+	else if (choice == 4)
 	{
 		cout << "enter the new name:";
 		cin >> name;
@@ -149,6 +137,9 @@ void  UserAccount::updateInfo(UserAccount& user)
 		cin >> phone;
 		user.Phone = phone;
 	}
+	else
+		return user;
+	return user;
 }
 
 
