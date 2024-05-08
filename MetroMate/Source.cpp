@@ -7,6 +7,8 @@
 #include"TrainManagement.cpp"
 #include"MetroMate.h"
 #include"MetroMate.cpp"
+#include"Admin.h"
+#include"Admin.cpp"
 
 #include <iostream>
 #include <unordered_map>
@@ -54,26 +56,30 @@ using namespace std::chrono;
 //}
 
 void saveData(unordered_map<string, UserAccount>& users);
-void ModifyUsers(bool& isAdmine, unordered_map<string, UserAccount>&users);
-void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans,
-	unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones,
-	vector<pair<double, pair<int, int>>>& stages, vector<station> stationsList, DateTime date); 
+//void ModifyUsers(bool& isAdmine, unordered_map<string, UserAccount>&users);
+//void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans,unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones,vector<pair<double, pair<int, int>>>& stages, vector<station> stationsList, DateTime date); 
 void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones);
-void SetZones(vector<pair<vector<string>, double>>& zones);
-void manageStages(vector<pair<double, pair<int, int>>>& stages,int choice);
+//void SetZones(vector<pair<vector<string>, double>>& zones);
+//void manageStages(vector<pair<double, pair<int, int>>>& stages,int choice);
 //subscription file
 vector<string> split(const string& str, char delimiter);
 void writeToSubscriptionFile(const unordered_map<string, SubscriptionDetails>& data, const string& filename);
 unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string& filename, unordered_map<int, string>& subscriptions_names);
+unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& users);
 
 Line lines;
 deque<Train> trains;
 unordered_map<string, UserAccount> users;
 int main() {
+	MetroMate metro;
 	unordered_map<string, SubscriptionDetails> subscription_plans;//name and details
 	unordered_map<int, string> subscriptions_names;//to have id and name only
 	string SubscriptionFileName = "subscriptions.csv";
 	subscription_plans = readFromSubscriptionFile(SubscriptionFileName, subscriptions_names);
+	users = ReadData(users);
+	
+	Admin admin;
+	
 	
 	vector<pair<vector<string>, double>>zones;//zone[1][station1]
 	vector<pair<double, pair<int, int>>> stages; // <price , <min_stations,max_stations>> for 4 stages
@@ -121,6 +127,7 @@ int main() {
 			currentUser.displayAccount();
 		//	currentUser.updateInfo(currentUser);
 			saveData(users);
+			User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones);
 			break;
 		}
 		case 2:
@@ -136,12 +143,13 @@ int main() {
 				if (isAdmin == true)
 				{
 					cout << "Login successful"<<endl;
-					Admin(isAdmin, subscription_plans, subscriptions_names, zones, stages, stationsList, date);
+					admin.HomePage(isAdmin, subscription_plans, subscriptions_names, zones, stages, stationsList, date,metro,users);
 				}
 				else if(isAdmin==false)
 				{
 					cout << "Login successful" << endl;
 					currentUser.displayAccount();
+					User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones);
 				}
 			}
 
@@ -151,12 +159,6 @@ int main() {
 			break;
 		}
 			
-			//logic of program
-			//logined as (admin) or ( user with "email" above)
-		   Admin(isAdmin, subscription_plans, subscriptions_names, zones, stages, stationsList, date);
-			User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones);
-
-			break;
 		default:
 			outerLoop = false;
 			break;
@@ -184,194 +186,56 @@ void saveData(unordered_map<string, UserAccount>& users)
 		const UserAccount& user = entry.second;
 
 		// Write user data to the file
-		outputFile << "Email: " << email << endl;
-		outputFile << "Name: " << user.Name << endl;
-		outputFile << "Phone Number: " << user.Phone << endl;
-		outputFile << "Address: " << user.Address << endl;
-		outputFile << "Password: " << user.Password << endl;
-		outputFile << "------------------------" << endl;
+		outputFile << email << "," << user.Name << "," << user.Phone << "," << user.Address << "," << user.Password << ","<<endl;
 	}
+	
 
 	outputFile.close();
 }
 
+unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& users) {
+	ifstream file("UsersData.txt");
 
-void ModifyUsers(bool& isAdmin, unordered_map<string, UserAccount>& users)
-{
-	int c;
-	
-	do
-	{
-		cout << "what is action you want to do\n1.view all the accounts\n2. edit a user account\n3.delete a user account\n enter 0 if you want to exit\n";
-
-		string loop;
-		cin >> c;
-		if (c == 1)
-		{
-			for (const auto& pair : users) {
-				const UserAccount& value = pair.second;
-				cout << value.Name << '\t' << value.Email << '\t' << value.Phone << endl;
-			}
-		}
-		else if (c == 2)
-		{
-			cout << "enter the email of the account you want to edit in:\n";
-			string mail;
-			cin >> mail;
-			if (users.count(mail) == 0)
-				cout << "there is no account in the system like this\n";
-			UserAccount finded = users.at(mail);
-			finded.displayAccount();
-			finded.updateInfo(finded);
-		}
-		else if (c == 3)
-		{
-			cout << "enter the email of the account you want to delete:\n";
-			string mail;
-			cin >> mail;
-			if (users.count(mail) == 0)
-				cout << "there is no account in the system like this\n";
-			users.erase(mail);
-			if (users.count(mail) == 0)
-				cout << "The account no longer exists\n";
-		}
-		else
-			break;
-	} while (c != 0);
-}
+	if (file.is_open()) {
+		string line;
+		//string name, email, phone, address, password;
 
 
+		while (getline(file, line)) {
+			stringstream ss(line);
+			string key;
+			string attributeStr; 
 
-void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones,
-	vector<pair<double, pair<int, int>>>& stages, vector<station> stationsList, DateTime date) {
-	//DateTime date;
-	if (isAdmin) {
-		//admin
-		bool isAdminLoop = true;
-		int answer;
-
-		//for station management
-		string stName;
-		int stFunct;
-		char timePeriod;
-
-		//for subscription
-		string subscriptionName;
-		SubscriptionDetails newSubscriptions;//we will need it when creating
-
-
-		while (isAdminLoop) {
-			cout << "enter number of operation you want to perform:\n 1. User Management \n 2. Metro Management \n 3. Subscription Plan Management \n 4. View All Ride Logs \n 5. Station Management \n 6. Fare Management  \n 7.User Management \n any other number to exit" << endl;
-			cin >> answer;
-			switch (answer)
-			{
-			case 1:
-				break;
-			case 2:
-				break;
-			case 3:
-				int funcChoice;
-				cout << "enter the number of the function you want to perform\n 1- create subscription \n 2- modify subscription \n 3- remove subscription \n    press any key to go back";
-				
-				cin >> funcChoice;
-
-				switch (funcChoice)
-				{
-				case 1:
-					//create
-					newSubscriptions.Create(zones,stages);
-
-					//adding it to hash table
-					subscription_plans.insert(make_pair(newSubscriptions.name, newSubscriptions));
-					subscriptions_names.insert(make_pair(subscription_plans.size(), newSubscriptions.name));//1-student,2-public...
-					break;
-
-				case 2:
-					//modify subscription
-					newSubscriptions.Modify(subscription_plans, subscriptions_names);
-
-					break;
-				case 3:
-					int key;
-					//remove subscription 
-					for (const auto& pair : subscriptions_names) {
-						cout << "Key: " << pair.first << ", name: " << pair.second << endl;
-					}
-					cout << "choose subscription key" << endl;
-					cin >> key;
-					subscriptionName = subscriptions_names[key];
-					subscription_plans.erase(subscriptionName);
-					break;
-				default:
-					break;
-				}
-				
-			case 4:
-				break;
-			case 5: 
-				//station management
-
-				cout << "Enter the station's name in which you want to access it's data" << endl;
-				cin >> stName;
-
-				cout << "choose what you want to view:\n 1-number of sold tickets \n 2-total income \n 3-number of passengers " << endl;
-				cin >> stFunct;
-
-				cout << "type the time period required:\n d for day \n w for week \n m for month \n y for year " << endl;
-				cin >> timePeriod;
-
-				for (unsigned int itrator = 0; itrator < stationsList.size(); itrator++) {
-					if (stName == stationsList[itrator].getName()) {
-						switch (stFunct)
-						{
-						case 1:
-							//number of sold tickets
-							cout << stationsList[itrator].getSoldTickets(timePeriod, date.current_date()) << endl;
-							break;
-						case 2:
-							//total income
-							cout << stationsList[itrator].getTotalIncome(timePeriod, date.current_date()) << endl;
-							break;
-						case 3:
-							//number of passengers
-							cout << stationsList[itrator].getTotalPassengers(timePeriod, date.current_date()) << endl;
-							break;
-						}
-
-						break;
-					}
-				}
 			
-				  break;
-			case 6:
-				cout << "press 1. to manage zones 2. to manage stages";
-				int choice;
-				cin >> choice;
-				switch (choice)
-				{
-				case 1:
-					SetZones(zones);
-					break;
-				case 2:
-					manageStages(stages, choice);
-					break;
-				default:
-					break;
-				}
-				break;
-			case 7:
-				ModifyUsers(isAdmin, users);
-				break;
-			default:
-				isAdminLoop = false;
-				break;
+			if (line.empty()) {
+				continue;
 			}
-
+			UserAccount tmpuser;
+			if (getline(ss, key, ',') && getline(ss, attributeStr)) {
+				vector<string> attributes = split(attributeStr, ',');
+				tmpuser.Email = key;
+				tmpuser.Name = attributes[0];
+				tmpuser.Phone = stoi(attributes[1]);
+				tmpuser.Address = attributes[2];
+				tmpuser.Password = attributes[3];
+			}
+			users.insert(make_pair(key, tmpuser));
 		}
 
+		
 
+		file.close();
+		cout << "User data has been successfully loaded from the file." << endl;
 	}
+	else {
+		cout << "Failed to open the file for reading." << endl;
+	}
+	return users;
 }
+
+
+
+
 
 void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones)
 {
@@ -441,8 +305,10 @@ void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDeta
 			case 3:
 				break;
 			case 4:
+				user.updateInfo(user);
 				break;
 			default:
+				isUserLoop = false;
 				break;
 			}
 			
@@ -453,206 +319,8 @@ void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDeta
 	}
 }
 
-void SetZones(vector<pair<vector<string>, double>>& zones)
-{
-	while (true) {
-		unsigned int zoneNum;
-		vector<string> targetZone;
-		int choice;
-		cout << "press 1. if you want to add zone \n 2. edit zone\n";
-		cin >> choice;
-		if (choice == 1){
-			//add zone
-			double price;
-			cout << "enter price of zone" << zones.size() + 1 << endl;
-			cin >> price;
-			while (true) {
-				cout << "enter station name in zone"<< zones.size()+1<<" \n press 0 if you want to exit (no more stations)  ";
-					string stationName;
-					cin >> stationName;
-
-					if (stationName == "0")
-						break;
-
-					for (unsigned int i = 0; i < zones.size(); i++) {
-						for (unsigned int j = 0; j < zones[i].first.size(); j++) {
-							if (zones[i].first[j] == stationName) {
-								cout << "station is already in another zone";
-								continue;
-							}
-						}
-					}
-					targetZone.push_back(stationName);
-			}
-			if(!targetZone.empty())
-				zones.push_back(make_pair(targetZone,price));
-		}
-		else if (choice == 2) {
-			//edit zone
-			bool validZone = false;
-			while (true) {
-				vector<pair<vector<string>, double>>::iterator zoneIt;
-				zoneIt = zones.begin(); int i = 0;
-				while (zoneIt !=zones.end())
-				{
-					cout << "zone " << i + 1 << " : \n";
-					for (unsigned int j = 0; j < zoneIt->first.size(); j++) {
-						cout <<"station "<<j+1<<": " << zoneIt->first[j]<<endl;
-					}
-					cout << "zone price " << zoneIt->second << "\n";
-					zoneIt++;
-					i++;
-				}
-				cout << "enter number of zone you want to edit \n press 0 if you want to exit" << endl;
-				cin >> zoneNum;
-				if (zoneNum == 0) {
-					//chosed to exit
-					validZone = false;
-					break;
-				}
 
 
-				if (zoneNum > 0 && zoneNum < zones.size() + 1) {
-					validZone = true;
-					targetZone = zones[zoneNum - 1].first;//zone 1 as zones[0]
-					break;
-				}
-				else {
-					cout << "not valid zone num \n";
-					validZone = false;
-				}
-
-			}
-
-			while (validZone) {
-				cout << "press \n 1. to delete that zone \n2. delete station in that zone \n3. add station in that zone\n4. change that zone price";
-				cin >> choice;
-				if (choice == 1) {
-					//delete zone
-					vector<pair<vector<string>, double>> ::iterator deletedZone;
-					deletedZone = zones.begin();
-					//zones.erase(zoneNum - 1);
-					while (*deletedZone != zones[zoneNum - 1]) {
-						deletedZone++;
-					}
-					zones.erase(deletedZone);
-				}
-				else if (choice == 2) {
-					//delete station
-					if (targetZone.empty()) {
-						cout << "no stations here";
-						continue;
-					}
-					for (unsigned int i = 0; i < targetZone.size(); i++) {
-						cout << "station index " << i + 1 << " : " << targetZone[i]<<endl;
-					}
-					cout << "enter station index you want to delete \n press 0 if you want to exit (no more stations)  "<<endl;
-					unsigned int stationIndex;
-					cin >> stationIndex;
-					if (stationIndex == 0)
-						break;
-
-					//if (stationIndex > 0 && stationIndex < targetZone.size() + 1) {
-					//	vector<string> ::iterator it;
-					//	it = targetZone.begin();
-					//	//zones[zoneNum].erase(stationIndex - 1);
-					//	while (*it != targetZone[stationIndex - 1]) {
-					//		it++;
-					//	}
-					//	zones[zoneNum-1].first.erase(it);
-
-					//}
-					if (stationIndex > 0 && stationIndex < targetZone.size() + 1) {
-						auto it = find(zones[zoneNum - 1].first.begin(), zones[zoneNum - 1].first.end(), targetZone[stationIndex - 1]);
-						if (it != zones[zoneNum - 1].first.end()) {
-							zones[zoneNum - 1].first.erase(it);
-							cout<<zones[zoneNum - 1].first[0];
-						}
-					}
-				}
-				else if (choice == 3) {
-					//add station
-					while (true) {
-						cout << "enter station name in zone" << zoneNum << " \n press 0 if you want to exit (no more stations)  ";
-						string stationName;
-						cin >> stationName;
-						if (stationName == "0")
-							break;
-						for (unsigned int i = 0; i < zones.size(); i++) {
-							for (unsigned int j = 0; j < zones[i].first.size(); j++) {
-								if (zones[i].first[j] == stationName) {
-									cout << "station is already in another zone";
-									continue;
-								}
-							}
-						}
-						zones[zoneNum-1].first.push_back(stationName);
-					}
-				}
-				else if (choice == 4) {
-					//edit zone price
-					double price;
-					cout << "enter zone new price" << zoneNum << " \n ";
-					cin >> price;
-					zones[zoneNum - 1].second = price;
-					
-				}
-				else {
-					break;
-				}
-				
-			}
-		}
-		else {
-			break;
-		}
-		
-		
-	}
-}
-void manageStages(vector<pair<double, pair<int, int>>>& stages, int choice)
-{
-	cout << "1. if you want to add stage \n2. if you want to edit stage\n any thing to exit";
-	cin >> choice;
-	pair<double, pair<int, int>> tmpStage;
-	if (choice == 1) {
-		cout << "you will add details of stage " << stages.size() + 1 << " : \n enter its price : \n";
-		cin >> tmpStage.first;
-		cout << "enter its min stations : \n";
-		cin >> tmpStage.second.first;
-		cout << "enter its max stations : \n";
-		cin >> tmpStage.second.second;
-		stages.push_back(tmpStage);
-	}
-	else if (choice == 2) {
-		for (unsigned int i = 0; i < stages.size(); i++) {
-			cout << "stage " << i + 1 << " : price = " << stages[i].first << ", min stations : " << stages[i].second.first << ", max stations : " << stages[i].second.second << endl;
-		}
-		cout << "enter stage number : ";
-		int stageNum;
-		cin >> stageNum;
-
-		cout << "1. if you want to change price \n2. min stations\n 3. max stations";
-		cin >> choice;
-		switch (choice)
-		{
-		case 1:
-			cout << "enter new price\n";
-			cin >> stages[stageNum - 1].first;
-			break;
-		case 2:
-			cout << "enter new min stations\n";
-			cin >> stages[stageNum - 1].second.first;
-			break;
-		case 3:
-			cout << "enter new max stations\n";
-			cin >> stages[stageNum - 1].second.first;
-			break;
-		default:
-			break;
-		}
-	}
-}
 //subscription file
 void writeToSubscriptionFile(const unordered_map<string, SubscriptionDetails>& data, const string& filename) {
 	std::ofstream file(filename);

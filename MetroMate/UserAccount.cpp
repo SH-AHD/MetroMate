@@ -43,6 +43,7 @@ bool UserAccount::Register(unordered_map<string, UserAccount>& users, UserAccoun
 			cin >> Email;
 
 		}
+		
 	}
 	//_file.open("Users Data.txt");
 	//for (auto& pair : users) {
@@ -86,6 +87,9 @@ bool UserAccount::logIn(bool& isAdmin, UserAccount& theLog, string email, string
 	if (email == "Admin@gmail.com") {
 		isAdmin = true;
 		return true;
+	}
+	else {
+		isAdmin = false;
 	}
 	if (users.count(email) == 0)
 		return false;
