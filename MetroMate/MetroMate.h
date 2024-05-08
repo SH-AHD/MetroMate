@@ -51,8 +51,8 @@ public:
 	bool intersection = false;
 	bool visited = false;
 	bool chosen = false;
-	list<queue< pair<station*, int>>> possiblePaths;
-	queue <pair<station*, int>> shortestPath;
+	list<queue< pair<string, int>>> possiblePaths;
+	queue <pair<string, int>> shortestPath;
 	unordered_map<Date, stationInfo, DateHash, DateEqual> stationMap;
 
 	station(string n, int num);
@@ -70,6 +70,11 @@ public:
 	bool valueExistsInMap(unordered_map<Date, stationInfo, DateHash, DateEqual>& stationMap, Date date);
 	Date timeDecrement(Date date);
 	Date convertTm(tm current);
+
+	void writeData(unordered_map<string, station> stationsList);
+	unordered_map<string, station> readData();
+	bool stringToBool(const std::string& str);
+	vector<string> split(const string& str, char delimiter);
 };
 class MetroMate
 {

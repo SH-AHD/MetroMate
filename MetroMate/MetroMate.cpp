@@ -1,6 +1,6 @@
 #include "MetroMate.h"
 #include "UserAccount.h"
-
+#include <sstream>
 #include <ctime>
 using namespace std;
 DateEqual de;
@@ -212,7 +212,141 @@ Date station::convertTm(tm current) {
 	return final;
 }
 
+void station::writeData(unordered_map<string, station> stationsList)
+{
+	
+	ofstream outputFile;
+	outputFile.open("stations.csv", std::ios::app);
 
+	// Iterate over the hash table and write each key-value pair to the file
+	for (const auto& entry : stationsList) {
+		const string key = entry.first;
+		const station Station = entry.second;
+
+		// Write user data to the file
+		outputFile << key << "," << Station.chosen << "," << Station.intersection << "," << Station.lineNumber << "," << Station.name << "," <<Station.possiblePaths.size()<<",";
+		//paths
+		/*list<queue< pair<string, int>>> ::iterator it;
+		it = Station.possiblePaths.begin();*/
+		for(const auto& it : Station.possiblePaths){
+			queue< pair<string, int>> tmpqueue = it;
+			outputFile << it.size() << ",";
+			for (int i = 0; i < tmpqueue.size(); i++) {
+				outputFile << tmpqueue.front().first << ","<< tmpqueue.front().second<<",";
+				tmpqueue.pop();
+			}
+		}
+		//shortest
+		queue< pair<string, int>> tmpShortest = Station.shortestPath;
+		outputFile << tmpShortest.size() << ",";
+		for (int i = 0; i < tmpShortest.size(); i++) {
+			outputFile << tmpShortest.front().first << "," << tmpShortest.front().second<<",";
+			tmpShortest.pop();
+		}
+		//date
+		outputFile << Station.stationMap.size() << ",";
+		for (const auto& entry : Station.stationMap) {
+			outputFile << entry.first.day<<","<< entry.first.month<<","<<entry.first.year << "," << entry.second.Passengers.size()<< "," << entry.second.soldTickets << "," << entry.second.totalIncome << ",";
+			for (const auto& entry2 : entry.second.Passengers) {
+				outputFile << entry.second.Passengers.front() << ",";
+			}
+		}
+
+	}
+
+
+	outputFile.close();
+}
+unordered_map<string, station> station::readData()
+{
+	ifstream file("stations.csv");
+	unordered_map<string, station> tmpstationsList;
+	if (file.is_open()) {
+		string line;
+
+		while (getline(file, line)) {
+			stringstream ss(line);
+			string key;
+			string attributeStr;
+
+
+			if (line.empty()) {
+				continue;
+			}
+			station tmpStation;
+			if (getline(ss, key, ',') && getline(ss, attributeStr)) {
+				vector<string> attributes = split(attributeStr, ',');
+				tmpStation.chosen = stringToBool(attributes[0]);
+				tmpStation.intersection = stringToBool(attributes[1]);
+				tmpStation.lineNumber = stoi(attributes[2]);
+				tmpStation.name = attributes[3];
+				int Size = stoi(attributes[4]);
+				int startIndex = 5;
+				//paths
+				for (int i = 0; i < Size; i++) {
+					int innerSize = stoi(attributes[startIndex]);
+					startIndex++;
+					queue< pair<string, int>> tmpQueue;
+					for (int j = 0; j < innerSize; j++) {
+						tmpQueue.push(make_pair(attributes[startIndex++], stoi(attributes[startIndex++])));
+					}
+					tmpStation.possiblePaths.push_back(tmpQueue);
+				}
+				//shortest
+				Size = stoi(attributes[startIndex]);
+				startIndex++;
+				for (int j = 0; j < Size; j++) {
+					tmpStation.shortestPath.push(make_pair(attributes[startIndex++], stoi(attributes[startIndex++])));
+				}
+				//date
+				Size = stoi(attributes[startIndex++]);
+				for (int i = 0; i < Size; i++) {
+					Date date;
+					date.day = stoi(attributes[startIndex++]);
+					date.month = stoi(attributes[startIndex++]);
+					date.year = stoi(attributes[startIndex++]);
+					stationInfo tmpStationInfo;
+					int Size2;
+					Size2 = stoi(attributes[startIndex++]);
+					tmpStationInfo.soldTickets = stoi(attributes[startIndex++]);
+					tmpStationInfo.totalIncome = stod(attributes[startIndex++]);
+					for (int i = 0; i < Size2; i++) {
+						tmpStationInfo.Passengers.push_back(attributes[startIndex++]);
+					}
+					tmpStation.stationMap.insert(make_pair(date, tmpStationInfo));
+				}
+				
+			}
+			tmpstationsList.insert(make_pair(key, tmpStation));
+		}
+
+
+
+		file.close();
+		cout << "stations data has been successfully loaded from the file." << endl;
+	}
+	else {
+		cout << "Failed to open the file for reading." << endl;
+	}
+	return tmpstationsList;
+}
+bool station::stringToBool(const std::string& str) {
+	std::istringstream iss(str);
+	iss >> std::boolalpha;
+	bool value;
+	iss >> value;
+	return value;
+}
+
+vector<string> station::split(const string& str, char delimiter) {
+	vector<string> tokens;
+	stringstream ss(str);
+	string token;
+	while (getline(ss, token, delimiter)) {
+		tokens.push_back(token);
+	}
+	return tokens;
+}
 //Done functions
 void MetroMate::createNewStation(int lineNumber, int stationNumber) { //station number is used when the admin add more than one station at time
 	string sName;

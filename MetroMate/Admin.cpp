@@ -14,7 +14,7 @@ void Admin::stationManagement(MetroMate metro) {
 		cout << " 5 - Delete station\n";
 		cout << " 6 - To Exit\n";
 
-		choice = numberInRange(choice, 1, 5);
+		choice = numberInRange(choice, 1, 6);
 		switch (choice)
 		{
 		case 1:
@@ -153,7 +153,7 @@ void Admin::stationManagement(MetroMate metro) {
 }
 
 void Admin::HomePage(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones,
-	vector<pair<double, pair<int, int>>>& stages, vector<station> stationsList, DateTime date , MetroMate metro , unordered_map<string, UserAccount> users) {
+	vector<pair<double, pair<int, int>>>& stages, unordered_map<string,station> stationsList, DateTime date , MetroMate metro , unordered_map<string, UserAccount> users) {
 	//DateTime date;
 	if (isAdmin) {
 		//admin
@@ -171,7 +171,7 @@ void Admin::HomePage(bool& isAdmin, unordered_map<string, SubscriptionDetails>& 
 
 
 		while (isAdminLoop) {
-			cout << "enter number of operation you want to perform:\n 1. User Management \n 2. Metro Management \n 3. Subscription Plan Management \n 4. View All Ride Logs \n 5. Station Management \n 6. Fare Management  \n 7.User Management \n any other number to exit" << endl;
+			cout << "enter number of operation you want to perform:\n 1. User Management \n 2. Metro Management \n 3. Subscription Plan Management \n 4. View All Ride Logs \n 5. Station Management \n 6. Fare Management \n any other number to exit" << endl;
 			cin >> answer;
 			switch (answer)
 			{
@@ -231,28 +231,26 @@ void Admin::HomePage(bool& isAdmin, unordered_map<string, SubscriptionDetails>& 
 				cout << "type the time period required:\n d for day \n w for week \n m for month \n y for year " << endl;
 				cin >> timePeriod;
 
-				for (unsigned int itrator = 0; itrator < stationsList.size(); itrator++) {
-					if (stName == stationsList[itrator].getName()) {
-						switch (stFunct)
-						{
-						case 1:
-							//number of sold tickets
-							cout << stationsList[itrator].getSoldTickets(timePeriod, date.current_date()) << endl;
-							break;
-						case 2:
-							//total income
-							cout << stationsList[itrator].getTotalIncome(timePeriod, date.current_date()) << endl;
-							break;
-						case 3:
-							//number of passengers
-							cout << stationsList[itrator].getTotalPassengers(timePeriod, date.current_date()) << endl;
-							break;
-						}
-
+				
+				if (stationsList.count(stName)!=0) {
+					switch (stFunct)
+					{
+					case 1:
+						//number of sold tickets
+						cout << stationsList[stName].getSoldTickets(timePeriod, date.current_date()) << endl;
+						break;
+					case 2:
+						//total income
+						cout << stationsList[stName].getTotalIncome(timePeriod, date.current_date()) << endl;
+						break;
+					case 3:
+						//number of passengers
+						cout << stationsList[stName].getTotalPassengers(timePeriod, date.current_date()) << endl;
 						break;
 					}
-				}
 
+					break;
+				}
 				break;
 			case 6:
 				cout << "press 1. to manage zones 2. to manage stages";

@@ -64,7 +64,7 @@ void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDeta
 //subscription file
 vector<string> split(const string& str, char delimiter);
 void writeToSubscriptionFile(const unordered_map<string, SubscriptionDetails>& data, const string& filename);
-unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string& filename, unordered_map<int, string>& subscriptions_names);
+unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string& filename, unordered_map<int, string>& subscriptions_names, unordered_map<string, station>stationsList);
 unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& users);
 
 Line lines;
@@ -72,10 +72,12 @@ deque<Train> trains;
 unordered_map<string, UserAccount> users;
 int main() {
 	MetroMate metro;
+	station tmpStation;
+	
 	unordered_map<string, SubscriptionDetails> subscription_plans;//name and details
 	unordered_map<int, string> subscriptions_names;//to have id and name only
 	string SubscriptionFileName = "subscriptions.csv";
-	subscription_plans = readFromSubscriptionFile(SubscriptionFileName, subscriptions_names);
+	
 	users = ReadData(users);
 	
 	Admin admin;
@@ -84,7 +86,15 @@ int main() {
 	vector<pair<vector<string>, double>>zones;//zone[1][station1]
 	vector<pair<double, pair<int, int>>> stages; // <price , <min_stations,max_stations>> for 4 stages
 
-	vector<station> stationsList;
+	//vector<station> stationsList;
+	unordered_map<string, station> stationsList;
+	stationsList = tmpStation.readData();
+
+	subscription_plans = readFromSubscriptionFile(SubscriptionFileName, subscriptions_names, stationsList);
+
+
+	//stationslist = read station
+	//read metro ,add station
 	DateTime date;
 	//variables needed for register:
 	string name, email, address, password;
@@ -126,7 +136,7 @@ int main() {
 			currentUser.PurchaceSubscription(currentUser, subscription_plans, subscriptions_names, zones);
 			currentUser.displayAccount();
 		//	currentUser.updateInfo(currentUser);
-			saveData(users);
+			
 			User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones);
 			break;
 		}
@@ -166,7 +176,8 @@ int main() {
 
 
 	}
-
+	tmpStation.writeData(stationsList);
+	saveData(users);
 	ifstream file(SubscriptionFileName);
 	file.clear();
 	writeToSubscriptionFile(subscription_plans, SubscriptionFileName);
@@ -346,7 +357,7 @@ vector<string> split(const string& str, char delimiter) {
 	}
 	return tokens;
 }
-unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string& filename, unordered_map<int, string>& subscriptions_names) {
+unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string& filename, unordered_map<int, string>& subscriptions_names,unordered_map<string,station>stationsList) {
 	
 	ifstream file(filename);
 	if (!file.is_open()) {
@@ -440,8 +451,10 @@ unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string
 					queue <pair< station, int>> tmpQueue;
 					pair< station, int> tmpPair;
 					for (int i = 0; i < queueSize; i++) {
-						tmpPair.first.name = attributes[startIndex];
-						tmpPair.first.lineNumber = stoi(attributes[++startIndex]);
+						string name = attributes[startIndex];
+
+						tmpPair.first = stationsList[name];
+						//tmpPair.first.lineNumber = stoi(attributes[++startIndex]);
 
 						tmpPair.second = stoi(attributes[++startIndex]);
 						startIndex++;

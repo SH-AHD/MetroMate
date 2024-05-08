@@ -205,7 +205,7 @@ string SubscriptionDetails::toString() const{
 	if (!chosenPath.empty()) {
 		ss += to_string(chosenPath.size()) + ",";
 		while (!tmp.empty()) {
-			ss += tmp.front().first.name + "," + to_string(tmp.front().first.lineNumber) + ",";
+			ss += tmp.front().first.name + ",";
 			ss += to_string(tmp.front().second) + ",";
 			tmp.pop();
 		}
