@@ -58,7 +58,7 @@ using namespace std::chrono;
 void saveData(unordered_map<string, UserAccount>& users);
 //void ModifyUsers(bool& isAdmine, unordered_map<string, UserAccount>&users);
 //void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans,unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones,vector<pair<double, pair<int, int>>>& stages, vector<station> stationsList, DateTime date); 
-void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones);
+void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones, unordered_map<string, UserAccount>users);
 //void SetZones(vector<pair<vector<string>, double>>& zones);
 //void manageStages(vector<pair<double, pair<int, int>>>& stages,int choice);
 //subscription file
@@ -127,7 +127,7 @@ int main() {
 			currentUser.displayAccount();
 		//	currentUser.updateInfo(currentUser);
 			saveData(users);
-			User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones);
+			User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones,users);
 			break;
 		}
 		case 2:
@@ -149,13 +149,15 @@ int main() {
 				{
 					cout << "Login successful" << endl;
 					currentUser.displayAccount();
-					User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones);
+					currentUser= currentUser.updateInfo(currentUser.Email, users);
+					currentUser.displayAccount();
+					User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones,users);
 				}
 			}
 
 
 			else
-				cout << "Login failed";
+				cout << "Login failed"<<endl;
 			break;
 		}
 			
@@ -237,7 +239,7 @@ unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& 
 
 
 
-void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones)
+void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones,unordered_map<string,UserAccount>users)
 {
 	if (!isAdmin) {
 		DateTime Date;
@@ -305,7 +307,7 @@ void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDeta
 			case 3:
 				break;
 			case 4:
-				user.updateInfo(user);
+				user=user.updateInfo(user.Email,users);
 				break;
 			default:
 				isUserLoop = false;

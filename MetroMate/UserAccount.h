@@ -48,7 +48,7 @@ public:
 	bool VailEmail(string email);
 	bool logIn(bool& isAdmin, UserAccount& theLog, string email, string password, unordered_map<string, UserAccount>& user);
 	void ChangePassword(UserAccount& user, string NewPass);
-	void updateInfo(UserAccount& user);
+	UserAccount updateInfo(string key,unordered_map<string, UserAccount>& users);
 	void LogOut(UserAccount& current);
 	void displayAccount();
 };
