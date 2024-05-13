@@ -72,6 +72,47 @@ deque<Train> trains;
 unordered_map<string, UserAccount> users;
 int main() {
 	MetroMate metro;
+
+	
+	//temp data to metro graph
+	metro.numberOfLines = 2;
+	//entering data to graph manually
+	//metro.noOfStationsInLine = { 3,3 };
+	metro.noOfStationsInLine.push_back(3);
+	metro.noOfStationsInLine.push_back(3);
+
+	station A("a", 1);
+	station b("b", 1);
+	station c("c", 2);
+	station d("d", 1);
+	station e("e", 2);
+	station f("f", 2);
+	metro.MetroLines[1].push_back(A);
+	metro.MetroLines[1].push_back(b);
+	metro.MetroLines[2].push_back(c);
+	metro.MetroLines[1].push_back(d);
+	metro.MetroLines[2].push_back(e);
+	metro.MetroLines[2].push_back(f);
+	metro.Metromate["a"].push_back(make_pair(&b, 4));
+	metro.Metromate["a"].push_back(make_pair(&c, 5));
+	metro.Metromate["b"].push_back(make_pair(&A, 4));
+	metro.Metromate["b"].push_back(make_pair(&c, 11));
+	metro.Metromate["b"].push_back(make_pair(&e, 7));
+	metro.Metromate["b"].push_back(make_pair(&d, 9));
+	metro.Metromate["e"].push_back(make_pair(&c, 3));
+	metro.Metromate["e"].push_back(make_pair(&b, 7));
+	metro.Metromate["e"].push_back(make_pair(&d, 13));
+	metro.Metromate["e"].push_back(make_pair(&f, 6));
+	metro.Metromate["d"].push_back(make_pair(&b, 9));
+	metro.Metromate["d"].push_back(make_pair(&e, 13));
+	metro.Metromate["d"].push_back(make_pair(&f, 2));
+	metro.Metromate["c"].push_back(make_pair(&A, 5));
+	metro.Metromate["c"].push_back(make_pair(&b, 11));
+	metro.Metromate["c"].push_back(make_pair(&e, 3));
+	metro.Metromate["f"].push_back(make_pair(&d, 2));
+	metro.Metromate["f"].push_back(make_pair(&e, 6));
+
+
 	station tmpStation;
 	
 	unordered_map<string, SubscriptionDetails> subscription_plans;//name and details
@@ -137,7 +178,7 @@ int main() {
 			currentUser.displayAccount();
 		//	currentUser.updateInfo(currentUser);
 			
-			User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones);
+			User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones,users);
 			break;
 		}
 		case 2:

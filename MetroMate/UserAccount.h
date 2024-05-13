@@ -1,7 +1,8 @@
 
 #pragma once
 
-
+#include "helpingMethods.h"
+#include "MetroMate.h"
 #include "SubscriptionDetails.h"
 #include "DateTime.h"
 #include<iostream>
@@ -20,6 +21,13 @@
 
 using namespace std;
 using namespace std::chrono;
+struct rideDetails {
+	string sourceStation, targetStation;
+	int lineNo1, lineNo2;
+	float fare;
+	//date and time
+	pair<queue< pair< pair<string, int>, float> >, float> pathChosen;
+};
 
 
 
@@ -33,7 +41,7 @@ public:
 	int Phone;
 	tm startDate;
 	bool LogedUser;
-
+	list<rideDetails> rideLog;
 	SubscriptionDetails chosenSubscription;
 	int availableTrips;
 
@@ -51,6 +59,7 @@ public:
 	UserAccount updateInfo(string key,unordered_map<string, UserAccount>& users);
 	void LogOut(UserAccount& current);
 	void displayAccount();
+	void checkIn(MetroMate metro);
 };
 
 //class DateTime {

@@ -334,6 +334,37 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 	}
 }
 
+void UserAccount::checkIn(MetroMate metro) {
+	cout << " Hello, " << Name << ".\n";
+	cout << " Here are the steps to save your ride details:\n -> choose the station you will ride from.\n";
+	cout << "-> choose the target station.\n";
+	cout << " we will show you possible path/s to your target, if they are more than one path,\n choose the one you want\n";
+	cout << " Station available right now:\n";
+	metro.displayStations();
+	cout << " Choose the station you will ride from:\n";
+	station* source = metro.chooseStation();
+	source->chosen = true;
+	cout << "\n\n";
+	cout << " Now choose the target station:\n";
+	station* target = metro.chooseStation();
+	float fare = 0.0; //temp var will be deleted later according to scenrio
+	cout << " The possible oath to your target:\n";
+	metro.simpleDFS(source->name, source->lineNumber, target->name, fare); //dijkstra will be continued 
+	//dijkstra
+	cout << " Choose the path you want:\n";
+	int pathChosen=-1;
+	pathChosen = numberInRange(pathChosen, 1, 2);
+	rideDetails newLog;
+	if (pathChosen == 1) {
+		newLog.pathChosen = target->possiblePaths[0];
+	}
+	else {
+		newLog.pathChosen = target->possiblePaths[1];
+	}
+	//subscribtion datils will complete here
+}
+
+
 //
 //tm DateTime::current_date() {
 //	auto now = std::chrono::system_clock::now();

@@ -47,12 +47,13 @@ class station
 {
 public:
 	string name;
-	int lineNumber=0;
+	int lineNumber = 0;
 	bool intersection = false;
 	bool visited = false;
+	bool end = false;
 	bool chosen = false;
-	list<queue< pair<string, int>>> possiblePaths;
-	queue <pair<string, int>> shortestPath;
+	vector<pair<queue< pair< pair<string, int>, float> >, float>> possiblePaths; //0 for dfs, 1 for shortest path
+	//station & line , accumulative distance , total fare
 	unordered_map<Date, stationInfo, DateHash, DateEqual> stationMap;
 
 	station(string n, int num);
@@ -81,6 +82,7 @@ class MetroMate
 public:
 	int numberOfStations=0;
 	int numberOfLines=0;
+	vector<int> noOfStationsInLine;
 	unordered_map<int, vector<station>> MetroLines;
 	unordered_map<string, list<pair<station*, int>>> Metromate;
 	void createNewStation(int lineNumber, int stationNumber = 0);
@@ -95,4 +97,10 @@ public:
 	void editStationName(int lineNumber, string oldName, string newName, bool& notFoundStation);
 	void editStationPosition(int lineNumber, string stationName);
 	void removeStation(int lineNumber, string stationName, bool& successfulEdit/* = false*/);
+
+	//check in functions
+	void markAsUnvisited();
+	station* findStation(string station, int line);
+	void simpleDFS(string start, int startLine, string end, float fare);
+
 };

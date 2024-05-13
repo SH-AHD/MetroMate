@@ -1,3 +1,4 @@
+#include "helpingMethods.h"
 #include "MetroMate.h"
 #include "UserAccount.h"
 #include <sstream>
@@ -228,21 +229,22 @@ void station::writeData(unordered_map<string, station> stationsList)
 		//paths
 		/*list<queue< pair<string, int>>> ::iterator it;
 		it = Station.possiblePaths.begin();*/
-		for(const auto& it : Station.possiblePaths){
+		/*for(const auto& it : Station.possiblePaths){
 			queue< pair<string, int>> tmpqueue = it;
 			outputFile << it.size() << ",";
 			for (int i = 0; i < tmpqueue.size(); i++) {
 				outputFile << tmpqueue.front().first << ","<< tmpqueue.front().second<<",";
 				tmpqueue.pop();
 			}
-		}
-		//shortest
+		}*/
+		//shortest 
+	/*
 		queue< pair<string, int>> tmpShortest = Station.shortestPath;
 		outputFile << tmpShortest.size() << ",";
 		for (int i = 0; i < tmpShortest.size(); i++) {
 			outputFile << tmpShortest.front().first << "," << tmpShortest.front().second<<",";
 			tmpShortest.pop();
-		}
+		}*/
 		//date
 		outputFile << Station.stationMap.size() << ",";
 		for (const auto& entry : Station.stationMap) {
@@ -283,7 +285,7 @@ unordered_map<string, station> station::readData()
 				int Size = stoi(attributes[4]);
 				int startIndex = 5;
 				//paths
-				for (int i = 0; i < Size; i++) {
+			/*	for (int i = 0; i < Size; i++) {
 					int innerSize = stoi(attributes[startIndex]);
 					startIndex++;
 					queue< pair<string, int>> tmpQueue;
@@ -291,13 +293,13 @@ unordered_map<string, station> station::readData()
 						tmpQueue.push(make_pair(attributes[startIndex++], stoi(attributes[startIndex++])));
 					}
 					tmpStation.possiblePaths.push_back(tmpQueue);
-				}
+				}*/
 				//shortest
-				Size = stoi(attributes[startIndex]);
+				/*Size = stoi(attributes[startIndex]);
 				startIndex++;
 				for (int j = 0; j < Size; j++) {
 					tmpStation.shortestPath.push(make_pair(attributes[startIndex++], stoi(attributes[startIndex++])));
-				}
+				}*/
 				//date
 				Size = stoi(attributes[startIndex++]);
 				for (int i = 0; i < Size; i++) {
@@ -377,20 +379,21 @@ void MetroMate::displayStations() {
 	}
 }
 station* MetroMate::chooseStation() {
-	int choice, line;
-	while (true) {
-		cout << " Enter Line number:";
-		cin >> line;
-		cout << " Station Number";
-		cin >> choice;
-		//if (&MetroLines[line].at(choice).chosen) {
-		//	cout << " This station is already chosen before, please choose again!\n";
-		//}
-		//else 
-			break;
+	int choice=-1, line=-1;
+	cout << " Line number:";
+	line = numberInRange(line, 1, numberOfLines);
+	cout << " Station Number";
+	choice = numberInRange(choice, 1, MetroLines[line].size());
+	if (&MetroLines[line].at(choice).chosen) {
+		cout << " This station is already chosen before, please choose again!\n";
+		chooseStation();
 	}
-	return &MetroLines[line].at(choice);
+	else {
+		return &MetroLines[line].at(choice);
+	}
+
 }
+
 
 void MetroMate::stationPositioning() {
 	displayStations();
@@ -532,3 +535,47 @@ void MetroMate::removeStation(int lineNumber, string stationName, bool& successf
 		cout << "Line " << lineNumber << " not found.\n";
 	}
 }
+
+
+void MetroMate::markAsUnvisited() {
+	for (int line = 1; line < numberOfLines; line++) {
+		for (int i = 0; i < MetroLines[line].size(); i++) { MetroLines[line][i].visited = false; }
+	}
+}
+station* MetroMate::findStation(string station, int line) {
+	for (int i = 0; i < MetroLines[line].size(); i++) {
+		if (MetroLines[line][i].name == station)return &MetroLines[line][i];
+	}
+}
+void MetroMate::simpleDFS(string start, int startLine, string end, float fare) {
+	stack<pair<pair<string, int>, float>> path; //station name and line number //distance
+	path.push(make_pair(make_pair(start, startLine), 0));
+	queue< pair< pair<string, int>, float> > pathToDestination;
+	while (!path.empty()) {
+		station* st = findStation(path.top().first.first, path.top().first.second);
+		pair<pair<string, int>, int> current = path.top();
+		pathToDestination.push(path.top());
+		path.pop();
+
+		if (!st->visited) {
+			st->visited = true;
+			if (st->name != end) {
+				pathToDestination.push(current); //for saving station only
+				cout << " [" << st->name << " Line " << st->lineNumber << "] ->";
+				for (pair<station*, int> adj : Metromate[st->name]) {
+					if (!adj.first->visited) {
+						path.push(make_pair(make_pair(adj.first->name, adj.first->lineNumber), adj.second));
+					}
+				}
+			}
+			else {
+				cout << " [" << st->name << " Line " << st->lineNumber << "]";
+				pathToDestination.push(current);
+				st->possiblePaths.push_back(make_pair(pathToDestination, fare));
+				markAsUnvisited();
+				break;
+			}
+		}
+	}
+}
+

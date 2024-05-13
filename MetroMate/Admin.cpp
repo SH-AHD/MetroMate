@@ -268,8 +268,11 @@ void Admin::HomePage(bool& isAdmin, unordered_map<string, SubscriptionDetails>& 
 					break;
 				}
 				break;
-			default:
+			case 7: 
 				isAdminLoop = false;
+				cout << "hkhku";
+			default:
+				
 				break;
 			}
 
