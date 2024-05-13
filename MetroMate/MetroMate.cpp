@@ -1,11 +1,19 @@
 #include "helpingMethods.h"
 #include "MetroMate.h"
 #include "UserAccount.h"
+#include "TrainManagement.h"
+
+#include"DateTime.h"
 #include <sstream>
 #include <ctime>
 using namespace std;
 DateEqual de;
 DateHash dh;
+
+//
+using namespace std::chrono;
+#include <random>
+#include <algorithm>
 
 station::station(string n, int num) {
 	name = n;
@@ -215,7 +223,7 @@ Date station::convertTm(tm current) {
 
 void station::writeData(unordered_map<string, station> stationsList)
 {
-	
+
 	ofstream outputFile;
 	outputFile.open("stations.csv", std::ios::app);
 
@@ -225,7 +233,7 @@ void station::writeData(unordered_map<string, station> stationsList)
 		const station Station = entry.second;
 
 		// Write user data to the file
-		outputFile << key << "," << Station.chosen << "," << Station.intersection << "," << Station.lineNumber << "," << Station.name << "," <<Station.possiblePaths.size()<<",";
+		outputFile << key << "," << Station.chosen << "," << Station.intersection << "," << Station.lineNumber << "," << Station.name << "," << Station.possiblePaths.size() << ",";
 		//paths
 		/*list<queue< pair<string, int>>> ::iterator it;
 		it = Station.possiblePaths.begin();*/
@@ -248,7 +256,7 @@ void station::writeData(unordered_map<string, station> stationsList)
 		//date
 		outputFile << Station.stationMap.size() << ",";
 		for (const auto& entry : Station.stationMap) {
-			outputFile << entry.first.day<<","<< entry.first.month<<","<<entry.first.year << "," << entry.second.Passengers.size()<< "," << entry.second.soldTickets << "," << entry.second.totalIncome << ",";
+			outputFile << entry.first.day << "," << entry.first.month << "," << entry.first.year << "," << entry.second.Passengers.size() << "," << entry.second.soldTickets << "," << entry.second.totalIncome << ",";
 			for (const auto& entry2 : entry.second.Passengers) {
 				outputFile << entry.second.Passengers.front() << ",";
 			}
@@ -317,7 +325,7 @@ unordered_map<string, station> station::readData()
 					}
 					tmpStation.stationMap.insert(make_pair(date, tmpStationInfo));
 				}
-				
+
 			}
 			tmpstationsList.insert(make_pair(key, tmpStation));
 		}
@@ -379,7 +387,7 @@ void MetroMate::displayStations() {
 	}
 }
 station* MetroMate::chooseStation() {
-	int choice=-1, line=-1;
+	int choice = -1, line = -1;
 	cout << " Line number:";
 	line = numberInRange(line, 1, numberOfLines);
 	cout << " Station Number";
@@ -490,7 +498,7 @@ void MetroMate::editStationPosition(int lineNumber, string stationName) {
 				cout << "Current position of station " << stationName << ":\n";
 				//connectionDetails(stationToEdit);
 				bool test = false;
-				removeStation(lineNumber, stationName,test);
+				removeStation(lineNumber, stationName, test);
 				// Choose new position for the station
 				stationPositioning();
 				cout << "Station position edited successfully.\n";
@@ -537,6 +545,237 @@ void MetroMate::removeStation(int lineNumber, string stationName, bool& successf
 }
 
 
+/////Line
+
+
+void MetroMate::addTrain(Train newTrain) {
+	trains.push_back(newTrain);
+	cout << "Train \"" << newTrain.getTrainID() << "\" has been successfully added." << endl;
+
+}
+
+void MetroMate::editTrain(int editTrainid) {
+	for (auto it = trains.begin(); it != trains.end(); ++it) {
+		if (it->getTrainID() == editTrainid) {
+			it->setTrainInfo();
+			cout << "Train \"" << editTrainid << "\" has been successfully modified." << endl;
+			break;
+		}
+	}
+}
+
+void MetroMate::removeTrain(int removedTrainid) {
+	for (auto it = trains.begin(); it != trains.end(); ++it) {
+		if (it->getTrainID() == removedTrainid) {
+			cout << "Train \"" << removedTrainid << "\" has been successfully deleted." << endl;
+			trains.erase(it);
+			break;
+		}
+	}
+}
+
+void MetroMate::addTripToTrainSchedule(int trainid, Schedule schedule) {
+	for (auto& t : trains) {
+		if (t.getTrainID() == trainid) {
+			t.setTrainSchedule(schedule);
+			cout << "The trip  has been successfully added!\n";
+			break;
+		}
+	}
+}
+
+
+
+
+void MetroMate::modifyTripFromTrainSchedule(int lineID, int id, string date, string DepartureTime) {
+	for (auto& t : trains) {
+		if (t.getTrainID() == id) {
+			for (auto& schedule : t.getTrainSchedule()) {
+				// Compare relevant properties of the schedules
+				/*if (schedule.getDate() == oldSchedule.getDate() &&
+					schedule.getDelay() == oldSchedule.getDelay() &&
+					schedule.getDepartureStation() == oldSchedule.getDepartureStation() &&
+					schedule.getDepartureTime() == oldSchedule.getDepartureTime() &&
+					schedule.getDestinationStation() == oldSchedule.getDestinationStation() &&
+					schedule.getArrivalTime() == oldSchedule.getArrivalTime() &&
+					schedule.getBroken() == oldSchedule.getBroken())*/
+					//if(DateTime::calculateDateDifference(DateTime::)==)
+				if (schedule.getDate() == date) {
+					auto zero = std::chrono::minutes(0);
+					if (DateTime::calculateTimeDifferenceMinutes(DateTime::timeInputString(DepartureTime), schedule.getDepartureTime()) == zero)
+					{
+
+						schedule.setTripScheduleInfo();
+						cout << "The trip information has been successfully modified!\n";
+						return; // Exit the function after modifying the trip
+					}
+					else {
+						cout << "Departure Time not found";
+						return;
+					}
+				}
+				else {
+					cout << "Date not found";
+					return;
+				}
+			}
+		}
+	}
+	// If the loop completes without finding the schedule
+	cout << "Schedule not found for modification.\n";
+}
+
+
+void MetroMate::deleteTripFromTrainSchedule(int trainID, string  date, string DepartureTime) {
+	for (auto& t : trains) {
+		if (t.getTrainID() == trainID) {
+
+			auto zero = std::chrono::minutes(0);
+			for (auto it = t.getTrainSchedule().begin(); it != t.getTrainSchedule().end(); ++it) {
+				if (it->getDate() == date) {
+					if (DateTime::calculateTimeDifferenceMinutes(DateTime::timeInputString(DepartureTime), it->getDepartureTime()) == zero) {
+						t.getTrainSchedule().erase(it);
+						cout << "The trip has been successfully deleted!\n";
+						return; // You may want to break here if you don't want to delete multiple trips with the same date and departure time
+					}
+					else {
+						cout << "Departure Time not found";
+						return;
+					}
+				}
+				else {
+					cout << "Date not found";
+					return;
+				}
+			}
+
+			// If the loop completes without finding a matching date and departure time
+			cout << "No trip found with the specified date and departure time." << endl;
+
+		}
+	}
+
+}
+
+
+size_t MetroMate::findScheduleIndex(Train train, string time, string date) {
+	for (size_t i = 0; i < train.getTrainSchedule().size(); ++i) {
+		if (train.getTrainSchedule()[i].getDate() == date && train.getTrainSchedule()[i].getDepartureTime() == DateTime::timeInputString(time)) {
+			return i; // Found the schedule with the specified station name
+
+		}
+	}
+	// Schedule not found, return a value indicating failure (e.g., -1 or train.trainSchedule.size())
+	return std::string::npos; // Using npos to indicate failure
+}
+
+void MetroMate::simulateTrainBreakdown(int brokenTrainID, string time, string date) {
+	for (auto& t : trains) {
+		if (t.getTrainID() == brokenTrainID) {
+			t.setStatus("Breakdown");
+			size_t scheduleIndex = findScheduleIndex(t, time, date);
+			if (scheduleIndex != std::string::npos) {
+				int newDelay = rand() % 26 + 5;//0->25 +5
+				t.getTrainSchedule()[scheduleIndex].setDelay(newDelay);
+				t.adjustNextTripDepartureTime();
+				adjustNextTrainDepartureTime(t);
+				cout << "The train " << brokenTrainID << " breaks down and the amount of delay is " << newDelay << " \n";
+			}
+			else {
+				cout << "Train " << brokenTrainID << "has no trips at this \"" << date << "  " << time << "\"." << endl;
+			}
+			break;
+		}
+	}
+}
+
+
+
+
+
+
+void MetroMate::adjustNextTrainDepartureTime(Train t) {
+	this->trains;
+	// Check if there is a next train in the deque and if the current train has a positive delay
+	if (!trains.empty() && t.getCurrentTripIndex() + 1 < trains.size() && t.getTrainSchedule().size() > 0 &&
+		t.getTrainSchedule()[0].getDelay() > 0) {
+		// Access the next trains in the deque
+		for (size_t i = t.getCurrentTripIndex() + 1; i < trains.size(); i++) {
+			Train& nextTrain = trains[i];
+			// Access the trip schedule of the next train
+			auto tripSchedule = nextTrain.getTrainSchedule();
+
+			// Access the current trip schedule
+		   // auto currentTripSchedule = trains[currentTrainIndex].getTrainSchedule();
+
+			// Perform any necessary operations on the trip schedule
+			// Example: Check if the departure station of the next train matches some condition
+			if (!tripSchedule.empty() && !t.getTrainSchedule().empty() && tripSchedule.size() == t.getTrainSchedule().size()) {
+				for (int j = 0; j < tripSchedule.size(); ++j) {
+					if (tripSchedule[j].getDepartureStation() == t.getTrainSchedule()[j].getDestinationStation()) {
+						// Adjust the departure time of the next train
+						tripSchedule[j].setDelay(t.getTrainSchedule()[j].getDelay());
+						nextTrain.adjustNextTripDepartureTime();
+						cout << "adjustNextTrainDepartureTime--\n";
+					}
+				}
+			}
+		}
+	}
+	cout << "adjustNextTrainDepartureTime--out\n";
+}
+
+
+void MetroMate::displayTrains(int lineID) {
+	cout << "Trains in Line " << lineID << ":\n";
+	for (auto& train : trains) {
+		if (train.getLineID() == lineID)
+			train.displayTrainInfo();
+
+	}
+}
+
+void MetroMate::displaySpecificTrain(int lineID, int trainID) {
+	for (auto& train : trains) {
+
+		if (train.getLineID() == lineID && train.getTrainID() == trainID) {
+			train.displayTrainInfo();
+			break;
+		}
+		else {
+			cout << "Train not found on this line.\n";
+		}
+	}
+}
+
+
+//Station::Station(unordered_map<system_clock::time_point&, deque<Train>>& stationSchedule) {
+//    this->stationSchedule = stationSchedule;
+//}
+
+// Station::Station(unordered_map<system_clock::time_point, deque<Train>>& schedule)
+//     : stationSchedule(schedule) {
+
+// }
+
+// void Station::findTrips(system_clock::time_point tripTime) {
+//     for (auto& trainPair : stationSchedule) {
+//         if (trainPair.second.getTrainSchedule().getArrivalTime() == tripTime) {
+//             cout << trainPair.second.getTrainID();
+//         }
+//     }
+// }
+
+
+
+
+
+
+
+
+
+
+
 void MetroMate::markAsUnvisited() {
 	for (int line = 1; line < numberOfLines; line++) {
 		for (int i = 0; i < MetroLines[line].size(); i++) { MetroLines[line][i].visited = false; }
@@ -578,4 +817,3 @@ void MetroMate::simpleDFS(string start, int startLine, string end, float fare) {
 		}
 	}
 }
-

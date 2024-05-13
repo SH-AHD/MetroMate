@@ -20,14 +20,14 @@ public:
 
 
 	//s
-	tm dateInput();
-	system_clock::time_point timeInput();
+	static tm dateInput();
+	static system_clock::time_point timeInput();
 	static system_clock::time_point timeInputString(string timeStr);
-
-	long calculateDateDifference(tm date1, tm date2);
-	long calculateTimeDifferenceHours(system_clock::time_point time1, system_clock::time_point time2);
-	long calculateTimeDifferenceMinutes(system_clock::time_point time1, system_clock::time_point time2);
+	//void displayTime(system_clock::time_point timePoint);
+	static long calculateDateDifference(tm date1, tm date2);
+	static long calculateTimeDifferenceHours(system_clock::time_point time1, system_clock::time_point time2);
+	static minutes calculateTimeDifferenceMinutes(system_clock::time_point time1, system_clock::time_point time2);
 	//void dateDay(string date);
-	string inputDateString(string inputDate);
+	static string inputDateString();
 	static void outputTimePoint(system_clock::time_point timePoint);
 };

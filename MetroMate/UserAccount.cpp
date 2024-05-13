@@ -33,7 +33,7 @@ UserAccount::UserAccount(string email, string passw)
 
 bool UserAccount::Register(unordered_map<string, UserAccount>& users, UserAccount user)
 {
-//	ofstream _file;
+	//	ofstream _file;
 	if (!VailEmail(Email))
 	{
 		while (VailEmail(Email) == false || Email == "Admin@gmail.com")
@@ -43,7 +43,7 @@ bool UserAccount::Register(unordered_map<string, UserAccount>& users, UserAccoun
 			cin >> Email;
 
 		}
-		
+
 	}
 	users.insert(make_pair(Email, user));
 	//	Users[Email] = UserAccount(Email, Password, Name, Address, Phone);
@@ -92,13 +92,13 @@ bool UserAccount::logIn(bool& isAdmin, UserAccount& theLog, string email, string
 }
 
 
-void  UserAccount::ChangePassword(UserAccount& user,string NewPass)
+void  UserAccount::ChangePassword(UserAccount& user, string NewPass)
 {
 	user.Password = NewPass;
 }
 
 
-UserAccount  UserAccount::updateInfo(string key,unordered_map<string,UserAccount>&users)
+UserAccount  UserAccount::updateInfo(string key, unordered_map<string, UserAccount>& users)
 {
 
 	UserAccount& user = users[key];
@@ -152,11 +152,11 @@ void UserAccount::LogOut(UserAccount& current)
 
 void UserAccount::displayAccount()
 {
-	cout << this->Name << '\t' << this->Email << '\t' << this->Address << '\t' << this->Phone<<endl;
-	
+	cout << this->Name << '\t' << this->Email << '\t' << this->Address << '\t' << this->Phone << endl;
+
 }
 
-void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, SubscriptionDetails> subscription_plans, unordered_map<int, string> subscriptions_names , vector<pair<vector<string>, double>> zones)
+void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, SubscriptionDetails> subscription_plans, unordered_map<int, string> subscriptions_names, vector<pair<vector<string>, double>> zones)
 {
 
 
@@ -167,7 +167,7 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 		3 - public monthly card
 		3 - Cash wallet
 	*/
-		
+
 	int key;
 	string chosenSubscribtionName;
 	SubscriptionDetails chosenSubscription;
@@ -177,7 +177,7 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 	list<queue <pair< station, int>>> availablePaths;
 
 	if (subscription_plans.empty()) {
-		cout << "no subscriptions available "<<endl;
+		cout << "no subscriptions available " << endl;
 	}
 	else {
 		cout << "available subscriptions: " << endl;
@@ -223,13 +223,13 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 		else {
 			string firstDestination;
 			string targetDestination;
-			cout << "enter your first station"<<endl;
-			cin >> firstDestination ;
+			cout << "enter your first station" << endl;
+			cin >> firstDestination;
 			cout << "enter your target  station" << endl;
 			cin >> targetDestination;
 
 			int answer;
-			
+
 
 			//print all avaliable paths
 			for (auto it = availablePaths.begin(); it != availablePaths.end(); ++it) {
@@ -264,17 +264,17 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 					advance(it, index - 1);//go to this index
 					queue <pair< station, int>> chosenPath = *it;
 					chosenSubscription.chosenPath = chosenPath;
-					cout << "your price is : " << chosenSubscription.calcPrice(chosenPath,0,true) << " every " << chosenSubscription.valid_duration;
+					cout << "your price is : " << chosenSubscription.calcPrice(chosenPath, 0, true) << " every " << chosenSubscription.valid_duration;
 
 				}
 
 			}
 			else if (answer == 2) {
-				for (unsigned int i = 0; i < zones.size();i++) {
+				for (unsigned int i = 0; i < zones.size(); i++) {
 					cout << "zone " << i + 1 << " : \n";
-					cout << "its price :" << chosenSubscription.availableZones[i].second<<endl;
+					cout << "its price :" << chosenSubscription.availableZones[i].second << endl;
 					for (unsigned int j = 0; j < zones[i].first.size(); j++) {
-						cout << "station " << i + 1 << " : "<< zones[i].first[j]<<endl;
+						cout << "station " << i + 1 << " : " << zones[i].first[j] << endl;
 
 					}
 				}
@@ -284,7 +284,7 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 				bool stationInZone = false;
 				do {
 
-				
+
 					cout << "enter the index of the path you want " << endl;
 					cin >> index;
 					if (index - 1 < 0 || index - 1 >= availablePaths.size()) {
@@ -295,8 +295,8 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 						advance(it, index - 1);//go to this index
 						queue <pair< station, int>> chosenPath = *it;
 
-						queue <pair< station, int>> tmp =chosenPath;
-						
+						queue <pair< station, int>> tmp = chosenPath;
+
 						while (!tmp.empty()) {
 							for (unsigned int j = 0; j < zones[zoneChoice].first.size(); j++) {
 								if (tmp.front().first.name != zones[zoneChoice].first[j]) {
@@ -316,20 +316,20 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 
 						}
 
-						if(stationInZone)
-							cout << "your price is : " << chosenSubscription.calcPrice(chosenPath,zoneChoice,false) << " every " << chosenSubscription.valid_duration;
+						if (stationInZone)
+							cout << "your price is : " << chosenSubscription.calcPrice(chosenPath, zoneChoice, false) << " every " << chosenSubscription.valid_duration;
 
 					}
 				} while (!stationInZone);
 			}
-			
+
 			user.chosenSubscription = chosenSubscription;
 			user.availableTrips = user.chosenSubscription.numberOfTrips;
 
 			//calculating start date
 			DateTime Date;
-			user.startDate=Date.current_date();
-			 
+			user.startDate = Date.current_date();
+
 		}
 	}
 }
@@ -352,7 +352,7 @@ void UserAccount::checkIn(MetroMate metro) {
 	metro.simpleDFS(source->name, source->lineNumber, target->name, fare); //dijkstra will be continued 
 	//dijkstra
 	cout << " Choose the path you want:\n";
-	int pathChosen=-1;
+	int pathChosen = -1;
 	pathChosen = numberInRange(pathChosen, 1, 2);
 	rideDetails newLog;
 	if (pathChosen == 1) {

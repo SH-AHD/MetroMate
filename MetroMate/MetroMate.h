@@ -1,4 +1,4 @@
-#pragma once
+#pragma once //DONE
 #include <iostream>
 #include <String>
 #include <list>
@@ -9,10 +9,21 @@
 #include <stack>
 #include <fstream>
 //for time
+#include <deque>
+#include <chrono>
+#include <random>
+#include <algorithm>
+using namespace std::chrono;
+//for time
 #include <ctime>
 using namespace std;
+#include "TrainManagement.h"
+
+#include"DateTime.h"
 
 class UserAccount;
+class Train;
+class Schedule;
 
 struct Date {
 	int day;
@@ -80,11 +91,12 @@ public:
 class MetroMate
 {
 public:
-	int numberOfStations=0;
-	int numberOfLines=0;
+	int numberOfStations = 0;
+	int numberOfLines = 0;
 	vector<int> noOfStationsInLine;
 	unordered_map<int, vector<station>> MetroLines;
 	unordered_map<string, list<pair<station*, int>>> Metromate;
+
 	void createNewStation(int lineNumber, int stationNumber = 0);
 	void addStationToMetroSystem(string stationName);
 	void connectStations(station* station1, station* station2, int distance);
@@ -97,6 +109,25 @@ public:
 	void editStationName(int lineNumber, string oldName, string newName, bool& notFoundStation);
 	void editStationPosition(int lineNumber, string stationName);
 	void removeStation(int lineNumber, string stationName, bool& successfulEdit/* = false*/);
+
+	////Line 
+
+	deque<Train> trains;
+
+	void addTrain(Train newTrain);
+	void editTrain(int editTrainid);
+	void removeTrain(int removedTrainid);
+	void addTripToTrainSchedule(int trainid, Schedule schedule);
+	void modifyTripFromTrainSchedule(int lineID, int id, string date, string DepartureTime);
+	void deleteTripFromTrainSchedule(int trainID, string  date, string time);
+	void simulateTrainBreakdown(int  brokenTrainID, string time, string date);
+	size_t findScheduleIndex(Train train, string time, string date);
+	void adjustNextTrainDepartureTime(Train t);
+	void displaySpecificTrain(int lineID, int trainID);
+	void displayTrains(int lineID);
+
+
+
 
 	//check in functions
 	void markAsUnvisited();

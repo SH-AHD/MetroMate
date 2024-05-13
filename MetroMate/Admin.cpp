@@ -4,7 +4,7 @@ Admin::Admin() {
 }
 void Admin::stationManagement(MetroMate metro) {
 	bool existFlag = false;
-	int lineId=0;
+	int lineId = 0;
 	while (!existFlag)
 	{
 		int choice{};
@@ -22,7 +22,7 @@ void Admin::stationManagement(MetroMate metro) {
 			cout << " How many stations do you want to add ? note: should be on the same line\n";
 			cout << " Number of stations:";
 			int num = 0;
-				num = checkPositiveNumber(num);
+			num = checkPositiveNumber(num);
 			cout << "Enter the line number where the station/s will be added: ";
 			lineId = checkPositiveNumber(lineId);
 			for (int i = 0; i < num; i++) metro.createNewStation(lineId, i + 1);
@@ -52,7 +52,7 @@ void Admin::stationManagement(MetroMate metro) {
 				else {
 					cout << " How many connections you will make? ";
 					int count = 0;
-						count = checkPositiveNumber(count);
+					count = checkPositiveNumber(count);
 					for (int i = 0; i < count; i++) metro.stationPositioning();
 				}
 			}
@@ -64,8 +64,8 @@ void Admin::stationManagement(MetroMate metro) {
 					lineId = checkPositiveNumber(lineId);
 					if (metro.MetroLines[lineId].size() > 0) {
 						cout << " How many connections you will make? ";
-						int count=0;
-						   count= checkPositiveNumber(count);
+						int count = 0;
+						count = checkPositiveNumber(count);
 						for (int i = 0; i < count; i++) metro.stationPositioning();
 					}
 					else cout << " Sorry, this line does not exist. You cannot make connections\n";
@@ -153,7 +153,7 @@ void Admin::stationManagement(MetroMate metro) {
 }
 
 void Admin::HomePage(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones,
-	vector<pair<double, pair<int, int>>>& stages, unordered_map<string,station> stationsList, DateTime date , MetroMate metro , unordered_map<string, UserAccount> users) {
+	vector<pair<double, pair<int, int>>>& stages, unordered_map<string, station> stationsList, DateTime date, MetroMate metro, unordered_map<string, UserAccount> users) {
 	//DateTime date;
 	if (isAdmin) {
 		//admin
@@ -231,8 +231,8 @@ void Admin::HomePage(bool& isAdmin, unordered_map<string, SubscriptionDetails>& 
 				cout << "type the time period required:\n d for day \n w for week \n m for month \n y for year " << endl;
 				cin >> timePeriod;
 
-				
-				if (stationsList.count(stName)!=0) {
+
+				if (stationsList.count(stName) != 0) {
 					switch (stFunct)
 					{
 					case 1:
@@ -268,11 +268,11 @@ void Admin::HomePage(bool& isAdmin, unordered_map<string, SubscriptionDetails>& 
 					break;
 				}
 				break;
-			case 7: 
+			case 7:
 				isAdminLoop = false;
 				cout << "hkhku";
 			default:
-				
+
 				break;
 			}
 
@@ -513,7 +513,7 @@ void Admin::ModifyUsers(bool& isAdmin, unordered_map<string, UserAccount>& users
 			{
 				UserAccount finded = users.at(mail);
 				finded.displayAccount();
-				finded= finded.updateInfo(finded.Email, users);
+				finded = finded.updateInfo(finded.Email, users);
 			}
 		}
 		else if (c == 3)

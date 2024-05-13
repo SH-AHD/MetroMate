@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "helpingMethods.h"
@@ -45,7 +44,7 @@ public:
 	SubscriptionDetails chosenSubscription;
 	int availableTrips;
 
-	void PurchaceSubscription(UserAccount& user, unordered_map<std::string, SubscriptionDetails> subscription_plans, unordered_map<int, string> subscriptions_names , vector<pair<vector<string>, double>> zones);
+	void PurchaceSubscription(UserAccount& user, unordered_map<std::string, SubscriptionDetails> subscription_plans, unordered_map<int, string> subscriptions_names, vector<pair<vector<string>, double>> zones);
 
 	UserAccount() {
 		//dont delete it
@@ -56,7 +55,7 @@ public:
 	bool VailEmail(string email);
 	bool logIn(bool& isAdmin, UserAccount& theLog, string email, string password, unordered_map<string, UserAccount>& user);
 	void ChangePassword(UserAccount& user, string NewPass);
-	UserAccount updateInfo(string key,unordered_map<string, UserAccount>& users);
+	UserAccount updateInfo(string key, unordered_map<string, UserAccount>& users);
 	void LogOut(UserAccount& current);
 	void displayAccount();
 	void checkIn(MetroMate metro);
@@ -81,4 +80,3 @@ public:
 //	string inputDateString(string inputDate);
 //	static void outputTimePoint(system_clock::time_point timePoint);
 //};
-

@@ -73,7 +73,7 @@ unordered_map<string, UserAccount> users;
 int main() {
 	MetroMate metro;
 
-	
+
 	//temp data to metro graph
 	metro.numberOfLines = 2;
 	//entering data to graph manually
@@ -114,16 +114,16 @@ int main() {
 
 
 	station tmpStation;
-	
+
 	unordered_map<string, SubscriptionDetails> subscription_plans;//name and details
 	unordered_map<int, string> subscriptions_names;//to have id and name only
 	string SubscriptionFileName = "subscriptions.csv";
-	
+
 	users = ReadData(users);
-	
+
 	Admin admin;
-	
-	
+
+
 	vector<pair<vector<string>, double>>zones;//zone[1][station1]
 	vector<pair<double, pair<int, int>>> stages; // <price , <min_stations,max_stations>> for 4 stages
 
@@ -158,7 +158,7 @@ int main() {
 		{
 		case 1:
 		{
-			
+
 			cout << "Register" << endl;
 			cout << "--------" << endl;
 			cout << "Name:";
@@ -176,9 +176,9 @@ int main() {
 			currentUser = user;
 			currentUser.PurchaceSubscription(currentUser, subscription_plans, subscriptions_names, zones);
 			currentUser.displayAccount();
-		//	currentUser.updateInfo(currentUser);
-			
-			User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones,users);
+			//	currentUser.updateInfo(currentUser);
+
+			User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones, users);
 			break;
 		}
 		case 2:
@@ -193,25 +193,25 @@ int main() {
 			{
 				if (isAdmin == true)
 				{
-					cout << "Login successful"<<endl;
-					admin.HomePage(isAdmin, subscription_plans, subscriptions_names, zones, stages, stationsList, date,metro,users);
+					cout << "Login successful" << endl;
+					admin.HomePage(isAdmin, subscription_plans, subscriptions_names, zones, stages, stationsList, date, metro, users);
 				}
-				else if(isAdmin==false)
+				else if (isAdmin == false)
 				{
 					cout << "Login successful" << endl;
 					currentUser.displayAccount();
-					currentUser= currentUser.updateInfo(currentUser.Email, users);
+					currentUser = currentUser.updateInfo(currentUser.Email, users);
 					currentUser.displayAccount();
-					User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones,users);
+					User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones, users);
 				}
 			}
 
 
 			else
-				cout << "Login failed"<<endl;
+				cout << "Login failed" << endl;
 			break;
 		}
-			
+
 		default:
 			outerLoop = false;
 			break;
@@ -224,7 +224,7 @@ int main() {
 	ifstream file(SubscriptionFileName);
 	file.clear();
 	writeToSubscriptionFile(subscription_plans, SubscriptionFileName);
-	
+
 	return 0;
 }
 
@@ -240,9 +240,9 @@ void saveData(unordered_map<string, UserAccount>& users)
 		const UserAccount& user = entry.second;
 
 		// Write user data to the file
-		outputFile << email << "," << user.Name << "," << user.Phone << "," << user.Address << "," << user.Password << ","<<endl;
+		outputFile << email << "," << user.Name << "," << user.Phone << "," << user.Address << "," << user.Password << "," << endl;
 	}
-	
+
 
 	outputFile.close();
 }
@@ -258,9 +258,9 @@ unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& 
 		while (getline(file, line)) {
 			stringstream ss(line);
 			string key;
-			string attributeStr; 
+			string attributeStr;
 
-			
+
 			if (line.empty()) {
 				continue;
 			}
@@ -276,7 +276,7 @@ unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& 
 			users.insert(make_pair(key, tmpuser));
 		}
 
-		
+
 
 		file.close();
 		cout << "User data has been successfully loaded from the file." << endl;
@@ -291,7 +291,7 @@ unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& 
 
 
 
-void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones,unordered_map<string,UserAccount>users)
+void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones, unordered_map<string, UserAccount>users)
 {
 	if (!isAdmin) {
 		DateTime Date;
@@ -332,7 +332,7 @@ void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDeta
 				int manageChoice;
 				cout << "if you want to: \n view active subscription type 1 \n renew subscription type 2  \n upgrade subscription type 3";
 				cin >> manageChoice;
-				
+
 				switch (manageChoice)
 				{
 				case 1:
@@ -359,13 +359,13 @@ void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDeta
 			case 3:
 				break;
 			case 4:
-				user=user.updateInfo(user.Email,users);
+				user = user.updateInfo(user.Email, users);
 				break;
 			default:
 				isUserLoop = false;
 				break;
 			}
-			
+
 		}
 
 
@@ -400,8 +400,8 @@ vector<string> split(const string& str, char delimiter) {
 	}
 	return tokens;
 }
-unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string& filename, unordered_map<int, string>& subscriptions_names,unordered_map<string,station>stationsList) {
-	
+unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string& filename, unordered_map<int, string>& subscriptions_names, unordered_map<string, station>stationsList) {
+
 	ifstream file(filename);
 	if (!file.is_open()) {
 		//throw std::runtime_error("Error opening file: " + filename);
@@ -412,11 +412,11 @@ unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string
 	string line;
 	if (file.good()) {
 		while (getline(file, line)) {
-			
+
 			stringstream ss(line);
 			string key;
 			string attributeStr; // Stringall comma-separated attributes
-			
+
 			if (getline(ss, key, ',') && getline(ss, attributeStr)) {
 				vector<string> attributes = split(attributeStr, ',');
 				/*for (int i = 0; i < attributes.size(); i++) {
@@ -438,15 +438,15 @@ unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string
 					details.name = attributes[3];
 					details.numberOfTrips = stoi(attributes[4]);// Assuming numberOfTrips is last
 
-					int vectorSize=0;
-					unsigned int startIndex=6;
+					int vectorSize = 0;
+					unsigned int startIndex = 6;
 					if (attributes.size() > 5) {
 						vectorSize = stoi(attributes[5]);
 					}
-					
-					
+
+
 					pair<double, pair<int, int>> tmp;
-					for ( int i = 0; i < vectorSize; i++) {
+					for (int i = 0; i < vectorSize; i++) {
 						//because availableStages has 3 attributes
 						tmp.first = stod(attributes[startIndex]);// 0 _ _    3 _ _     6 _ _
 						tmp.second.first = stoi(attributes[startIndex + 1]);// _ 1 _    _ 4 _   _ 7 _
@@ -460,14 +460,14 @@ unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string
 						vectorSize = stoi(attributes[startIndex]);
 						startIndex++;
 					}
-					
+
 					int innerVectorSize;
 					vector<pair<vector<string>, double>> tmpZones;
 					pair<vector<string>, double> tmpZonesPairs;
-					for ( int i = 0; i < vectorSize; i++) {
+					for (int i = 0; i < vectorSize; i++) {
 						innerVectorSize = stoi(attributes[startIndex]);
 						startIndex++;
-						for ( int j = 0; j < innerVectorSize; j++) {
+						for (int j = 0; j < innerVectorSize; j++) {
 							tmpZonesPairs.first.push_back(attributes[startIndex]);
 							startIndex++;
 
@@ -484,9 +484,9 @@ unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string
 						details.chosenStage.second.second = stoi(attributes[++startIndex]);
 						startIndex++;
 					}
-					
-					int queueSize=0;
-					
+
+					int queueSize = 0;
+
 					if (attributes.size() > startIndex) {
 						queueSize = stoi(attributes[startIndex]);
 						startIndex++;
@@ -514,13 +514,9 @@ unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string
 					continue;
 				}
 			}
-			
+
 		}
 	}
-	
+
 	return data;
 }
-
-
-
-
