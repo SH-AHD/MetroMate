@@ -54,7 +54,6 @@ public:
 	bool Register(unordered_map<string, UserAccount>& users, UserAccount user);
 	bool VailEmail(string email);
 	bool logIn(bool& isAdmin, UserAccount& theLog, string email, string password, unordered_map<string, UserAccount>& user);
-	void ChangePassword(UserAccount& user, string NewPass);
 	UserAccount updateInfo(string key, unordered_map<string, UserAccount>& users);
 	UserAccount forgetPass(string mail, unordered_map<string, UserAccount>users);
 	UserAccount LogOut(UserAccount& current);
