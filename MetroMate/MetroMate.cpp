@@ -748,6 +748,11 @@ void MetroMate::displaySpecificTrain(int lineID, int trainID) {
 	}
 }
 
+void MetroMate::displayTrainETAForUser(string stationName, string checkindate, string checkinTime) {
+	for (auto& train : trains) {
+		train.getETAForTrip( stationName, checkindate,  checkinTime);
+	}
+}
 
 //Station::Station(unordered_map<system_clock::time_point&, deque<Train>>& stationSchedule) {
 //    this->stationSchedule = stationSchedule;

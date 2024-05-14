@@ -348,7 +348,7 @@ void UserAccount::checkIn(MetroMate metro) {
 	cout << " Now choose the target station:\n";
 	station* target = metro.chooseStation();
 	float fare = 0.0; //temp var will be deleted later according to scenrio
-	cout << " The possible oath to your target:\n";
+	cout << " The possible path to your target:\n";
 	metro.simpleDFS(source->name, source->lineNumber, target->name, fare); //dijkstra will be continued 
 	//dijkstra
 	cout << " Choose the path you want:\n";
