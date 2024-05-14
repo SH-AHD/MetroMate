@@ -433,16 +433,6 @@ void Train::displayTrainSchedule() {
         i++;
     }
 
-}
-
-void Train::getETAForTrip(string stationName, string checkindate, string checkinTime) {
-    for (auto& schedule : trainSchedule) {
-        if (schedule.getDate() == checkindate && schedule.getDestinationStation() == stationName && schedule.getArrivalTime() >= DateTime::timeInputString(checkinTime))
-        {
-          auto arrtime=  DateTime::calculateTimeDifferenceMinutes(schedule.getArrivalTime(), DateTime::timeInputString(checkinTime));
-            cout << "The train will arrive in " <<arrtime << " minutes.";
-            break;
-        }
     }
 
 }
