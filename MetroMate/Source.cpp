@@ -1,4 +1,4 @@
-
+#include<map>
 #include "SubscriptionDetails.h"
 #include "SubscriptionDetails.cpp"
 #include"UserAccount.h"
@@ -160,32 +160,45 @@ int main() {
 		}
 		case 2:
 		{
-			cout << "please enter the email and password of your account:\n";
-			cout << "Email: ";
-			cin >> email;
-			cout << "Password: ";
-			cin >> password;
-			UserAccount userLog(email, password);
-			if (userLog.logIn(isAdmin, currentUser, email, password, users))
+			int c;
+			cout << "forget password?\npress1\nif no press2\n";
+			cin >> c;
+			if (c == 1)
 			{
-				if (isAdmin == true)
-				{
-					cout << "Login successful" << endl;
-					admin.HomePage(isAdmin, subscription_plans, subscriptions_names, zones, stages, stationsList, date, metro, users,train,schedule);
-				}
-				else if (isAdmin == false)
-				{
-					cout << "Login successful" << endl;
-					currentUser.displayAccount();
-					currentUser = currentUser.updateInfo(currentUser.Email, users);
-					currentUser.displayAccount();
-					User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones, users,metro,train,schedule);
-				}
+				cout << "Email: ";
+				cin >> email;
+				UserAccount user;
+				user=user.forgetPass(email, users);
 			}
-
-
 			else
-				cout << "Login failed" << endl;
+			{
+				cout << "please enter the email and password of your account:\n";
+				cout << "Email: ";
+				cin >> email;
+				cout << "Password: ";
+				cin >> password;
+				UserAccount userLog(email, password);
+				if (userLog.logIn(isAdmin, currentUser, email, password, users))
+				{
+					if (isAdmin == true)
+					{
+						cout << "Login successful" << endl;
+						admin.HomePage(isAdmin, subscription_plans, subscriptions_names, zones, stages, stationsList, date, metro, users, train, schedule);
+					}
+					else if (isAdmin == false)
+					{
+						cout << "Login successful" << endl;
+						currentUser.displayAccount();
+						currentUser = currentUser.updateInfo(currentUser.Email, users);
+						currentUser.displayAccount();
+						User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones, users, metro, train, schedule);
+					}
+				}
+
+
+				else
+					cout << "Login failed" << endl;
+			}
 			break;
 		}
 
@@ -292,7 +305,7 @@ void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDeta
 		bool isUserLoop = true;
 		while (isUserLoop) {
 			int answer;
-			cout << "press the number of the functionality you want \n 1- Manage Subscription \n 2- Check-In/Check-Out for Rides \n 3- View Ride History \n 4- View Estimated Time of Arrival (ETA) \n 5-Update Personal Information \n";
+			cout << "press the number of the functionality you want \n 1- Manage Subscription \n 2- Check-In/Check-Out for Rides \n 3- View Ride History \n 4- View Estimated Time of Arrival (ETA) \n 5-Update Personal Information \n 6-logout\n";
 			cin >> answer;
 
 			//needed variables in manage subscribtion 
@@ -341,6 +354,8 @@ void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDeta
 			case 5:
 				user = user.updateInfo(user.Email, users);
 				break;
+			case 6:
+				user=user.LogOut(user);
 			default:
 				isUserLoop = false;
 				break;
@@ -500,3 +515,8 @@ unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string
 
 	return data;
 }
+
+
+
+
+

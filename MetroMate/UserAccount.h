@@ -56,7 +56,8 @@ public:
 	bool logIn(bool& isAdmin, UserAccount& theLog, string email, string password, unordered_map<string, UserAccount>& user);
 	void ChangePassword(UserAccount& user, string NewPass);
 	UserAccount updateInfo(string key, unordered_map<string, UserAccount>& users);
-	void LogOut(UserAccount& current);
+	UserAccount forgetPass(string mail, unordered_map<string, UserAccount>users);
+	UserAccount LogOut(UserAccount& current);
 	void displayAccount();
 	void checkIn(MetroMate metro, UserAccount user, tm date);
 };

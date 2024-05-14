@@ -276,7 +276,7 @@ Schedule Train::setTripInfo() {
                schedule.setArrivalTime(DateTime::timeInputString(arrivalTime));
            }else{
                cout << "Arrival time must be > depature time";
-               schedule.setArrivalTime() == system_clock::time_point();
+            //   schedule.setArrivalTime() == system_clock::time_point();
            }
        } while (schedule.getArrivalTime() == system_clock::time_point());
 

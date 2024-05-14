@@ -91,6 +91,22 @@ bool UserAccount::logIn(bool& isAdmin, UserAccount& theLog, string email, string
 	return true;
 }
 
+UserAccount UserAccount::forgetPass(string mail,unordered_map<string,UserAccount>users)
+{
+	if (users.count(mail) == 0)
+	{
+		cout << "sorry there is no account with this mail.\n";
+		throw runtime_error("Account not found");
+	}
+	UserAccount& usa = users[mail];
+	string pass;
+	cout << "enter the new password:";
+	cin >> pass;
+	usa.Password = pass;
+	cout << "Done\n";
+	return usa;
+}
+
 
 void  UserAccount::ChangePassword(UserAccount& user, string NewPass)
 {
@@ -143,11 +159,11 @@ UserAccount  UserAccount::updateInfo(string key, unordered_map<string, UserAccou
 }
 
 
-void UserAccount::LogOut(UserAccount& current)
+UserAccount UserAccount::LogOut(UserAccount& current)
 {
 	LogedUser = false;
-	UserAccount emptyUser;
-	current = emptyUser;
+	return UserAccount ();
+
 }
 
 void UserAccount::displayAccount()
