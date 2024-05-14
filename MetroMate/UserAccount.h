@@ -58,7 +58,7 @@ public:
 	UserAccount updateInfo(string key, unordered_map<string, UserAccount>& users);
 	void LogOut(UserAccount& current);
 	void displayAccount();
-	void checkIn(MetroMate metro);
+	void checkIn(MetroMate metro, UserAccount user, tm date);
 };
 
 //class DateTime {

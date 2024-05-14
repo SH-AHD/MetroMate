@@ -334,7 +334,7 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 	}
 }
 
-void UserAccount::checkIn(MetroMate metro) {
+void UserAccount::checkIn(MetroMate metro,UserAccount user, tm date) {
 	cout << " Hello, " << Name << ".\n";
 	cout << " Here are the steps to save your ride details:\n -> choose the station you will ride from.\n";
 	cout << "-> choose the target station.\n";
@@ -345,9 +345,19 @@ void UserAccount::checkIn(MetroMate metro) {
 	station* source = metro.chooseStation(); //DepartureStation 
 	chrono::system_clock::time_point currentTime = chrono::system_clock::now();//CheckIn Time; 
 	source->chosen = true;
+
+	//upgrading the station's info
+	source->addIncome(user,date);
+	source->addTickets(date);
+	source->addPassenger(source->stationMap,date,user);
+
 	cout << "\n\n";
 	cout << " Now choose the target station:\n";
 	station* target = metro.chooseStation();
+
+	//upgrade the target's info
+	target->addPassenger(target->stationMap, date, user);
+
 	float fare = 0.0; //temp var will be deleted later according to scenrio
 	cout << " The possible path to your target:\n";
 	metro.simpleDFS(source->name, source->lineNumber, target->name, fare); //dijkstra will be continued 

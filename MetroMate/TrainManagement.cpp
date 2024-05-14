@@ -275,8 +275,8 @@ Schedule Train::setTripInfo() {
            if (arrivalTime > departureTime) {
                schedule.setArrivalTime(DateTime::timeInputString(arrivalTime));
            }else{
-               cout << "Arrival time must be > depature time";
-               schedule.setArrivalTime() == system_clock::time_point();
+               cout << "Arrival time must be > depature time\n";
+               schedule.setArrivalTime(system_clock::time_point());
            }
        } while (schedule.getArrivalTime() == system_clock::time_point());
 
@@ -331,8 +331,11 @@ void Train::displaySchedule(string date) {
     
     // cout <<DateTime::dateDay(date) << "-" << date << " \n";
     for (auto& schedule : trainSchedule) {
+        cout << "!!!!";
         if (schedule.getDate() == date) {
+
             cout << "Train Schedule:" << "\n";
+            cout << "Date:" << schedule.getDate() << "\n";
             cout << "Train Departure Station:" << schedule.getDepartureStation() << "\n";
             cout << "Train Departure Time:";
             DateTime::outputTimePoint(schedule.getDepartureTime());
