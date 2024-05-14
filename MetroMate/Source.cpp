@@ -28,37 +28,12 @@ using namespace std;
 using namespace std::chrono;
 
 
-//int main() {
-//	Train t;
-//	Line l;
-//	
-//	t.setTrainInfo();
-//	
-//	//t.displayTrainInfo();
-//	/*DateTime::outputTimePoint(*/ 
-//	//cout<<t.calculateETA("10", "10:40");
-//	Schedule s, a, h;
-//	t.setTrainSchedule(h);
-//	t.displaySchedule("4-4-2024");
-//	s.setDestinationStation("r");
-//	l.addTrain(t);
-//	l.displayTrains();
-//	t.setLineID(1);
-//	l.editTrainSchedule(1, t, s);
-//	l.findScheduleIndex(t, "r");
-//	l.simulateTrainBreakdown(t, "r");
-//	s.getDelay();
-//	t.getStatus();
-//	t.setTrainSchedule(a);
-//	t.adjustNextTripDepartureTime();
-//	a.getDelay();
-//	l.removeTrain(t);
-//}
+
 
 void saveData(unordered_map<string, UserAccount>& users);
 //void ModifyUsers(bool& isAdmine, unordered_map<string, UserAccount>&users);
 //void Admin(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans,unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones,vector<pair<double, pair<int, int>>>& stages, vector<station> stationsList, DateTime date); 
-void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones, unordered_map<string, UserAccount>users);
+void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones, unordered_map<string, UserAccount>users, MetroMate metro, Train train, Schedule schedule);
 //void SetZones(vector<pair<vector<string>, double>>& zones);
 //void manageStages(vector<pair<double, pair<int, int>>>& stages,int choice);
 //subscription file
@@ -67,11 +42,13 @@ void writeToSubscriptionFile(const unordered_map<string, SubscriptionDetails>& d
 unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string& filename, unordered_map<int, string>& subscriptions_names, unordered_map<string, station>stationsList);
 unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& users);
 
-Line lines;
+//Line lines;
+Train train;
+Schedule schedule;
+MetroMate metro;
 deque<Train> trains;
 unordered_map<string, UserAccount> users;
 int main() {
-	MetroMate metro;
 
 
 	//temp data to metro graph
@@ -178,7 +155,7 @@ int main() {
 			currentUser.displayAccount();
 			//	currentUser.updateInfo(currentUser);
 
-			User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones, users);
+			User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones, users,metro,train,schedule);
 			break;
 		}
 		case 2:
@@ -194,7 +171,7 @@ int main() {
 				if (isAdmin == true)
 				{
 					cout << "Login successful" << endl;
-					admin.HomePage(isAdmin, subscription_plans, subscriptions_names, zones, stages, stationsList, date, metro, users);
+					admin.HomePage(isAdmin, subscription_plans, subscriptions_names, zones, stages, stationsList, date, metro, users,train,schedule);
 				}
 				else if (isAdmin == false)
 				{
@@ -202,7 +179,7 @@ int main() {
 					currentUser.displayAccount();
 					currentUser = currentUser.updateInfo(currentUser.Email, users);
 					currentUser.displayAccount();
-					User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones, users);
+					User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones, users,metro,train,schedule);
 				}
 			}
 
@@ -290,8 +267,7 @@ unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& 
 
 
 
-
-void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones, unordered_map<string, UserAccount>users)
+void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones, unordered_map<string, UserAccount>users,MetroMate metro,Train train,Schedule schedule)
 {
 	if (!isAdmin) {
 		DateTime Date;
@@ -316,7 +292,7 @@ void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDeta
 		bool isUserLoop = true;
 		while (isUserLoop) {
 			int answer;
-			cout << "press the number of the functionality you want \n 1- Manage Subscription \n 2- Check-In/Check-Out for Rides \n 3- View Ride History \n 4-Update Personal Information \n";
+			cout << "press the number of the functionality you want \n 1- Manage Subscription \n 2- Check-In/Check-Out for Rides \n 3- View Ride History \n 4- View Estimated Time of Arrival (ETA) \n 5-Update Personal Information \n";
 			cin >> answer;
 
 			//needed variables in manage subscribtion 
@@ -359,6 +335,10 @@ void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDeta
 			case 3:
 				break;
 			case 4:
+				
+			//	metro.displayTrainETAForUser(stationName, chickindate, checkintime);
+				break;
+			case 5:
 				user = user.updateInfo(user.Email, users);
 				break;
 			default:

@@ -152,8 +152,138 @@ void Admin::stationManagement(MetroMate metro) {
 	}
 }
 
+//void Admin::HomePage(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones,
+//	vector<pair<double, pair<int, int>>>& stages, unordered_map<string, station> stationsList, DateTime date, MetroMate metro, unordered_map<string, UserAccount> users) {
+//	//DateTime date;
+//	if (isAdmin) {
+//		//admin
+//		bool isAdminLoop = true;
+//		int answer;
+//
+//		//for station management
+//		string stName;
+//		int stFunct;
+//		char timePeriod;
+//
+//		//for subscription
+//		string subscriptionName;
+//		SubscriptionDetails newSubscriptions;//we will need it when creating
+//
+//
+//		while (isAdminLoop) {
+//			cout << "enter number of operation you want to perform:\n 1. User Management \n 2. Metro Management \n 3. Subscription Plan Management \n 4. View All Ride Logs \n 5. Station Management \n 6. Fare Management \n any other number to exit" << endl;
+//			cin >> answer;
+//			switch (answer)
+//			{
+//			case 1:
+//				ModifyUsers(isAdmin, users);
+//				break;
+//			case 2:
+//				stationManagement(metro);
+//				break;
+//			case 3:
+//				int funcChoice;
+//				cout << "enter the number of the function you want to perform\n 1- create subscription \n 2- modify subscription \n 3- remove subscription \n    press any key to go back";
+//
+//				cin >> funcChoice;
+//
+//				switch (funcChoice)
+//				{
+//				case 1:
+//					//create
+//					newSubscriptions.Create(zones, stages);
+//
+//					//adding it to hash table
+//					subscription_plans.insert(make_pair(newSubscriptions.name, newSubscriptions));
+//					subscriptions_names.insert(make_pair(subscription_plans.size(), newSubscriptions.name));//1-student,2-public...
+//					break;
+//
+//				case 2:
+//					//modify subscription
+//					newSubscriptions.Modify(subscription_plans, subscriptions_names);
+//
+//					break;
+//				case 3:
+//					int key;
+//					//remove subscription 
+//					for (const auto& pair : subscriptions_names) {
+//						cout << "Key: " << pair.first << ", name: " << pair.second << endl;
+//					}
+//					cout << "choose subscription key" << endl;
+//					cin >> key;
+//					subscriptionName = subscriptions_names[key];
+//					subscription_plans.erase(subscriptionName);
+//					break;
+//				default:
+//					break;
+//				}
+//
+//			case 4:
+//				break;
+//			case 5:
+//				//station management
+//				cout << "Enter the station's name in which you want to access it's data" << endl;
+//				cin >> stName;
+//
+//				cout << "choose what you want to view:\n 1-number of sold tickets \n 2-total income \n 3-number of passengers " << endl;
+//				cin >> stFunct;
+//
+//				cout << "type the time period required:\n d for day \n w for week \n m for month \n y for year " << endl;
+//				cin >> timePeriod;
+//
+//
+//				if (stationsList.count(stName) != 0) {
+//					switch (stFunct)
+//					{
+//					case 1:
+//						//number of sold tickets
+//						cout << stationsList[stName].getSoldTickets(timePeriod, date.current_date()) << endl;
+//						break;
+//					case 2:
+//						//total income
+//						cout << stationsList[stName].getTotalIncome(timePeriod, date.current_date()) << endl;
+//						break;
+//					case 3:
+//						//number of passengers
+//						cout << stationsList[stName].getTotalPassengers(timePeriod, date.current_date()) << endl;
+//						break;
+//					}
+//
+//					break;
+//				}
+//				break;
+//			case 6:
+//				cout << "press 1. to manage zones 2. to manage stages";
+//				int choice;
+//				cin >> choice;
+//				switch (choice)
+//				{
+//				case 1:
+//					SetZones(zones);
+//					break;
+//				case 2:
+//					manageStages(stages, choice);
+//					break;
+//				default:
+//					break;
+//				}
+//				break;
+//			case 7:
+//				isAdminLoop = false;
+//				cout << "hkhku";
+//			default:
+//
+//				break;
+//			}
+//
+//		}
+//
+//
+//	}
+//}
+
 void Admin::HomePage(bool& isAdmin, unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names, vector<pair<vector<string>, double>>& zones,
-	vector<pair<double, pair<int, int>>>& stages, unordered_map<string, station> stationsList, DateTime date, MetroMate metro, unordered_map<string, UserAccount> users) {
+	vector<pair<double, pair<int, int>>>& stages, unordered_map<string, station> stationsList, DateTime date, MetroMate metro, unordered_map<string, UserAccount> users, Train train, Schedule schedule) {
 	//DateTime date;
 	if (isAdmin) {
 		//admin
@@ -171,7 +301,7 @@ void Admin::HomePage(bool& isAdmin, unordered_map<string, SubscriptionDetails>& 
 
 
 		while (isAdminLoop) {
-			cout << "enter number of operation you want to perform:\n 1. User Management \n 2. Metro Management \n 3. Subscription Plan Management \n 4. View All Ride Logs \n 5. Station Management \n 6. Fare Management \n any other number to exit" << endl;
+			cout << "Welcome ,Admin!!\nEnter number of operation you want to perform:\n 1. User Management \n 2. Metro Management \n 3. Subscription Plan Management \n 4. View All Ride Logs \n 5. Station Management \n 6. Fare Management \n 7.Train Management \n 8. Exit" << endl;
 			cin >> answer;
 			switch (answer)
 			{
@@ -268,11 +398,441 @@ void Admin::HomePage(bool& isAdmin, unordered_map<string, SubscriptionDetails>& 
 					break;
 				}
 				break;
-			case 7:
-				isAdminLoop = false;
-				cout << "hkhku";
-			default:
+				//case 7:
+				//	cout << "\nMetro Management System\n";
+				//	cout << "1. Train Management\n";
+				//	cout << "2. Display Functions\n";
+				//	cout << "3. Exit\n";
+				//	cout << "Enter your choice: ";
+				//	
+				//	//cout << "Press: 1. For addition, modification, and removal functions\n 2. For display functions\n";
+				//	int in;
+				//	cin >> in;
+				//	switch (in)
+				//	{
+				//	
+				//	case 1:
+				//	
+				//		cout << "\nTrain Management\n";
+				//		cout << "1. Add Train\n";
+				//		cout << "2. Edit Train\n";
+				//		cout << "3. Remove Train\n";
+				//		cout << "4. Add Trip To Train Schedule\n";
+				//		cout << "5. Modify Trip From Train Schedule\n";
+				//		cout << "6. Delete Trip From Train Schedule\n";
+				//		cout << "7. Back\n";
+				//		cout << "Enter your choice: ";
 
+				//		int trainChoice;
+				//			cin >> trainChoice;
+				//		switch (trainChoice)
+				//		{
+				//		case 1:
+				//			cout << "To add train you need to enter its information first \nplease,";
+				//			train.setTrainInfo();
+				//			metro.addTrain(train);
+				//			break;
+				//		case 2:
+				//			cout << "Enter the train ID you want to modify:\n";
+				//			int tid;
+				//			cin >> tid;
+				//			metro.editTrain(tid);
+				//			break;
+				//		case 3:
+				//			cout << "Enter the train ID you want to remove:\n";
+				//			
+				//			cin >> tid;
+				//			metro.removeTrain(tid);
+				//			break;
+				//		case 4:
+				//			cout << "Enter the train ID:\n";
+				//			
+				//			cin >> tid;
+				//			cout << "Enter trip details:\n";
+				//			metro.addTripToTrainSchedule(tid, train.setTripInfo());
+				//			break;
+				//		case 5:
+				//			cout << "Enter the line ID:\n";
+				//			int lid;
+				//			cin >> lid;
+				//			cout << "Enter the train ID:\n";
+				//			cin >> tid;
+				//			cout << "Enter trip date (DD-MM-YYYY):\n";
+				//			string date;
+				//			cin >> date;
+				//			cout << "Enter trip departure time (HH:MM):\n";
+				//			string time;
+				//			cin >> time;
+				//			if (metro.MetroLines.find(lid) != metro.MetroLines.end()) {
+				//				metro.modifyTripFromTrainSchedule(lid, tid, date, time);
+				//			}
+				//			else {
+				//				cout << "The line ID is not found!\n";
+				//			}
+				//			break;
+				//		case 6:
+				//			cout << "Enter the line ID:\n";
+				//			cin >> lid;
+				//			cout << "Enter the train ID:\n";
+				//			cin >> tid;
+				//			cout << "Enter trip date (DD-MM-YYYY):\n";
+				//			cin >> date;
+				//			cout << "Enter trip departure time (HH:MM):\n";
+				//			cin >> time;
+				//			if (metro.MetroLines.find(lid) != metro.MetroLines.end()) {
+				//				metro.deleteTripFromTrainSchedule(tid, date, time);
+				//			}
+				//			else {
+				//				cout << "The line ID is not found !!\n";
+				//			}
+				//			break;
+
+				//		case 7:
+				//			break;
+				//			
+				//		}
+				//		break;
+				//	case 2:
+				//		cout << "\nDisplay Functions\n";
+				//		cout << "1. In Case Train Breakdown\n";
+				//		cout << "2. Display Trains\n";
+				//		cout << "3. View information for a specific train\n";
+				//		cout << "4. View information for a specific train trip\n";
+				//		cout << "5. View information for train trips for specific date\n";
+				//		cout << "6. Back\n";
+				//		cout << "Enter your choice: ";
+
+				//		int displayChoice;
+				//		cin >> displayChoice;
+				//		switch (displayChoice)
+				//		{
+				//		case 1:
+				//			cout << "Enter the train ID:\n";
+				//			cin >> tid;
+				//			cout << "Enter trip date (DD-MM-YYYY):\n";
+				//			cin >> date;
+				//			cout << "Enter trip departure time (HH:MM):\n";
+				//			cin >> time;
+				//			metro.simulateTrainBreakdown(tid, time, date);
+				//			break;
+				//		case 2:
+				//			cout << "Enter the line ID:\n";
+				//			cin >> lid;
+				//			if (metro.MetroLines.find(lid) != metro.MetroLines.end()) {
+				//				metro.displayTrains(lid);
+				//			}
+				//			else {
+				//				cout << "The line ID is not found!\n";
+				//			}
+				//			break;
+
+				//	
+				//		case 3:
+				//			cout << "Enter the line ID:\n";
+				//			cin >> lid;
+				//			cout << "Enter the train ID:\n";
+				//			cin >> tid;
+				//			if (metro.MetroLines.find(lid) != metro.MetroLines.end()) {
+				//				metro.displaySpecificTrain(lid, tid);
+				//			}
+				//			else {
+				//				cout << "The line ID is not found!\n";
+				//			}
+				//			break;
+				//		
+				//		case 4:
+				//			cout << "Enter the line ID:\n";
+				//			cin >> lid;
+				//			cout << "Enter the train ID:\n";
+				//			cin >> tid;
+				//			cout << "Enter trip date (DD-MM-YYYY):\n";
+				//			cin >> date;
+				//			cout << "Enter trip departure time (HH:MM):\n";
+				//			cin >> time;
+				//			if (metro.MetroLines.find(lid) != metro.MetroLines.end() && train.getTrainID() == tid) {
+				//				train.displaySchedule(date, time);
+				//			}
+				//			else cout << "Line or train ID not found!!\n";
+				//			break;
+
+				//		case 5:
+				//			cout << "Enter the line ID:\n";
+				//			cin >> lid;
+				//			cout << "Enter the train ID:\n";
+				//			cin >> tid;
+				//			cout << "Enter trip date (DD-MM-YYYY):\n";
+				//			cin >> date;
+				//			if (metro.MetroLines.find(lid) != metro.MetroLines.end() && train.getTrainID() == tid) {
+				//				train.displaySchedule(date);
+				//			}
+				//			else cout << "Line or train ID not found!!\n";
+				//			break;
+				//			
+				//		case 6:
+				//			break;
+				//			
+				//		}
+
+				//	case 3:
+				//		cout << "Exiting Metro Management System...\n";
+				//		break;
+
+				//	default:
+				//		cout << "Invalid choice. Please try again.\n";
+				//		break;
+				//	}
+				//	break;
+
+			case 7:
+				char check;
+				do {
+
+					cout << "\nTrain Management System\n";
+					cout << "1. Train Management Functions\n";
+					cout << "2. Display Functions\n";
+					cout << "3. Exit\n";
+					cout << "Enter your choice: ";
+
+					int in;
+					cin >> in;
+
+					if (in == 1) {
+						cout << "\nTrain Management\n";
+						cout << "1. Add Train\n";
+						cout << "2. Edit Train\n";
+						cout << "3. Remove Train\n";
+						cout << "4. Add Trip To Train Schedule\n";
+						cout << "5. Modify Trip From Train Schedule\n";
+						cout << "6. Delete Trip From Train Schedule\n";
+						cout << "7. Back\n";
+						cout << "Enter your choice: ";
+
+						int trainChoice;
+						cin >> trainChoice;
+						if (trainChoice == 1) {
+
+							cout << "To add train you need to enter its information first \nplease,";
+							train.setTrainInfo();
+							metro.addTrain(train);
+
+						}
+						else if (trainChoice == 2) {
+							cout << "Enter the train ID you want to modify:\n";
+							int tidModify;
+							cin >> tidModify;
+							metro.editTrain(tidModify);
+
+						}
+						else if (trainChoice == 3) {
+							cout << "Enter the train ID you want to remove:\n";
+							int tidRemove;
+							cin >> tidRemove;
+							metro.removeTrain(tidRemove);
+
+						}
+						else if (trainChoice == 4) {
+							cout << "Enter the train ID:\n";
+							int tidAddTrip;
+							cin >> tidAddTrip;
+							cout << "Enter trip details:\n";
+							//schedule.setTripScheduleInfo();
+							//train.setTripInfo();
+							/*metro.addTripToTrainSchedule(tidAddTrip, schedule);*/
+							metro.addTripToTrainSchedule(tidAddTrip, train.setTripInfo());
+
+						}
+						else if (trainChoice == 5) {
+							cout << "Enter the line ID:\n";
+							int lidModify;
+							cin >> lidModify;
+							cout << "Enter the train ID:\n";
+							int tidModifyTrip;
+							cin >> tidModifyTrip;
+							cout << "Enter trip date (DD-MM-YYYY):\n";
+							string dateModify;
+							cin >> dateModify;
+							string timeModify;
+							cout << "Enter trip departure time (HH:MM):\n";
+
+							cin >> timeModify;
+							if (metro.MetroLines.find(lidModify) != metro.MetroLines.end()) {
+								metro.modifyTripFromTrainSchedule(lidModify, tidModifyTrip, dateModify, timeModify);
+							}
+							else {
+								cout << "The line ID is not found!\n";
+							}
+
+						}
+						else if (trainChoice == 6) {
+							cout << "Enter the line ID:\n";
+							int lidDelete;
+							cin >> lidDelete;
+							cout << "Enter the train ID:\n";
+							int tidDelete;
+							cin >> tidDelete;
+							cout << "Enter trip date (DD-MM-YYYY):\n";
+							string dateDelete;
+							cin >> dateDelete;
+							cout << "Enter trip departure time (HH:MM):\n";
+							string timeDelete;
+							cin >> timeDelete;
+							if (metro.MetroLines.find(lidDelete) != metro.MetroLines.end()) {
+								metro.deleteTripFromTrainSchedule(tidDelete, dateDelete, timeDelete);
+							}
+							else {
+								cout << "The line ID is not found!\n";
+							}
+
+						}
+						else if (trainChoice == 7)
+							break;
+						else {
+							cout << "Invalid choice. Please try again.\n";
+						}
+
+					}
+					else if (in == 2) {
+						cout << "\nDisplay Functions\n";
+						cout << "1. In Case Train Breakdown\n";
+						cout << "2. Display Trains\n";
+						cout << "3. View information for a specific train\n";
+						cout << "4. View information for a specific train trip\n";
+						cout << "5. View information for train trips for specific date\n";
+						cout << "6. Back\n";
+						cout << "Enter your choice: ";
+
+						int displayChoice;
+						cin >> displayChoice;
+						if (displayChoice == 1) {
+
+							cout << "Enter the train ID:\n";
+							int tidBreakdown;
+							cin >> tidBreakdown;
+							cout << "Enter trip date (DD-MM-YYYY):\n";
+							string dateBreakdown;
+							cin >> dateBreakdown;
+							cout << "Enter trip departure time (HH:MM):\n";
+							string timeBreakdown;
+							cin >> timeBreakdown;
+							metro.simulateTrainBreakdown(tidBreakdown, timeBreakdown, dateBreakdown);
+
+						}
+						else if (displayChoice == 2) {
+							cout << "Enter the line ID:\n";
+							int lidDisplay;
+							cin >> lidDisplay;
+							if (metro.MetroLines.find(lidDisplay) != metro.MetroLines.end()) {
+								metro.displayTrains(lidDisplay);
+							}
+							else {
+								cout << "The line ID is not found!\n";
+							}
+
+						}
+						else if (displayChoice == 3) {
+							cout << "Enter the line ID:\n";
+							int lidDisplayTrain;
+							cin >> lidDisplayTrain;
+							cout << "Enter the train ID:\n";
+							int tidDisplayTrain;
+							cin >> tidDisplayTrain;
+							if (metro.MetroLines.find(lidDisplayTrain) != metro.MetroLines.end()) {
+								metro.displaySpecificTrain(lidDisplayTrain, tidDisplayTrain);
+							}
+							else {
+								cout << "The line ID is not found!\n";
+							}
+
+						}
+						else if (displayChoice == 4) {
+							cout << "Enter the line ID:\n";
+							int lidDisplayTrip;
+							cin >> lidDisplayTrip;
+							cout << "Enter the train ID:\n";
+							int tidDisplayTrip;
+							cin >> tidDisplayTrip;
+							cout << "Enter trip date (DD-MM-YYYY):\n";
+							string dateDisplayTrip;
+							cin >> dateDisplayTrip;
+							string timeDisplayTrip;
+							do {
+								cout << "Enter trip departure time (HH:MM):\n";
+								
+								cin >> timeDisplayTrip;
+							} while (DateTime::timeInputString(timeDisplayTrip) == system_clock::time_point());
+							if (metro.MetroLines.find(lidDisplayTrip) != metro.MetroLines.end() && train.getTrainID() == tidDisplayTrip) {
+								train.displaySchedule(dateDisplayTrip, timeDisplayTrip);
+							}
+							else {
+								cout << "Line or train ID not found!\n";
+							}
+
+						}
+
+						else if (displayChoice == 5) {
+							cout << "Enter the line ID:\n";
+							int lidDisplayDate;
+							cin >> lidDisplayDate;
+							cout << "Enter the train ID:\n";
+							int tidDisplayDate;
+							cin >> tidDisplayDate;
+
+							//cout << "Enter trip date (DD-MM-YYYY):\n";
+							string dateDisplayDate = DateTime::inputDateString();;
+							//cin >> dateDisplayDate;
+							if (metro.MetroLines.find(lidDisplayDate) != metro.MetroLines.end() && train.getTrainID() == tidDisplayDate) {
+								train.displaySchedule(dateDisplayDate);
+							}
+							else {
+								cout << "Line or train ID not found!\n";
+							}
+
+						}
+						else if (displayChoice == 6) {
+							break;
+						}
+						else {
+							cout << "Invalid choice. Please try again.\n";
+						}
+
+					}
+					else if (in == 3) {
+						cout << "Exiting Metro Management System...\n";
+						break;
+					}
+					else
+					{
+						cout << "Invalid choice. Please try again.\n";
+
+					}
+
+
+
+					cout << "Do you want to do another operation in the train management system?\"Enter y to continue\"\n";
+
+					cin >> check;
+				} while (check == 'y');
+
+				break;
+
+				//case 8: 
+				//	
+				//	cout << "Exiting Admin Mode...\n";
+				//	isAdminLoop = false;
+				//	break;
+
+				//default:
+				//	//isAdminLoop = false;
+				//	cout << "Invalid choice. Please try again.\n";
+				//	//break;
+
+
+			case 8:
+				isAdminLoop = false;
+				cout << "Exiting Admin Mode...\n";
+				break;
+			default:
+				cout << "Invalid choice. Please try again.\n";
 				break;
 			}
 

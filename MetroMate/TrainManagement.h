@@ -88,7 +88,7 @@ public:
     vector<Schedule> getTrainSchedule();
     int getCurrentTripIndex();
     Schedule getTripInfo(Schedule s);
-
+    int getETAForTrip(string stationName, string date, string time);
 
     void setTrainID(int trainID);
     void setStatus(string status);

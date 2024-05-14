@@ -156,57 +156,132 @@ Schedule Train::setTripInfo() {
     cout << "Enter Destination Station :\n";
     cin >> destinationStation;
     schedule.setDestinationStation(destinationStation);
-    do {
-        cout << "OK!!!!!!!!!!!!";
-        cout << "Enter Departure Time :\n";
-        cin >> departureTime;
-        cout << "Enter Arrival Time :\n";
-        cin >> arrivalTime;
-        //deptime ?5 : 15 && arrivaltime?24 : 00 && arrivaltime - deptime>=3
-        auto departureTimePoint = DateTime::timeInputString(departureTime);
-        auto arrivalTimePoint = DateTime::timeInputString(arrivalTime);
+    //do {
+    //    cout << "OK!!!!!!!!!!!!";
+    //    cout << "Enter Departure Time :\n";
+    //    cin >> departureTime;
+    //    cout << "Enter Arrival Time :\n";
+    //    cin >> arrivalTime;
+    //    //deptime ?5 : 15 && arrivaltime?24 : 00 && arrivaltime - deptime>=3
+    //    auto departureTimePoint = DateTime::timeInputString(departureTime);
+    //    auto arrivalTimePoint = DateTime::timeInputString(arrivalTime);
+    //    // auto now = std::chrono::system_clock::now();
+    //     // Get the start of the current day
+    //     //auto startOfDay = std::chrono::time_point_cast<std::chrono::hours>(now);
+    //     // Calculate minTime and maxTime
+    //     //auto minTime = startOfDay + std::chrono::hours(5) + std::chrono::minutes(15);
+    //     //auto maxTime = startOfDay + std::chrono::hours(24) + std::chrono::minutes(0);
+    //    //auto startOfDay = std::chrono::time_point_cast<std::chrono::hours>(0);
+    //    auto minTime = std::chrono::hours(5) + std::chrono::minutes(15);
+    //    auto maxTime =  std::chrono::hours(24) + std::chrono::minutes(0);
+    //    //auto minTime = std::chrono::hours(5) + std::chrono::minutes(15);
+    //    //auto maxTime = std::chrono::hours(24) + std::chrono::minutes(0);
+    //    auto minDuration = std::chrono::minutes(3);
+    //    auto timeDifference = std::chrono::duration_cast<std::chrono::minutes>(arrivalTimePoint - departureTimePoint);
+    //    if (departureTimePoint >= minTime && arrivalTimePoint <= maxTime && timeDifference >= minDuration) {
+    //        //if (DateTime::timeInputString(departureTime)>= minTime && DateTime::timeInputString(arrivalTime)<= maxTime && DateTime::calculateTimeDifferenceMinutes(DateTime::timeInputString(arrivalTime) ,DateTime::timeInputString(departureTime)) >= minDuration) {
+    //        schedule.setArrivalTime(DateTime::timeInputString(arrivalTime));
+    //        schedule.setDepartureTime(DateTime::timeInputString(departureTime));
+    //    }
+    //    else {
+    //        cout << "The departure time must be from 05:15 AM and above and the arrival time must be before 24:00.\n ";
+    //        cout << "The difference between the arrival time and the departure time must be >= 3 minutes.\n";
+    //        schedule.getDepartureTime() == system_clock::time_point();
+    //        schedule.getArrivalTime() == system_clock::time_point();
+    //    }
+    //} while (schedule.getDepartureTime() == system_clock::time_point() && schedule.getArrivalTime() == system_clock::time_point());
 
-        // auto now = std::chrono::system_clock::now();
-         // Get the start of the current day
-         //auto startOfDay = std::chrono::time_point_cast<std::chrono::hours>(now);
-         // Calculate minTime and maxTime
-         //auto minTime = startOfDay + std::chrono::hours(5) + std::chrono::minutes(15);
-         //auto maxTime = startOfDay + std::chrono::hours(24) + std::chrono::minutes(0);
+    //do {
+    //    cout << "OK!!!!!!!!!!!!";
+    //    cout << "Enter Departure Time (HH:MM): ";
+    //    cin >> departureTime;
+    //    cout << "Enter Arrival Time (HH:MM): ";
+    //    cin >> arrivalTime;
 
-        auto startOfDay = std::chrono::time_point_cast<std::chrono::hours>(0);
+    //   // // Convert to time_point objects
+    //   // auto departureTimePoint = DateTime::timeInputString(departureTime);
+    //   // auto arrivalTimePoint = DateTime::timeInputString(arrivalTime);
 
-        auto minTime = startOfDay + std::chrono::hours(5) + std::chrono::minutes(15);
-        auto maxTime = startOfDay + std::chrono::hours(24) + std::chrono::minutes(0);
+    //   // // Calculate durations relative to a reference point (e.g., midnight)
+    //   // // You might need to adjust this based on your timekeeping approach
+    //   // auto referencePoint = std::chrono::hours(0);// Assuming midnight as reference
+    //   // auto minTime = DateTime::timeInputString("5:15");
+    //   // auto maxTime = DateTime::timeInputString("24:00");
+    //   // auto minTimeDuration= minTime- referencePoint;
+    //   //  auto maxTimeDuration =maxTime- referencePoint;
+    //   // auto departureDuration = departureTimePoint - referencePoint;
+    //   // auto arrivalDuration = arrivalTimePoint - referencePoint;
 
-        //auto minTime = std::chrono::hours(5) + std::chrono::minutes(15);
-        //auto maxTime = std::chrono::hours(24) + std::chrono::minutes(0);
-        auto minDuration = std::chrono::minutes(3);
+    //   // // Minimum duration requirement (3 minutes)
+    //   // auto minDuration = std::chrono::minutes(3); // Duration representing 3 minutes
+    //   // auto tripDuration = DateTime::timeInputString(departureTime) + minDuration;
 
-        auto timeDifference = std::chrono::duration_cast<std::chrono::minutes>(arrivalTimePoint - departureTimePoint);
+    //   ///* if (departureDuration >= std::chrono::hours(5) + std::chrono::minutes(15) &&
+    //   //     arrivalDuration <= std::chrono::hours(24) &&
+    //   //     arrivalDuration >= departureDuration + minDuration) {*/
 
-        if (departureTimePoint >= minTime && arrivalTimePoint <= maxTime && timeDifference >= minDuration) {
+    //   //     if ((departureDuration >= minTimeDuration) &&
+    //   //         (arrivalDuration <= maxTimeDuration) &&
+    //   //         (arrivalDuration >= minDuration)) {
 
 
-            //if (DateTime::timeInputString(departureTime)>= minTime && DateTime::timeInputString(arrivalTime)<= maxTime && DateTime::calculateTimeDifferenceMinutes(DateTime::timeInputString(arrivalTime) ,DateTime::timeInputString(departureTime)) >= minDuration) {
-            schedule.setArrivalTime(DateTime::timeInputString(arrivalTime));
+    //    //// Convert to time_point objects
+    //    //auto departureTimePoint = DateTime::timeInputString(departureTime);
+    //    //auto arrivalTimePoint = DateTime::timeInputString(arrivalTime);
+
+    //    //// Calculate durations relative to a reference point (midnight)
+    //    //auto minTime = DateTime::timeInputString("5:15");
+    //    //auto maxTime = DateTime::timeInputString("24:00");
+    //    //auto minTimeDuration = minTime - DateTime::timeInputString("00:00");
+    //    //auto maxTimeDuration = maxTime - DateTime::timeInputString("00:00");
+    //    //auto departureDuration = departureTimePoint - DateTime::timeInputString("00:00");
+    //    //auto arrivalDuration = arrivalTimePoint - DateTime::timeInputString("00:00");
+
+    //    //// Minimum duration requirement (3 minutes)
+    //    //auto minDuration = std::chrono::minutes(3);
+
+    //    //// Check if the schedule satisfies the conditions
+    //    //if ((departureDuration >= minTimeDuration) &&
+    //    //    (arrivalDuration <= maxTimeDuration) &&
+    //    //    (arrivalDuration >= departureDuration + minDuration))
+    //    //{
+
+
+    //        schedule.setArrivalTime(DateTime::timeInputString(arrivalTime));
+    //         schedule.setDepartureTime(DateTime::timeInputString(departureTime));
+    //    //}
+    //    //else {
+    //    //    cout << "Invalid time input.\n";
+    //    //    cout << "  - Departure time must be after 5:15 AM.\n";
+    //    //    cout << "  - Arrival time must be before midnight.\n";
+    //    //    cout << "  - The trip duration must be at least 3 minutes.\n";
+    //    //    // Clear invalid times from the schedule object (optional)
+    //    //    schedule.getDepartureTime() = system_clock::time_point();
+    //    //    schedule.getArrivalTime() = system_clock::time_point();
+    //    //}
+    //} while (schedule.getDepartureTime() == system_clock::time_point() &&
+    //    schedule.getArrivalTime() == system_clock::time_point());
+
+        do {
+            cout << "Enter Departure Time :\n";
+            cin >> departureTime;
             schedule.setDepartureTime(DateTime::timeInputString(departureTime));
-        }
-        else {
-            cout << "The departure time must be from 05:15 AM and above and the arrival time must be before 24:00.\n ";
-            cout << "The difference between the arrival time and the departure time must be >= 3 minutes.\n";
-            schedule.getDepartureTime() == system_clock::time_point();
-            schedule.getArrivalTime() == system_clock::time_point();
-        }
-    } while (schedule.getDepartureTime() == system_clock::time_point() && schedule.getArrivalTime() == system_clock::time_point());
+        } while (schedule.getDepartureTime() == system_clock::time_point());
 
-    /*   do {
+
+       do {
            cout << "Enter Arrival Time :\n";
            cin >> arrivalTime;
-           schedule.setArrivalTime(DateTime::timeInputString(arrivalTime));
-       } while (schedule.getArrivalTime() == system_clock::time_point());*/
+           if (arrivalTime > departureTime) {
+               schedule.setArrivalTime(DateTime::timeInputString(arrivalTime));
+           }else{
+               cout << "Arrival time must be > depature time";
+               schedule.setArrivalTime() == system_clock::time_point();
+           }
+       } while (schedule.getArrivalTime() == system_clock::time_point());
 
 
-       // schedule.setTripIndex(schedule.getNextTripCount());
+      //  schedule.setTripIndex(schedule.getNextTripCount());
     return schedule;
 }
 
@@ -253,10 +328,11 @@ void Train::incrementTripIndex() {
 
 
 void Train::displaySchedule(string date) {
-    cout << "Train Schedule:" << "\n";
+    
     // cout <<DateTime::dateDay(date) << "-" << date << " \n";
     for (auto& schedule : trainSchedule) {
         if (schedule.getDate() == date) {
+            cout << "Train Schedule:" << "\n";
             cout << "Train Departure Station:" << schedule.getDepartureStation() << "\n";
             cout << "Train Departure Time:";
             DateTime::outputTimePoint(schedule.getDepartureTime());
@@ -268,6 +344,9 @@ void Train::displaySchedule(string date) {
             if (schedule.getDelay() > 0)
                 cout << "Train Delay:" << schedule.getDelay() << "\n";
 
+        }
+        else {
+            cout << "Date not found!";
         }
     }
 }
@@ -401,6 +480,52 @@ void Train::displayTrainSchedule() {
     }
 
 }
+
+//int Train::getETAForTrip(string stationName, string checkindate, string checkinTime) {
+//    sort(trainSchedule.begin(), trainSchedule.end(), [](const Schedule& a, const Schedule& b) {
+//        return a.arrivalTime < b.arrivalTime;
+//
+//        }
+//    for (auto& schedule : trainSchedule) {
+//
+//        if (schedule.getDate() == checkindate && schedule.getDestinationStation() == stationName && schedule.getArrivalTime() >= DateTime::timeInputString(checkinTime))
+//        {
+//          auto arrtime=  DateTime::calculateTimeDifferenceMinutes(schedule.getArrivalTime(), DateTime::timeInputString(checkinTime));
+//            cout << "The train will arrive in " <<arrtime << " minutes.";
+//            return 1;
+//        }
+//    }
+//
+//}
+//
+
+
+int Train::getETAForTrip(string stationName, string checkindate, string checkinTime) {
+    // Sort the trainSchedule based on arrivalTime
+    sort(trainSchedule.begin(), trainSchedule.end(), []( Schedule& a,  Schedule& b) {
+        return a.getArrivalTime() < b.getArrivalTime();
+        });
+
+    for (auto& schedule : trainSchedule) {
+        // Check if the schedule matches the specified station, date, and arrival time condition
+        if (schedule.getDate() == checkindate &&
+            schedule.getDestinationStation() == stationName &&
+            schedule.getArrivalTime() >= DateTime::timeInputString(checkinTime))
+        {
+            // Calculate the time difference between the current time and the arrival time
+            auto arrtime = DateTime::calculateTimeDifferenceMinutes(schedule.getArrivalTime(), DateTime::timeInputString(checkinTime));
+            cout << "The train will arrive in " << arrtime.count() << " minutes.";
+            return 1;
+        }
+    }
+
+    // If no matching schedule is found, return 0
+    return 0;
+}
+
+
+
+
 //
 //Line::Line() {
 //

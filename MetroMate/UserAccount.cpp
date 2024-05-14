@@ -342,13 +342,14 @@ void UserAccount::checkIn(MetroMate metro) {
 	cout << " Station available right now:\n";
 	metro.displayStations();
 	cout << " Choose the station you will ride from:\n";
-	station* source = metro.chooseStation();
+	station* source = metro.chooseStation(); //DepartureStation 
+	chrono::system_clock::time_point currentTime = chrono::system_clock::now();//CheckIn Time; 
 	source->chosen = true;
 	cout << "\n\n";
 	cout << " Now choose the target station:\n";
 	station* target = metro.chooseStation();
 	float fare = 0.0; //temp var will be deleted later according to scenrio
-	cout << " The possible oath to your target:\n";
+	cout << " The possible path to your target:\n";
 	metro.simpleDFS(source->name, source->lineNumber, target->name, fare); //dijkstra will be continued 
 	//dijkstra
 	cout << " Choose the path you want:\n";
