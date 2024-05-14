@@ -211,22 +211,22 @@ Schedule Train::setTripInfo() {
         // Minimum duration requirement (3 minutes)
         auto minDuration = std::chrono::minutes(3);
 
-        if (departureDuration >= std::chrono::hours(5) + std::chrono::minutes(15) &&
-            arrivalDuration <= std::chrono::hours(24) &&
-            arrivalDuration >= departureDuration + minDuration) {
+        //if (departureDuration >= std::chrono::hours(5) + std::chrono::minutes(15) &&
+        //    arrivalDuration <= std::chrono::hours(24) &&
+        //    arrivalDuration >= departureDuration + minDuration) {
 
             schedule.setArrivalTime(DateTime::timeInputString(arrivalTime));
             schedule.setDepartureTime(DateTime::timeInputString(departureTime));
-        }
-        else {
-            cout << "Invalid time input.\n";
-            cout << "  - Departure time must be after 5:15 AM.\n";
-            cout << "  - Arrival time must be before midnight.\n";
-            cout << "  - The trip duration must be at least 3 minutes.\n";
-            // Clear invalid times from the schedule object (optional)
-            schedule.getDepartureTime() = system_clock::time_point();
-            schedule.getArrivalTime() = system_clock::time_point();
-        }
+        //}
+        //else {
+        //    cout << "Invalid time input.\n";
+        //    cout << "  - Departure time must be after 5:15 AM.\n";
+        //    cout << "  - Arrival time must be before midnight.\n";
+        //    cout << "  - The trip duration must be at least 3 minutes.\n";
+        //    // Clear invalid times from the schedule object (optional)
+        //    schedule.getDepartureTime() = system_clock::time_point();
+        //    schedule.getArrivalTime() = system_clock::time_point();
+        //}
     } while (schedule.getDepartureTime() == system_clock::time_point() &&
         schedule.getArrivalTime() == system_clock::time_point());
 
@@ -433,9 +433,19 @@ void Train::displayTrainSchedule() {
         i++;
     }
 
-    }
-
 }
+
+//void Train::getETAForTrip(string stationName, string checkindate, string checkinTime) {
+//    for (auto& schedule : trainSchedule) {
+//        if (schedule.getDate() == checkindate && schedule.getDestinationStation() == stationName && schedule.getArrivalTime() >= DateTime::timeInputString(checkinTime))
+//        {
+//          auto arrtime=  DateTime::calculateTimeDifferenceMinutes(schedule.getArrivalTime(), DateTime::timeInputString(checkinTime));
+//            cout << "The train will arrive in " <<arrtime << " minutes.";
+//            break;
+//        }
+//    }
+//
+//}
 
 
 

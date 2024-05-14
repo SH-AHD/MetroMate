@@ -221,6 +221,8 @@ Date station::convertTm(tm current) {
 	return final;
 }
 
+
+
 void station::writeData(unordered_map<string, station> stationsList)
 {
 
@@ -748,11 +750,11 @@ void MetroMate::displaySpecificTrain(int lineID, int trainID) {
 	}
 }
 
-void MetroMate::displayTrainETAForUser(string stationName, string checkindate, string checkinTime) {
-	for (auto& train : trains) {
-		train.getETAForTrip( stationName, checkindate,  checkinTime);
-	}
-}
+//void MetroMate::displayTrainETAForUser(string stationName, string checkindate, string checkinTime) {
+//	for (auto& train : trains) {
+//		train.getETAForTrip( stationName, checkindate,  checkinTime);
+//	}
+//}
 
 //Station::Station(unordered_map<system_clock::time_point&, deque<Train>>& stationSchedule) {
 //    this->stationSchedule = stationSchedule;
