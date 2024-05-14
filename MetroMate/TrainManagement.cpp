@@ -331,8 +331,10 @@ void Train::displaySchedule(string date) {
     
     // cout <<DateTime::dateDay(date) << "-" << date << " \n";
     for (auto& schedule : trainSchedule) {
+        cout<<"!!!!!!!!!";
         if (schedule.getDate() == date) {
             cout << "Train Schedule:" << "\n";
+             cout << "Date:" << schedule.getDate() << "\n";
             cout << "Train Departure Station:" << schedule.getDepartureStation() << "\n";
             cout << "Train Departure Time:";
             DateTime::outputTimePoint(schedule.getDepartureTime());
