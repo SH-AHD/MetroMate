@@ -327,79 +327,79 @@ void Train::incrementTripIndex() {
 //}
 
 
-void Train::displaySchedule(string date) {
-    
-    // cout <<DateTime::dateDay(date) << "-" << date << " \n";
-   /* for (auto& schedule : trainSchedule) {
-        cout<<"!!!!!!!!!";
-        if (schedule.getDate() == date) {
+//void Train::displaySchedule(string date) {
+//    
+//    // cout <<DateTime::dateDay(date) << "-" << date << " \n";
+//   /* for (auto& schedule : trainSchedule) {
+//        cout<<"!!!!!!!!!";
+//        if (schedule.getDate() == date) {
+//
+//            cout << "Train Schedule:" << "\n";
+//             cout << "Date:" << schedule.getDate() << "\n";
+//            cout << "Train Departure Station:" << schedule.getDepartureStation() << "\n";
+//            cout << "Train Departure Time:";
+//            DateTime::outputTimePoint(schedule.getDepartureTime());
+//            cout << "\n";
+//            cout << "Train Destination Station:" << schedule.getDestinationStation() << "\n";
+//            cout << "Train Departure Time:";
+//            DateTime::outputTimePoint(schedule.getArrivalTime());
+//            cout << "\n";
+//            if (schedule.getDelay() > 0)
+//                cout << "Train Delay:" << schedule.getDelay() << "\n";
+//
+//        }
+//        else {
+//            cout << "Date not found!";
+//        }
+//    }*/
+//    for (auto& schedule : trainSchedule) {
+//        cout << "!!!!!!!!!";
+//        if (schedule.getDate() == date) {
+//            cout << "Trip Date :"  << schedule.getDate() << "\n";
+//                cout << "Train Departure Station:" << schedule.getDepartureStation() << "\n";
+//            cout << "Train Departure Time:";
+//            DateTime::outputTimePoint(schedule.getDepartureTime());
+//            cout << "\n";
+//            cout << "Train Destination Station:" << schedule.getDestinationStation() << "\n";
+//            cout << "Train Departure Time:";
+//            DateTime::outputTimePoint(schedule.getArrivalTime());
+//            cout << "\n";
+//            //if (schedule.getDelay() > 0)
+//            cout << "Train Delay:" << schedule.getDelay() << "\n";
+//        }
+//        else {
+//            cout << "Date not found!";
+//        }
+//        
+//    }
+//
+//
+//
+//}
 
-            cout << "Train Schedule:" << "\n";
-             cout << "Date:" << schedule.getDate() << "\n";
-            cout << "Train Departure Station:" << schedule.getDepartureStation() << "\n";
-            cout << "Train Departure Time:";
-            DateTime::outputTimePoint(schedule.getDepartureTime());
-            cout << "\n";
-            cout << "Train Destination Station:" << schedule.getDestinationStation() << "\n";
-            cout << "Train Departure Time:";
-            DateTime::outputTimePoint(schedule.getArrivalTime());
-            cout << "\n";
-            if (schedule.getDelay() > 0)
-                cout << "Train Delay:" << schedule.getDelay() << "\n";
 
-        }
-        else {
-            cout << "Date not found!";
-        }
-    }*/
-    for (auto& schedule : trainSchedule) {
-        cout << "!!!!!!!!!";
-        if (schedule.getDate() == date) {
-            cout << "Trip Date :" " << schedule.getDate() << "\n";
-                cout << "Train Departure Station:" << schedule.getDepartureStation() << "\n";
-            cout << "Train Departure Time:";
-            DateTime::outputTimePoint(schedule.getDepartureTime());
-            cout << "\n";
-            cout << "Train Destination Station:" << schedule.getDestinationStation() << "\n";
-            cout << "Train Departure Time:";
-            DateTime::outputTimePoint(schedule.getArrivalTime());
-            cout << "\n";
-            //if (schedule.getDelay() > 0)
-            cout << "Train Delay:" << schedule.getDelay() << "\n";
-        }
-        else {
-            cout << "Date not found!";
-        }
-        
-    }
-
-
-
-}
-
-
-void Train::displaySchedule(string date, string DepartureTime) {
-    cout << "Train Schedule:" << "\n";
-    // cout <<DateTime::dateDay(date) << "-" << date << " \n";
-    for (auto& schedule : trainSchedule) {
-        auto zero = std::chrono::minutes(0);
-        //auto timeDifference = DateTime::calculateTimeDifferenceMinutes(DateTime::timeInputString(DepartureTime), schedule.getDepartureTime());
-
-        if (schedule.getDate() == date && DateTime::calculateTimeDifferenceMinutes(DateTime::timeInputString(DepartureTime), schedule.getDepartureTime()) == zero) {
-            cout << "Train Departure Station:" << schedule.getDepartureStation() << "\n";
-            cout << "Train Departure Time:";
-            DateTime::outputTimePoint(schedule.getDepartureTime());
-            cout << "\n";
-            cout << "Train Destination Station:" << schedule.getDestinationStation() << "\n";
-            cout << "Train Departure Time:";
-            DateTime::outputTimePoint(schedule.getArrivalTime());
-            cout << "\n";
-            if (schedule.getDelay() > 0)
-                cout << "Train Delay:" << schedule.getDelay() << "\n";
-            break;
-        }
-    }
-}
+//void Train::displaySchedule(string date, string DepartureTime) {
+//    cout << "Train Schedule:" << "\n";
+//    // cout <<DateTime::dateDay(date) << "-" << date << " \n";
+//    for (auto& schedule : trainSchedule) {
+//        auto zero = std::chrono::minutes(0);
+//        //auto timeDifference = DateTime::calculateTimeDifferenceMinutes(DateTime::timeInputString(DepartureTime), schedule.getDepartureTime());
+//
+//        if (schedule.getDate() == date && DateTime::calculateTimeDifferenceMinutes(DateTime::timeInputString(DepartureTime), schedule.getDepartureTime()) == zero) {
+//            cout << "Train Departure Station:" << schedule.getDepartureStation() << "\n";
+//            cout << "Train Departure Time:";
+//            DateTime::outputTimePoint(schedule.getDepartureTime());
+//            cout << "\n";
+//            cout << "Train Destination Station:" << schedule.getDestinationStation() << "\n";
+//            cout << "Train Departure Time:";
+//            DateTime::outputTimePoint(schedule.getArrivalTime());
+//            cout << "\n";
+//            if (schedule.getDelay() > 0)
+//                cout << "Train Delay:" << schedule.getDelay() << "\n";
+//            break;
+//        }
+//    }
+//}
 
 void Train::displayTrainInfoWithDate(string date) {
 
