@@ -44,14 +44,20 @@ unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& 
 bool stringToBool(const std::string& text);
 
 //Line lines;
-Train train;
-Schedule schedule;
+
+
 MetroMate metro;
 deque<Train> trains;
 unordered_map<string, UserAccount> users;
 int main() {
 
 
+	Train train(1, 1);
+	metro.addTrain(train);
+	Schedule schedule("4-4-2024","a","b","3:00","3:15");
+	train.addTripSchedule(schedule);
+	train.displayTrainSchedule();
+	cout << "===========\n";
 	//temp data to metro graph
 	metro.numberOfLines = 2;
 	//entering data to graph manually
@@ -160,7 +166,7 @@ int main() {
 				break;
 			}
 			currentUser = user;
-			currentUser.PurchaceSubscription(currentUser, subscription_plans, subscriptions_names, zones);
+			currentUser.PurchaceSubscription(currentUser, subscription_plans, subscriptions_names, zones,metro);
 			currentUser.displayAccount();
 
 
@@ -279,7 +285,7 @@ unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& 
 				tmpuser.Phone = stoi(attributes[1]);
 				tmpuser.Address = attributes[2];
 				tmpuser.Password = attributes[3];
-				tmpuser.balance = stod(attributes[4]);
+				tmpuser.balance = attributes.size()>4?stod(attributes[4]):0;
 				int startIndex = 5;
 				//tm read
 				tmpuser.startDate.tm_sec= stoi(attributes[startIndex++]);
@@ -362,7 +368,7 @@ void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDeta
 					break;
 				case 3:
 					//ubgrade
-					user.PurchaceSubscription(user, subscription_plans, subscriptions_names, zones);
+					user.PurchaceSubscription(user, subscription_plans, subscriptions_names, zones,metro);
 					break;
 				case 4:
 					user.chosenSubscription.putMoneyInWallet(user);
@@ -517,12 +523,12 @@ unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string
 						queueSize = stoi(attributes[startIndex]);
 						startIndex++;
 					}
-					queue <pair< station, int>> tmpQueue;
-					pair< station, int> tmpPair;
+					queue <pair< string, int>> tmpQueue;
+					pair< string, int> tmpPair;
 					for (int i = 0; i < queueSize; i++) {
 						string name = attributes[startIndex];
 
-						tmpPair.first = stationsList[name];
+						tmpPair.first = name;
 						//tmpPair.first.lineNumber = stoi(attributes[++startIndex]);
 
 						tmpPair.second = stoi(attributes[++startIndex]);

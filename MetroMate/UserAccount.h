@@ -17,7 +17,6 @@
 #include <chrono>  // Include for sys_days and weekday
 
 
-
 using namespace std;
 using namespace std::chrono;
 struct rideDetails {
@@ -25,10 +24,9 @@ struct rideDetails {
 	int lineNo1, lineNo2;
 	float fare;
 	//date and time
-	pair<queue< pair< pair<string, int>, float> >, float> pathChosen;
+	queue<pair<string, int>> pathChosen;
+	queue<string> shortestPath;
 };
-
-
 
 class UserAccount
 {
@@ -45,8 +43,8 @@ public:
 	int availableTrips;
 	double balance = 0;
 
-	void PurchaceSubscription(UserAccount& user, unordered_map<std::string, SubscriptionDetails> subscription_plans, unordered_map<int, string> subscriptions_names, vector<pair<vector<string>, double>> zones);
-
+	void PurchaceSubscription(UserAccount& user, unordered_map<std::string, SubscriptionDetails> subscription_plans, unordered_map<int, string> subscriptions_names, vector<pair<vector<string>, double>> zones, MetroMate metro);
+	void viewRideLogs();
 	UserAccount() {
 		//dont delete it
 	}
@@ -56,7 +54,7 @@ public:
 	bool VailEmail(string email);
 	bool logIn(bool& isAdmin, UserAccount& theLog, string email, string password, unordered_map<string, UserAccount>& user);
 	UserAccount updateInfo(string key, unordered_map<string, UserAccount>& users);
-	UserAccount forgetPass(string mail, unordered_map<string, UserAccount>&users);
+	UserAccount forgetPass(string mail, unordered_map<string, UserAccount>& users);
 	UserAccount LogOut(UserAccount& current);
 	void displayAccount();
 	bool existMail(UserAccount& user, unordered_map<string, UserAccount>& users);

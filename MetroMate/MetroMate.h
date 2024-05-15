@@ -63,8 +63,8 @@ public:
 	bool visited = false;
 	bool end = false;
 	bool chosen = false;
-	vector<pair<queue< pair< pair<string, int>, float> >, float>> possiblePaths; //0 for dfs, 1 for shortest path
-	//station & line , accumulative distance , total fare
+	queue<pair<string, int>> possiblePaths;
+	queue<string > shortestPath;
 	unordered_map<Date, stationInfo, DateHash, DateEqual> stationMap;
 
 	station(string n, int num);
@@ -132,6 +132,9 @@ public:
 	//check in functions
 	void markAsUnvisited();
 	station* findStation(string station, int line);
-	void simpleDFS(string start, int startLine, string end, float fare);
+	void simpleDFS(string start, int startLine, string end);
+	queue<string> shortestPath(string startStation, string endStation);
 
+	//new 
+	void undoChoice();
 };
