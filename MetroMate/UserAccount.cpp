@@ -15,13 +15,14 @@ using namespace std;
 using namespace std::chrono;
 unordered_map<string, UserAccount>Users;
 
-UserAccount::UserAccount(string email, string pass, string Name, string Address, int Phone)
+UserAccount::UserAccount(string email, string pass, string Name, string Address, int Phone , double balance)
 {
 	this->Name = Name;
 	this->Address = Address;
 	this->Phone = Phone;
 	this->Email = email;
 	this->Password = pass;
+	this->balance = balance;
 }
 
 UserAccount::UserAccount(string email, string passw)
@@ -243,6 +244,7 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 
 		}
 		else {
+			//here will be nouran code
 			string firstDestination;
 			string targetDestination;
 			cout << "enter your first station" << endl;
@@ -253,7 +255,7 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 			int answer;
 
 
-			//print all avaliable paths
+			//print all avaliable paths(will delete it after nouran)
 			for (auto it = availablePaths.begin(); it != availablePaths.end(); ++it) {
 				cout << "path " << index << " : ";
 
@@ -347,7 +349,8 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 
 			user.chosenSubscription = chosenSubscription;
 			user.availableTrips = user.chosenSubscription.numberOfTrips;
-
+			user.balance -= user.chosenSubscription.price;
+			cout << "\n subscribtion done to " << user.chosenSubscription.name<<endl;
 			//calculating start date
 			DateTime Date;
 			user.startDate = Date.current_date();
@@ -357,43 +360,109 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 }
 
 void UserAccount::checkIn(MetroMate metro,UserAccount user, tm date) {
-	cout << " Hello, " << Name << ".\n";
-	cout << " Here are the steps to save your ride details:\n -> choose the station you will ride from.\n";
-	cout << "-> choose the target station.\n";
-	cout << " we will show you possible path/s to your target, if they are more than one path,\n choose the one you want\n";
-	cout << " Station available right now:\n";
-	metro.displayStations();
-	cout << " Choose the station you will ride from:\n";
-	station* source = metro.chooseStation(); //DepartureStation 
-	//chrono::system_clock::time_point currentTime = chrono::system_clock::now();//CheckIn Time; 
-	source->chosen = true;
 
-	//upgrading the station's info
-	source->addIncome(user,date);
-	source->addTickets(date);
-	source->addPassenger(source->stationMap,date,user);
+	//checking if he has cash wallet or card
+	if (user.chosenSubscription.name == "Cash_wallet") {
+		cout << " Hello, " << Name << ".\n";
+		cout << " Here are the steps to save your ride details:\n -> choose the station you will ride from.\n";
+		cout << "-> choose the target station.\n";
+		cout << " we will show you possible path/s to your target, if they are more than one path,\n choose the one you want\n";
+		cout << " Station available right now:\n";
+		metro.displayStations();
+		cout << " Choose the station you will ride from:\n";
+		station* source = metro.chooseStation(); //DepartureStation 
+		//chrono::system_clock::time_point currentTime = chrono::system_clock::now();//CheckIn Time; 
+		source->chosen = true;
 
-	cout << "\n\n";
-	cout << " Now choose the target station:\n";
-	station* target = metro.chooseStation();
+		//upgrading the station's info
+		source->addIncome(user, date);
+		source->addTickets(date);
+		source->addPassenger(source->stationMap, date, user);
 
-	//upgrade the target's info
-	target->addPassenger(target->stationMap, date, user);
+		cout << "\n\n";
+		cout << " Now choose the target station:\n";
+		station* target = metro.chooseStation();
 
-	float fare = 0.0; //temp var will be deleted later according to scenrio
-	cout << " The possible path to your target:\n";
-	metro.simpleDFS(source->name, source->lineNumber, target->name, fare); //dijkstra will be continued 
-	//dijkstra
-	cout << " Choose the path you want:\n";
-	int pathChosen = -1;
-	pathChosen = numberInRange(pathChosen, 1, 2);
-	rideDetails newLog;
-	if (pathChosen == 1) {
-		newLog.pathChosen = target->possiblePaths[0];
+		//upgrade the target's info
+		target->addPassenger(target->stationMap, date, user);
+
+		float fare = 0.0; //temp var will be deleted later according to scenrio
+		cout << " The possible path to your target:\n";
+		metro.simpleDFS(source->name, source->lineNumber, target->name, fare); //dijkstra will be continued 
+		//dijkstra
+		cout << " Choose the path you want:\n";
+		int pathChosen = -1;
+		pathChosen = numberInRange(pathChosen, 1, 2);
+		rideDetails newLog;
+		if (pathChosen == 1) {
+			newLog.pathChosen = target->possiblePaths[0];
+		}
+		else {
+			newLog.pathChosen = target->possiblePaths[1];
+		}
+		//calculate price
+		queue <pair< station, int>> chosenPath;//will put (= newLog.pathChosen) after nouran changes its datatype
+		user.chosenSubscription.calcPrice(chosenPath, user.chosenSubscription.chosenZoneNum, user.chosenSubscription.isStageChoice);
+		user.chosenSubscription.cashWalletTicket(user);
+		
 	}
 	else {
-		newLog.pathChosen = target->possiblePaths[1];
+		
+		queue <pair< station, int>> tmpchosenPath = user.chosenSubscription.chosenPath;
+		if (tmpchosenPath.empty()) {
+			cout << "your didn't choose a path ";
+			return;
+		}
+		else {
+			cout << "your path is ";//display his path
+			while (!tmpchosenPath.empty()) {
+				cout << tmpchosenPath.front().first.name;
+				tmpchosenPath.pop();
+			}
+		}
+		
+		DateTime Date;
+		//checking that he didn't exceeds subscription valid duration
+		if (Date.current_date().tm_mon - user.startDate.tm_mon >= user.chosenSubscription.valid_duration && Date.is_valid_date(user.startDate)) {
+			cout << "please renew your subscription(your duration is done): \n enter y if you want to renew \n enter n if you want to exit" << endl;
+			char answer;
+			cin >> answer;
+			if (answer == 'y') {
+				//renew
+				user.startDate = Date.current_date();
+				user.availableTrips = user.chosenSubscription.numberOfTrips;
+				cout << "renew done";
+			}
+			else if (answer == 'n') {
+				cout << "sorry you will not able to check in \n";
+				return;
+			}
+		}
+		//checking that his available Trips didn't finish
+		if (user.availableTrips == 0) {
+			cout << "please renew your subscription(your available Trips is done): \n enter y if you want to renew \n enter n if you want to exit" << endl;
+			char answer;
+			cin >> answer;
+			if (answer == 'y') {
+				//renew
+				user.startDate = Date.current_date();
+				user.availableTrips = user.chosenSubscription.numberOfTrips;
+				cout << "renew done";
+			}
+			else if (answer == 'n') {
+				cout << "sorry you will not able to check-in \n";
+				return;
+			}
+		}
+		//done check in
+		user.chosenSubscription.numberOfTrips -= 1;
+		cout << "check-in done";
+		
+		
+		//if balance ...this is only in purchase
+		//balance-price
 	}
+	
 	//subscribtion datils will complete here
 }
 
