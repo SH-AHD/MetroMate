@@ -589,7 +589,7 @@ void MetroMate::addTripToTrainSchedule(int trainid, Schedule schedule) {
 			cout << "The trip  has been successfully added!\n";
 			break;
 		}
-		
+
 	}
 }
 
@@ -689,10 +689,6 @@ void MetroMate::simulateTrainBreakdown(int brokenTrainID, string time, string da
 				t.adjustNextTripDepartureTime();
 				adjustNextTrainDepartureTime(t);
 				cout << "The train " << brokenTrainID << " breaks down and the amount of delay is " << newDelay << " \n";
-				//cout << t.getTrainSchedule()[scheduleIndex-1].getDelay();
-				//cout << t.getTrainSchedule()[scheduleIndex ].getDelay();
-
-			
 			}
 			else {
 				cout << "Train " << brokenTrainID << "has no trips at this \"" << date << "  " << time << "\"." << endl;
@@ -729,13 +725,13 @@ void MetroMate::adjustNextTrainDepartureTime(Train t) {
 						// Adjust the departure time of the next train
 						tripSchedule[j].setDelay(t.getTrainSchedule()[j].getDelay());
 						nextTrain.adjustNextTripDepartureTime();
-					
+						cout << "adjustNextTrainDepartureTime--\n";
 					}
 				}
 			}
 		}
 	}
-	
+	cout << "adjustNextTrainDepartureTime--out\n";
 }
 
 
@@ -893,4 +889,13 @@ queue<string> MetroMate::shortestPath(string startStation, string endStation) {
 	// cout << station << " ";
 	//}
 	//cout << endl;
+}
+
+void MetroMate::undoChoice() {
+	for (int line = 1; line <= numberOfLines; line++) {
+		//unordered_map<int, vector<station>> MetroLines;
+		for (int i = 0; i < MetroLines[line].size(); i++) {
+			if (MetroLines[line][i].chosen) MetroLines[line][i].chosen = false;
+		}
+	}
 }

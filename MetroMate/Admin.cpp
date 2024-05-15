@@ -25,6 +25,7 @@ void Admin::stationManagement(MetroMate metro) {
 			num = checkPositiveNumber(num);
 			cout << "Enter the line number where the station/s will be added: ";
 			lineId = checkPositiveNumber(lineId);
+			if (metro.MetroLines[lineId].size() == 0)metro.numberOfLines++;
 			for (int i = 0; i < num; i++) metro.createNewStation(lineId, i + 1);
 			break;
 		}
@@ -48,15 +49,17 @@ void Admin::stationManagement(MetroMate metro) {
 					cout << "\nans:";
 					if (confirm()) metro.stationPositioning();
 					else cout << " No connection is made.\n";
+					metro.undoChoice();
 				}
 				else {
 					cout << " How many connections you will make? ";
 					int count = 0;
 					count = checkPositiveNumber(count);
-					for (int i = 0; i < count; i++) metro.stationPositioning();
+					for (int i = 0; i < count; i++) { metro.undoChoice(); metro.stationPositioning(); }
+					metro.undoChoice();
 				}
 			}
-			else { //make intersection case                            //will be edited
+			else {
 				cout << "Enter the first line number: ";
 				lineId = checkPositiveNumber(lineId);
 				if (metro.MetroLines[lineId].size() > 0) {
@@ -611,21 +614,21 @@ void Admin::HomePage(bool& isAdmin, unordered_map<string, SubscriptionDetails>& 
 						cin >> trainChoice;
 						if (trainChoice == 1) {
 
-						/*	cout << "To add train you need to enter its information first \nplease,";
-							
-							
-							train.setTrainInfo();
-							for (auto& t :metro.trains) {
-				if (train.getTrainID() == t.getTrainID()) {
-								cout << "This train " << train.getTrainID() << "is already exist";
-				}
-				else {
-								metro.addTrain(train);
-								break;
-				}
-								
-}*/
-				
+							/*	cout << "To add train you need to enter its information first \nplease,";
+
+
+								train.setTrainInfo();
+								for (auto& t :metro.trains) {
+					if (train.getTrainID() == t.getTrainID()) {
+									cout << "This train " << train.getTrainID() << "is already exist";
+					}
+					else {
+									metro.addTrain(train);
+									break;
+					}
+
+	}*/
+
 							cout << "To add train you need to enter its information first \nplease,";
 
 							train.setTrainInfo();
@@ -730,7 +733,7 @@ void Admin::HomePage(bool& isAdmin, unordered_map<string, SubscriptionDetails>& 
 						cout << "6. Back\n";
 						cout << "Enter your choice: ";
 
-					
+
 
 						int displayChoice;
 						cin >> displayChoice;
@@ -788,7 +791,7 @@ void Admin::HomePage(bool& isAdmin, unordered_map<string, SubscriptionDetails>& 
 							string timeDisplayTrip;
 							do {
 								cout << "Enter trip departure time (HH:MM):\n";
-								
+
 								cin >> timeDisplayTrip;
 							} while (DateTime::timeInputString(timeDisplayTrip) == system_clock::time_point());
 							if (metro.MetroLines.find(lidDisplayTrip) != metro.MetroLines.end() && train.getTrainID() == tidDisplayTrip) {

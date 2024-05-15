@@ -322,10 +322,10 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 
 					}
 
-						if (stationInZone)
-							cout << "your price is : " << chosenSubscription.calcPrice(chosenPath, zoneChoice, false) << " every " << chosenSubscription.valid_duration;
+					if (stationInZone)
+						cout << "your price is : " << chosenSubscription.calcPrice(chosenPath, zoneChoice, false) << " every " << chosenSubscription.valid_duration;
 
-					
+
 				} while (!stationInZone);
 			}
 
@@ -390,7 +390,7 @@ void UserAccount::checkIn(MetroMate metro, UserAccount user, tm date) {
 			user.chosenSubscription.calcPrice(newLog.pathChosen, user.chosenSubscription.chosenZoneNum, user.chosenSubscription.isStageChoice);
 			user.chosenSubscription.cashWalletTicket(user);
 		}
-		
+
 
 	}
 	else {
@@ -448,7 +448,7 @@ void UserAccount::checkIn(MetroMate metro, UserAccount user, tm date) {
 	}
 }
 
-void UserAccount::viewRideLogs() {                            
+void UserAccount::viewRideLogs() {
 	list<rideDetails>::iterator logs;
 	if (rideLog.size() != 0) {
 		int i = 1;
