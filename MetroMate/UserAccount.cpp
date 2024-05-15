@@ -91,20 +91,33 @@ bool UserAccount::logIn(bool& isAdmin, UserAccount& theLog, string email, string
 	return true;
 }
 
-
-void  UserAccount::ChangePassword(UserAccount& user, string NewPass)
+UserAccount UserAccount::forgetPass(string mail,unordered_map<string,UserAccount>users)
 {
-	user.Password = NewPass;
+	if (users.count(mail) == 0)
+	{
+		cout << "sorry there is no account with this mail.\n";
+		throw runtime_error("Account not found");
+	}
+	UserAccount& usa = users[mail];
+	string pass;
+	cout << "enter the new password:";
+	cin >> pass;
+	usa.Password = pass;
+	cout << "Done\n";
+	return usa;
 }
+
+
+
 
 
 UserAccount  UserAccount::updateInfo(string key, unordered_map<string, UserAccount>& users)
 {
 
 	UserAccount& user = users[key];
-	cout << "what the information you want to update:\n1.Name\n2.Adderss\n3.Phone\n4.All your information" << endl;
+	cout << "what the information you want to update:\n1.Name\n2.Adderss\n3.Phone\n4.Password\n5.All your information" << endl;
 	int choice, phone;
-	string name, address;
+	string name, address,pass;
 	cin >> choice;
 	if (choice == 1)
 	{
@@ -127,6 +140,12 @@ UserAccount  UserAccount::updateInfo(string key, unordered_map<string, UserAccou
 	}
 	else if (choice == 4)
 	{
+		cout << "enter the new password:";
+		cin >> pass;
+		user.Password = pass;
+	}
+	else if (choice == 5)
+	{
 		cout << "enter the new name:";
 		cin >> name;
 		user.Name = name;
@@ -136,6 +155,9 @@ UserAccount  UserAccount::updateInfo(string key, unordered_map<string, UserAccou
 		cout << "enter the new Phone number:";
 		cin >> phone;
 		user.Phone = phone;
+		cout << "enter the new password:";
+		cin >> pass;
+		user.Password = pass;
 	}
 	else
 		return user;
@@ -143,11 +165,11 @@ UserAccount  UserAccount::updateInfo(string key, unordered_map<string, UserAccou
 }
 
 
-void UserAccount::LogOut(UserAccount& current)
+UserAccount UserAccount::LogOut(UserAccount& current)
 {
 	LogedUser = false;
-	UserAccount emptyUser;
-	current = emptyUser;
+	return UserAccount ();
+
 }
 
 void UserAccount::displayAccount()
