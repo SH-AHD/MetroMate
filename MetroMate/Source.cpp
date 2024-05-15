@@ -137,27 +137,32 @@ int main() {
 		{
 		case 1:
 		{
-
-			cout << "Register" << endl;
-			cout << "--------" << endl;
-			cout << "Name:";
-			cin >> name;
-			cout << "Email:";
-			cin >> email;
-			cout << "Phone Number:";
-			cin >> phone;
-			cout << "Address:";
-			cin >> address;
-			cout << "Password:";
-			cin >> password;
-			cout << "your balance:";
-			cin >> balance;
-			UserAccount user(email, password, name, address, phone , balance);
-			user.Register(users, user);
+			bool exist;
+				cout << "Register" << endl;
+				cout << "--------" << endl;
+				cout << "Name:";
+				cin >> name;
+				cout << "Email:";
+				cin >> email;
+				cout << "Phone Number:";
+				cin >> phone;
+				cout << "Address:";
+				cin >> address;
+				cout << "Password:";
+				cin >> password;
+				cout << "your balance:";
+				cin >> balance;
+				UserAccount user(email, password, name, address, phone, balance);
+			exist=user.Register(users, user);
+			if (exist == false) {
+				if (user.existMail(user, users))
+					User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones, users, metro, train, schedule);
+				break;
+			}
 			currentUser = user;
 			currentUser.PurchaceSubscription(currentUser, subscription_plans, subscriptions_names, zones);
 			currentUser.displayAccount();
-			//	currentUser.updateInfo(currentUser);
+
 
 			User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones, users,metro,train,schedule);
 			break;
@@ -165,7 +170,7 @@ int main() {
 		case 2:
 		{
 			int c;
-			cout << "forget password?\npress1\nif no?\n press2\n";
+			cout << "forget password?\npress1\nif no?\npress2\n";
 			cin >> c;
 			if (c == 1)
 			{
@@ -173,6 +178,7 @@ int main() {
 				cin >> email;
 				UserAccount user;
 				user=user.forgetPass(email, users);
+				User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones, users, metro, train, schedule);
 			}
 			else
 			{
@@ -192,8 +198,6 @@ int main() {
 					else if (isAdmin == false)
 					{
 						cout << "Login successful" << endl;
-						currentUser.displayAccount();
-						currentUser = currentUser.updateInfo(currentUser.Email, users);
 						currentUser.displayAccount();
 						User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones, users, metro, train, schedule);
 					}

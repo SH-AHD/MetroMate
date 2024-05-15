@@ -52,13 +52,14 @@ public:
 	}
 	UserAccount(string email, string pass);
 	UserAccount(string Email, string Password, string Name, string Address, int Phone, double balance);
-	bool Register(unordered_map<string, UserAccount>& users, UserAccount user);
+	bool Register(unordered_map<string, UserAccount>& users, UserAccount &user);
 	bool VailEmail(string email);
 	bool logIn(bool& isAdmin, UserAccount& theLog, string email, string password, unordered_map<string, UserAccount>& user);
 	UserAccount updateInfo(string key, unordered_map<string, UserAccount>& users);
 	UserAccount forgetPass(string mail, unordered_map<string, UserAccount>&users);
 	UserAccount LogOut(UserAccount& current);
 	void displayAccount();
+	bool existMail(UserAccount& user, unordered_map<string, UserAccount>& users);
 	void checkIn(MetroMate metro, UserAccount user, tm date);
 };
 
