@@ -612,8 +612,21 @@ void Admin::HomePage(bool& isAdmin, unordered_map<string, SubscriptionDetails>& 
 						if (trainChoice == 1) {
 
 							cout << "To add train you need to enter its information first \nplease,";
+							
+							
 							train.setTrainInfo();
-							metro.addTrain(train);
+							for (auto& t :metro.trains) {
+				if (train.getTrainID() == t.getTrainID()) {
+								cout << "This train " << train.getTrainID() << "is already exist";
+				}
+				else {
+								metro.addTrain(train);
+								break;
+				}
+								
+}
+							
+							//metro.addTrain(train);
 
 						}
 						else if (trainChoice == 2) {
