@@ -26,7 +26,7 @@ void SubscriptionDetails::DisplayData(string name)
 		//scout << "your path" << path << endl;
 	}
 }
-void SubscriptionDetails::calcStage(queue <pair< station, int>> chosenPath)
+void SubscriptionDetails::calcStage(queue <pair< string, int>> chosenPath)
 {
 	int pathSize = chosenPath.size();
 	for (unsigned int i = 0; i < availableStages.size(); i++) {
@@ -36,7 +36,7 @@ void SubscriptionDetails::calcStage(queue <pair< station, int>> chosenPath)
 		}
 	}
 }
-double SubscriptionDetails::calcPrice(queue <pair< station, int>> chosenPath,int zoneNum, bool isStage) {
+double SubscriptionDetails::calcPrice(queue <pair< string, int>> chosenPath,int zoneNum, bool isStage) {
 
 	chosenZoneNum = zoneNum;//will need this two variables while calling the function in check in (in cash wallet ) i won't know what arguments to pass
 	isStageChoice = isStage;//and they will be initialize in purchase (in register)
@@ -246,11 +246,11 @@ string SubscriptionDetails::toString() const{
 	ss +=to_string(chosenStage.first) + "," + to_string(chosenStage.second.first) + "," + to_string(chosenStage.second.second) + ",";
 	
 	
-	queue <pair< station, int>> tmp = chosenPath;
+	queue <pair< string, int>> tmp = chosenPath;
 	if (!chosenPath.empty()) {
 		ss += to_string(chosenPath.size()) + ",";
 		while (!tmp.empty()) {
-			ss += tmp.front().first.name + ",";
+			ss += tmp.front().first + ",";
 			ss += to_string(tmp.front().second) + ",";
 			tmp.pop();
 		}

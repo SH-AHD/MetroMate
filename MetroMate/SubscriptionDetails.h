@@ -21,7 +21,7 @@ public:
 	vector<pair<vector<string>, double>> availableZones;//<<stations names>,zone price>
 	
 	pair<double, pair<int, int>> chosenStage;//same as availableStages but one stage"no vector"
-	queue <pair< station, int>> chosenPath;
+	queue <pair< string, int>> chosenPath;
 	
 
 	SubscriptionDetails() {
@@ -29,8 +29,8 @@ public:
 		//don't delete it
 	}
 	void DisplayData(string name);
-	void calcStage(queue <pair< station, int>> chosenPath);
-	double calcPrice(queue <pair< station, int>> chosenPath ,int zoneNum, bool isStage);
+	void calcStage(queue <pair< string, int>> chosenPath);
+	double calcPrice(queue <pair< string, int>> chosenPath ,int zoneNum, bool isStage);
 	void displayFixedData();
 	void Create(vector<pair<vector<string>, double>> zones, vector<pair<double, pair<int, int>>> stages);
 	void Modify(unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names);
