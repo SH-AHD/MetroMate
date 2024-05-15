@@ -161,7 +161,7 @@ int main() {
 		case 2:
 		{
 			int c;
-			cout << "forget password?\npress1\nif no press2\n";
+			cout << "forget password?\npress1\nif no?\n press2\n";
 			cin >> c;
 			if (c == 1)
 			{

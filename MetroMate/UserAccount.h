@@ -55,7 +55,7 @@ public:
 	bool VailEmail(string email);
 	bool logIn(bool& isAdmin, UserAccount& theLog, string email, string password, unordered_map<string, UserAccount>& user);
 	UserAccount updateInfo(string key, unordered_map<string, UserAccount>& users);
-	UserAccount forgetPass(string mail, unordered_map<string, UserAccount>users);
+	UserAccount forgetPass(string mail, unordered_map<string, UserAccount>&users);
 	UserAccount LogOut(UserAccount& current);
 	void displayAccount();
 	void checkIn(MetroMate metro, UserAccount user, tm date);

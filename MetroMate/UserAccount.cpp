@@ -91,12 +91,13 @@ bool UserAccount::logIn(bool& isAdmin, UserAccount& theLog, string email, string
 	return true;
 }
 
-UserAccount UserAccount::forgetPass(string mail,unordered_map<string,UserAccount>users)
+UserAccount UserAccount::forgetPass(string mail,unordered_map<string,UserAccount>&users)
 {
 	if (users.count(mail) == 0)
 	{
 		cout << "sorry there is no account with this mail.\n";
-		throw runtime_error("Account not found");
+		static UserAccount dummyAccount;
+		return dummyAccount;
 	}
 	UserAccount& usa = users[mail];
 	string pass;
