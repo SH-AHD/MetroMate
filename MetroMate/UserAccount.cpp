@@ -343,7 +343,7 @@ void UserAccount::checkIn(MetroMate metro,UserAccount user, tm date) {
 	metro.displayStations();
 	cout << " Choose the station you will ride from:\n";
 	station* source = metro.chooseStation(); //DepartureStation 
-	chrono::system_clock::time_point currentTime = chrono::system_clock::now();//CheckIn Time; 
+	//chrono::system_clock::time_point currentTime = chrono::system_clock::now();//CheckIn Time; 
 	source->chosen = true;
 
 	//upgrading the station's info
