@@ -41,6 +41,10 @@ vector<string> split(const string& str, char delimiter);
 void writeToSubscriptionFile(const unordered_map<string, SubscriptionDetails>& data, const string& filename);
 unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string& filename, unordered_map<int, string>& subscriptions_names, unordered_map<string, station>stationsList);
 unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& users);
+void zonesWrite(vector<pair<vector<string>, double>> zones);
+vector<pair<vector<string>, double>> zonesRead();
+void stagesWrite(vector<pair<double, pair<int, int>>> stages);
+vector<pair<double, pair<int, int>>> stagesRead();
 bool stringToBool(const std::string& text);
 
 //Line lines;
@@ -108,8 +112,8 @@ int main() {
 	Admin admin;
 
 
-	vector<pair<vector<string>, double>>zones;//zone[1][station1]
-	vector<pair<double, pair<int, int>>> stages; // <price , <min_stations,max_stations>> for 4 stages
+	vector<pair<vector<string>, double>>zones = zonesRead();//zone[1][station1]
+	vector<pair<double, pair<int, int>>> stages = stagesRead(); // <price , <min_stations,max_stations>> for 4 stages
 
 	//vector<station> stationsList;
 	unordered_map<string, station> stationsList;
@@ -232,6 +236,14 @@ int main() {
 	file.clear();
 	writeToSubscriptionFile(subscription_plans, SubscriptionFileName);
 
+	ifstream zonesfile("zones.csv");
+	zonesfile.clear();
+	zonesWrite(zones);
+
+	ifstream stagesfile("stages.csv");
+	stagesfile.clear();
+	stagesWrite(stages);
+
 	return 0;
 }
 
@@ -305,6 +317,141 @@ unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& 
 	}
 	return users;
 }
+
+ void zonesWrite(vector<pair<vector<string>, double>> zones)
+{
+	std::ofstream file("zones.csv");
+	if (!file.is_open()) {
+		// Handle error opening file
+		cout << "not open";
+		return;
+	}
+	int size = zones.size();
+	file << to_string(size) << ",";
+	for (const auto& element : zones) {
+
+		int size2 = element.first.size();
+		file << to_string(size2) << ",";
+		for (const auto& element2 : element.first) {
+			file << (element2) << ",";
+		}
+		file << to_string(element.second) << ",";
+	}
+	file << endl;
+	file.close();
+}
+
+ vector<pair<vector<string>, double>> zonesRead()
+ {
+	 vector<pair<vector<string>, double>> zones;
+	 //read
+	 ifstream file("zones.csv");
+
+	 if (file.is_open()) {
+		 string line;
+		 //string name, email, phone, address, password;
+
+
+		 while (getline(file, line)) {
+			 stringstream ss(line);
+			 string attributeStr;
+
+
+			 if (line.empty()) {
+				 continue;
+			 }
+			 UserAccount tmpuser;
+			 if (getline(ss, attributeStr)) {
+				 vector<string> attributes = split(attributeStr, ',');
+				 vector<string> firstVector;
+				 int startIndex = 0;
+				 int size = stoi(attributes[startIndex++]);
+				 for (int i = 0; i < size; i++) {
+					 int size2 = stoi(attributes[startIndex++]);
+					 for (int j = 0; j < size2; j++) {
+						 firstVector.push_back(attributes[startIndex++]);
+					 }
+					 double secondInPair = stod(attributes[startIndex++]);
+
+					 zones.push_back(make_pair(firstVector, secondInPair));
+
+				 }
+			 }
+		 }
+
+
+
+		 file.close();
+		 cout << "User data has been successfully loaded from the file." << endl;
+	 }
+	 else {
+		 cout << "Failed to open the file for reading." << endl;
+	 }
+	 return zones;
+ }
+
+ void stagesWrite(vector<pair<double, pair<int, int>>> stages)
+ {
+	 std::ofstream file("stages.csv");
+	 if (!file.is_open()) {
+		 // Handle error opening file
+		 cout << "not open";
+		 return;
+	 }
+	 int size = stages.size();
+	 file << to_string(size) << ",";
+	 for (const auto& element : stages) {
+		 file << to_string(element.first) << "," << to_string(element.second.first) << "," << to_string(element.second.second) << ",";
+	 }
+	 file << endl;
+	 file.close();
+ }
+
+ vector<pair<double, pair<int, int>>> stagesRead()
+ {
+	 vector<pair<double, pair<int, int>>> stages;
+	 //read
+	 ifstream file("stages.csv");
+
+	 if (file.is_open()) {
+		 string line;
+		 //string name, email, phone, address, password;
+
+
+		 while (getline(file, line)) {
+			 stringstream ss(line);
+			 string attributeStr;
+
+
+			 if (line.empty()) {
+				 continue;
+			 }
+			 if (getline(ss, attributeStr)) {
+				 vector<string> attributes = split(attributeStr, ',');
+				 int startIndex = 0;
+				 int size = stoi(attributes[startIndex++]);
+				 for (int i = 0; i < size; i++) {
+
+					 double first = stod(attributes[startIndex++]);
+					 int secondf = stoi(attributes[startIndex++]);
+					 int seconds = stoi(attributes[startIndex++]);
+					 stages.push_back(make_pair(first, make_pair(secondf, seconds)));
+
+				 }
+			 }
+		 }
+
+
+
+		 file.close();
+		 cout << "stages data has been successfully loaded from the file." << endl;
+	 }
+	 else {
+		 cout << "Failed to open the file for reading." << endl;
+	 }
+	 return stages;
+
+ }
 
 
 
