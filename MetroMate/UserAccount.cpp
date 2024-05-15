@@ -15,7 +15,7 @@ using namespace std;
 using namespace std::chrono;
 unordered_map<string, UserAccount>Users;
 
-UserAccount::UserAccount(string email, string pass, string Name, string Address, int Phone , double balance)
+UserAccount::UserAccount(string email, string pass, string Name, string Address, int Phone, double balance)
 {
 	this->Name = Name;
 	this->Address = Address;
@@ -92,7 +92,7 @@ bool UserAccount::logIn(bool& isAdmin, UserAccount& theLog, string email, string
 	return true;
 }
 
-UserAccount UserAccount::forgetPass(string mail,unordered_map<string,UserAccount>&users)
+UserAccount UserAccount::forgetPass(string mail, unordered_map<string, UserAccount>& users)
 {
 	if (users.count(mail) == 0)
 	{
@@ -119,7 +119,7 @@ UserAccount  UserAccount::updateInfo(string key, unordered_map<string, UserAccou
 	UserAccount& user = users[key];
 	cout << "what the information you want to update:\n1.Name\n2.Adderss\n3.Phone\n4.Password\n5.All your information" << endl;
 	int choice, phone;
-	string name, address,pass;
+	string name, address, pass;
 	cin >> choice;
 	if (choice == 1)
 	{
@@ -170,7 +170,7 @@ UserAccount  UserAccount::updateInfo(string key, unordered_map<string, UserAccou
 UserAccount UserAccount::LogOut(UserAccount& current)
 {
 	LogedUser = false;
-	return UserAccount ();
+	return UserAccount();
 
 }
 
@@ -351,7 +351,7 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 			user.chosenSubscription = chosenSubscription;
 			user.availableTrips = user.chosenSubscription.numberOfTrips;
 			user.balance -= user.chosenSubscription.price;
-			cout << "\n subscribtion done to " << user.chosenSubscription.name<<endl;
+			cout << "\n subscribtion done to " << user.chosenSubscription.name << endl;
 			//calculating start date
 			DateTime Date;
 			user.startDate = Date.current_date();
@@ -360,7 +360,7 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 	}
 }
 
-void UserAccount::checkIn(MetroMate metro,UserAccount user, tm date) {
+void UserAccount::checkIn(MetroMate metro, UserAccount user, tm date) {
 
 	//checking if he has cash wallet or card
 	if (user.chosenSubscription.name == "Cash_wallet") {
@@ -387,28 +387,28 @@ void UserAccount::checkIn(MetroMate metro,UserAccount user, tm date) {
 		//upgrade the target's info
 		target->addPassenger(target->stationMap, date, user);
 
-		float fare = 0.0; //temp var will be deleted later according to scenrio
-		cout << " The possible path to your target:\n";
-		metro.simpleDFS(source->name, source->lineNumber, target->name, fare); //dijkstra will be continued 
-		//dijkstra
+		cout << " A possible path to your target:\n";
+		metro.simpleDFS(source->name, source->lineNumber, target->name);
+		target->shortestPath = metro.shortestPath(source->name, target->name);
 		cout << " Choose the path you want:\n";
+		cout << "1- Normal path\n2- Shortest path\n";
 		int pathChosen = -1;
 		pathChosen = numberInRange(pathChosen, 1, 2);
 		rideDetails newLog;
 		if (pathChosen == 1) {
-			newLog.pathChosen = target->possiblePaths[0];
+			newLog.pathChosen = target->possiblePaths;
 		}
 		else {
-			newLog.pathChosen = target->possiblePaths[1];
+			newLog.shortestPath = target->shortestPath;
 		}
 		//calculate price
 		queue <pair< station, int>> chosenPath;//will put (= newLog.pathChosen) after nouran changes its datatype
 		user.chosenSubscription.calcPrice(chosenPath, user.chosenSubscription.chosenZoneNum, user.chosenSubscription.isStageChoice);
 		user.chosenSubscription.cashWalletTicket(user);
-		
+
 	}
 	else {
-		
+
 		queue <pair< station, int>> tmpchosenPath = user.chosenSubscription.chosenPath;
 		if (tmpchosenPath.empty()) {
 			cout << "your didn't choose a path ";
@@ -421,7 +421,7 @@ void UserAccount::checkIn(MetroMate metro,UserAccount user, tm date) {
 				tmpchosenPath.pop();
 			}
 		}
-		
+
 		DateTime Date;
 		//checking that he didn't exceeds subscription valid duration
 		if (Date.current_date().tm_mon - user.startDate.tm_mon >= user.chosenSubscription.valid_duration && Date.is_valid_date(user.startDate)) {
@@ -458,16 +458,36 @@ void UserAccount::checkIn(MetroMate metro,UserAccount user, tm date) {
 		//done check in
 		user.chosenSubscription.numberOfTrips -= 1;
 		cout << "check-in done";
-		
-		
+
+
 		//if balance ...this is only in purchase
 		//balance-price
 	}
-	
+
 	//subscribtion datils will complete here
 }
 
-
+void UserAccount::viewRideLogs() {                            
+	list<rideDetails>::iterator logs;
+	if (rideLog.size() != 0) {
+		int i = 1;
+		for (logs = rideLog.begin(); logs != rideLog.end(); logs++) {
+			cout << " Log no." << i << " :\n";
+			cout << " Time: "; //will be edited
+			cout << " From " << logs->sourceStation << " station to " << logs->targetStation << " station\n";
+			cout << " Path : \n";
+			queue< pair<string, int> > pathOFLog = logs->pathChosen;
+			while (!pathOFLog.empty()) {
+				cout << pathOFLog.front().first << " station [" << pathOFLog.front().second << "] - ";
+			}
+			cout << "\n";
+			cout << " Total fare: " << logs->fare << "\n";
+			cout << "-----------------------------\n";
+			i++;
+		}
+	}
+	else cout << " You do not have any logs.\n";
+}
 //
 //tm DateTime::current_date() {
 //	auto now = std::chrono::system_clock::now();

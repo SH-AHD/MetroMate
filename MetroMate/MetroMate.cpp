@@ -668,7 +668,7 @@ void MetroMate::deleteTripFromTrainSchedule(int trainID, string  date, string De
 
 
 size_t MetroMate::findScheduleIndex(Train train, string time, string date) {
-	for (size_t i = 0; i < train.getTrainSchedule().size();i++) {
+	for (size_t i = 0; i < train.getTrainSchedule().size(); ++i) {
 		if (train.getTrainSchedule()[i].getDate() == date && train.getTrainSchedule()[i].getDepartureTime() == DateTime::timeInputString(time)) {
 			return i; // Found the schedule with the specified station name
 
@@ -685,12 +685,10 @@ void MetroMate::simulateTrainBreakdown(int brokenTrainID, string time, string da
 			size_t scheduleIndex = findScheduleIndex(t, time, date);
 			if (scheduleIndex != std::string::npos) {
 				int newDelay = rand() % 26 + 5;//0->25 +5
-				t.getTrainSchedule()[scheduleIndex-1].setDelay(newDelay);
+				t.getTrainSchedule()[scheduleIndex].setDelay(newDelay);
 				t.adjustNextTripDepartureTime();
 				adjustNextTrainDepartureTime(t);
 				cout << "The train " << brokenTrainID << " breaks down and the amount of delay is " << newDelay << " \n";
-				cout << scheduleIndex;
-				t.getTrainSchedule()[scheduleIndex - 1].getDelay();
 			}
 			else {
 				cout << "Train " << brokenTrainID << "has no trips at this \"" << date << "  " << time << "\"." << endl;
@@ -760,11 +758,11 @@ void MetroMate::displaySpecificTrain(int lineID, int trainID) {
 }
 
 void MetroMate::displayTrainETAForUser(string stationName, string checkindate, string checkinTime) {
-	int sum=0;
+	int sum = 0;
 	for (auto& train : trains) {
 		if (sum < 4) {
-		int i= train.getETAForTrip( stationName, checkindate,  checkinTime);
-			sum+i;
+			int i = train.getETAForTrip(stationName, checkindate, checkinTime);
+			sum + i;
 		}
 		else {
 			break;
@@ -809,20 +807,20 @@ station* MetroMate::findStation(string station, int line) {
 		if (MetroLines[line][i].name == station)return &MetroLines[line][i];
 	}
 }
-void MetroMate::simpleDFS(string start, int startLine, string end, float fare) {
+void MetroMate::simpleDFS(string start, int startLine, string end) {
 	stack<pair<pair<string, int>, float>> path; //station name and line number //distance
 	path.push(make_pair(make_pair(start, startLine), 0));
-	queue< pair< pair<string, int>, float> > pathToDestination;
+	queue<pair<string, int>> pathToDestination;
 	while (!path.empty()) {
 		station* st = findStation(path.top().first.first, path.top().first.second);
 		pair<pair<string, int>, int> current = path.top();
-		pathToDestination.push(path.top());
+		pathToDestination.push(path.top().first);
 		path.pop();
-
 		if (!st->visited) {
 			st->visited = true;
 			if (st->name != end) {
-				pathToDestination.push(current); //for saving station only
+				pathToDestination.push(current.first);
+				//for saving station only
 				cout << " [" << st->name << " Line " << st->lineNumber << "] ->";
 				for (pair<station*, int> adj : Metromate[st->name]) {
 					if (!adj.first->visited) {
@@ -832,11 +830,63 @@ void MetroMate::simpleDFS(string start, int startLine, string end, float fare) {
 			}
 			else {
 				cout << " [" << st->name << " Line " << st->lineNumber << "]";
-				pathToDestination.push(current);
-				st->possiblePaths.push_back(make_pair(pathToDestination, fare));
+				pathToDestination.push(current.first);
+				st->possiblePaths = pathToDestination;
 				markAsUnvisited();
 				break;
 			}
 		}
 	}
+}
+
+
+struct Compare {
+	bool operator()(pair<station*, int> const& p1, pair<station*, int> const& p2) {
+		return p1.second > p2.second;
+	}
+};
+
+queue<string> MetroMate::shortestPath(string startStation, string endStation) {
+	unordered_map<string, int> distances;
+	unordered_map<string, string> previous;
+	priority_queue<pair<station*, int>, vector<pair<station*, int>>, Compare> pq;
+
+	for (auto& pair : Metromate) {
+		distances[pair.first] = numeric_limits<int>::max();
+	}
+	distances[startStation] = 0;
+
+	pq.push(make_pair(Metromate[startStation].front().first, 0));
+
+	while (!pq.empty()) {
+		station* current = pq.top().first;
+		pq.pop();
+
+		for (auto& neighbor : Metromate[current->name]) {
+			int alternat_distance = distances[current->name] + neighbor.second;
+			if (alternat_distance < distances[neighbor.first->name]) {
+				distances[neighbor.first->name] = alternat_distance;
+				previous[neighbor.first->name] = current->name;
+				pq.push(make_pair(neighbor.first, alternat_distance));
+			}
+		}
+	}
+
+	vector<string> path;
+	queue<string> shortestPath;
+	for (string at = endStation; at != ""; at = previous[at]) {
+		path.push_back(at);
+	}
+	reverse(path.begin(), path.end());
+	for (string st : path)shortestPath.push(st);
+	return shortestPath;
+
+	////will be at main
+	//MetroMate metroMate;
+	//vector<string> path = metroMate.shortestPath("Station1", "Station5");
+	//cout << "Shortest path: ";
+	//for ( auto& station : path) {
+	// cout << station << " ";
+	//}
+	//cout << endl;
 }
