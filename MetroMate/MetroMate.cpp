@@ -36,7 +36,7 @@ void station::addTickets(tm date) {
 }
 void station::addIncome(UserAccount user, tm date) {
 	Date mapDate = convertTm(date);
-	if (user.chosenSubscription.name == "wallet") {
+	if (user.chosenSubscription.name == "Cash_wallet") {
 		if (valueExistsInMap(stationMap, mapDate)) {
 			stationMap[mapDate].totalIncome += user.chosenSubscription.price;
 		}
