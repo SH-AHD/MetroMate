@@ -2,6 +2,9 @@
 #include <algorithm>
 
 #include"DateTime.h" 
+
+
+
 Schedule::Schedule() {
     /*  string date,departureStation,destinationStation, departureTime, arrivalTime;
       int delay = 0;
@@ -61,16 +64,24 @@ void Schedule::setArrivalTime(system_clock::time_point arrivalTime) { this->arri
 void Schedule::setTripScheduleInfo() {
     string date, departureStation, destinationStation, departureTime, arrivalTime;
     int delay = 0;
-
+    MetroMate metroo;
     /* cout << "Enter Date:\n";
      cin >> date;*/
     setDate(DateTime::inputDateString());
     cout << "=======================================\n";
-    cout << "Enter Departure Station :\n";
-    cin >> departureStation;
+    cout << "Choose Departure Station :\n";
+    //cin >> departureStation;
+    metroo.displayStations();
+    
+   // if(departureStation== station.getName())
+    departureStation = (metroo.chooseStation())->getName();
     setDepartureStation(departureStation);
-    cout << "Enter Destination Station :\n";
-    cin >> destinationStation;
+    cout << "Choose Destination Station : \n";
+    //cin >> destinationStation;
+    metroo.displayStations();
+    //station = metro.chooseStation();
+    // if(departureStation== station.getName())
+    destinationStation = (metroo.chooseStation())->getName();
     setDestinationStation(destinationStation);
     do {
         cout << "Enter Departure Time :\n";
@@ -479,9 +490,9 @@ void Train::adjustNextTripDepartureTime() {
                 nextTrip.setArrivalTime(nextTrip.getArrivalTime() + minutes(trainSchedule[currentTripIndex].getDelay()));
             }
         }
-        cout << "adjustNextTripDepartureTime1\n";
+        
     }
-    cout << "adjustNextTripDepartureTime2\n";
+   
 }
 
 

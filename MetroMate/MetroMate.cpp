@@ -689,6 +689,10 @@ void MetroMate::simulateTrainBreakdown(int brokenTrainID, string time, string da
 				t.adjustNextTripDepartureTime();
 				adjustNextTrainDepartureTime(t);
 				cout << "The train " << brokenTrainID << " breaks down and the amount of delay is " << newDelay << " \n";
+				//cout << t.getTrainSchedule()[scheduleIndex-1].getDelay();
+				//cout << t.getTrainSchedule()[scheduleIndex ].getDelay();
+
+			
 			}
 			else {
 				cout << "Train " << brokenTrainID << "has no trips at this \"" << date << "  " << time << "\"." << endl;
@@ -725,13 +729,13 @@ void MetroMate::adjustNextTrainDepartureTime(Train t) {
 						// Adjust the departure time of the next train
 						tripSchedule[j].setDelay(t.getTrainSchedule()[j].getDelay());
 						nextTrain.adjustNextTripDepartureTime();
-						cout << "adjustNextTrainDepartureTime--\n";
+					
 					}
 				}
 			}
 		}
 	}
-	cout << "adjustNextTrainDepartureTime--out\n";
+	
 }
 
 

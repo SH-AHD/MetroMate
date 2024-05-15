@@ -8,7 +8,7 @@
 #include <string>
 #include <algorithm>
 //#include "UserAccount.h"
-//#include "MetroMate.h"
+#include "MetroMate.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -29,6 +29,8 @@ private:
     bool broken;
 
 public:
+  
+    //station *station;
     Schedule();
     Schedule(string date, string departureStation, string destinationStation, string departureTime, string arrivalTime);
     string getDate();
@@ -76,12 +78,12 @@ private:
     bool isBrokenDown = false;
     string status = "Running";
     int currentTripIndex = 0;
-    vector<Schedule> trainSchedule;
+  
 public:
-
+    vector<Schedule> trainSchedule;
     Train();
     Train(int id, int lid);
-
+    
     int getTrainID();
     string getStatus();
     int getLineID();
