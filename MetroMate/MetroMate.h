@@ -134,4 +134,7 @@ public:
 	station* findStation(string station, int line);
 	void simpleDFS(string start, int startLine, string end);
 	queue<string> shortestPath(string startStation, string endStation);
+
+	//new 
+	void undoChoice();
 };

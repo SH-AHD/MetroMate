@@ -589,7 +589,7 @@ void MetroMate::addTripToTrainSchedule(int trainid, Schedule schedule) {
 			cout << "The trip  has been successfully added!\n";
 			break;
 		}
-		
+
 	}
 }
 
@@ -889,4 +889,13 @@ queue<string> MetroMate::shortestPath(string startStation, string endStation) {
 	// cout << station << " ";
 	//}
 	//cout << endl;
+}
+
+void MetroMate::undoChoice() {
+	for (int line = 1; line <= numberOfLines; line++) {
+		//unordered_map<int, vector<station>> MetroLines;
+		for (int i = 0; i < MetroLines[line].size(); i++) {
+			if (MetroLines[line][i].chosen) MetroLines[line][i].chosen = false;
+		}
+	}
 }

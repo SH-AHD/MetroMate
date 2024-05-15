@@ -32,7 +32,7 @@ UserAccount::UserAccount(string email, string passw)
 }
 
 
-bool UserAccount::Register(unordered_map<string, UserAccount>& users, UserAccount user)
+bool UserAccount::Register(unordered_map<string, UserAccount>& users, UserAccount& user)
 {
 	//	ofstream _file;
 	if (!VailEmail(Email))
@@ -46,11 +46,15 @@ bool UserAccount::Register(unordered_map<string, UserAccount>& users, UserAccoun
 		}
 
 	}
+	if (users.count(Email) > 0)
+	{
+		cout << "This email is already registered. Please use another one or log in." << endl;
+		cout << "to login to the account press 1\nto create a new account press 2\n";
+		return false;
+	}
 	users.insert(make_pair(Email, user));
-	//	Users[Email] = UserAccount(Email, Password, Name, Address, Phone);
 	cout << "succesful Registertion" << endl;
 	LogedUser = true;
-	//	Users[Email] = UserAccount(Email, Password, Name, Address, Phone);
 	return true;
 }
 bool UserAccount::VailEmail(string email)
@@ -110,8 +114,34 @@ UserAccount UserAccount::forgetPass(string mail, unordered_map<string, UserAccou
 }
 
 
-
-
+bool UserAccount::existMail(UserAccount& user, unordered_map<string, UserAccount>& users)
+{
+	int c;
+	cin >> c;
+	string email, password;
+	bool isAdmin = false;
+	if (c == 1)
+	{
+		cout << "please enter the password of your account:\n";
+		cout << "Password: ";
+		cin >> password;
+		UserAccount userLog(user.Email, password);
+		userLog.logIn(isAdmin, userLog, user.Email, password, users);
+		cout << "Login successful" << endl;
+		return true;
+	}
+	string input;
+	while (true)
+	{
+		cout << "enter another email:";
+		cin >> input;
+		if (users.count(input) == 0)
+			break;
+	}
+	user.Email = input;
+	users.insert(make_pair(input, user));
+	return false;
+}
 
 UserAccount  UserAccount::updateInfo(string key, unordered_map<string, UserAccount>& users)
 {
@@ -322,10 +352,10 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 
 					}
 
-						if (stationInZone)
-							cout << "your price is : " << chosenSubscription.calcPrice(chosenPath, zoneChoice, false) << " every " << chosenSubscription.valid_duration;
+					if (stationInZone)
+						cout << "your price is : " << chosenSubscription.calcPrice(chosenPath, zoneChoice, false) << " every " << chosenSubscription.valid_duration;
 
-					
+
 				} while (!stationInZone);
 			}
 
@@ -390,7 +420,7 @@ void UserAccount::checkIn(MetroMate metro, UserAccount user, tm date) {
 			user.chosenSubscription.calcPrice(newLog.pathChosen, user.chosenSubscription.chosenZoneNum, user.chosenSubscription.isStageChoice);
 			user.chosenSubscription.cashWalletTicket(user);
 		}
-		
+
 
 	}
 	else {
@@ -448,7 +478,7 @@ void UserAccount::checkIn(MetroMate metro, UserAccount user, tm date) {
 	}
 }
 
-void UserAccount::viewRideLogs() {                            
+void UserAccount::viewRideLogs() {
 	list<rideDetails>::iterator logs;
 	if (rideLog.size() != 0) {
 		int i = 1;
