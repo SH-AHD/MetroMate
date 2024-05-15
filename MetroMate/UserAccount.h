@@ -43,6 +43,7 @@ public:
 	list<rideDetails> rideLog;
 	SubscriptionDetails chosenSubscription;
 	int availableTrips;
+	double balance = 0;
 
 	void PurchaceSubscription(UserAccount& user, unordered_map<std::string, SubscriptionDetails> subscription_plans, unordered_map<int, string> subscriptions_names, vector<pair<vector<string>, double>> zones);
 
@@ -50,7 +51,7 @@ public:
 		//dont delete it
 	}
 	UserAccount(string email, string pass);
-	UserAccount(string Email, string Password, string Name, string Address, int Phone);
+	UserAccount(string Email, string Password, string Name, string Address, int Phone, double balance);
 	bool Register(unordered_map<string, UserAccount>& users, UserAccount user);
 	bool VailEmail(string email);
 	bool logIn(bool& isAdmin, UserAccount& theLog, string email, string password, unordered_map<string, UserAccount>& user);

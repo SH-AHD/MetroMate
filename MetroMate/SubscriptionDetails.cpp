@@ -37,7 +37,10 @@ void SubscriptionDetails::calcStage(queue <pair< station, int>> chosenPath)
 	}
 }
 double SubscriptionDetails::calcPrice(queue <pair< station, int>> chosenPath,int zoneNum, bool isStage) {
-	
+
+	chosenZoneNum = zoneNum;//will need this two variables while calling the function in check in (in cash wallet ) i won't know what arguments to pass
+	isStageChoice = isStage;//and they will be initialize in purchase (in register)
+
 	if (isStage) {
 		calcStage(chosenPath);
 		price = chosenStage.first;//price
@@ -171,6 +174,48 @@ void SubscriptionDetails::remove(unordered_map<string, SubscriptionDetails>& sub
 	subscription_plans.erase(subscriptionName);
 }
 
+void SubscriptionDetails::putMoneyInWallet(UserAccount user)
+{
+
+	if (name == "Cash_wallet") {
+		cout << "your cash amount is :" << user.chosenSubscription.cashAmount;
+		int cashMoney;
+		do {
+			cout << "please put money in wallet (multiple of 10)\n" << endl;
+			cin >> cashMoney;
+		} while (cashMoney % 10 != 0);
+		user.chosenSubscription.cashAmount += cashMoney;
+	}
+	else {
+		cout << "you didn't subscripe in cash wallet \n";
+	}
+	
+}
+
+void SubscriptionDetails::cashWalletTicket(UserAccount user)
+{
+	while (true) {
+		int userCashAmount = user.chosenSubscription.cashAmount;
+		double pathPrice = user.chosenSubscription.price;
+		if (userCashAmount > pathPrice && userCashAmount != 0) {
+			user.chosenSubscription.cashAmount -= (int)pathPrice;
+			user.chosenSubscription.price = 0;//in the end to restart path price(becaues it is cash wallet)
+		}
+		else {
+			cout << "sorry there is no enough money in your wallet \n press 1 if you want to put money \n else press any number";
+			int answer;
+			cin >> answer;
+			if (answer == 1) {
+				user.chosenSubscription.putMoneyInWallet(user);
+			}
+			else {
+				user.chosenSubscription.price = 0;
+				return;
+			}
+		}
+	}
+}
+
 
 
 
@@ -178,7 +223,7 @@ void SubscriptionDetails::remove(unordered_map<string, SubscriptionDetails>& sub
 string SubscriptionDetails::toString() const{
 	string ss;
 	// You can modify the format string to control output appearance
-	ss = to_string(price) + "," + to_string(valid_duration) + "," + to_string(cashAmount) + ","+ name + "," + to_string(numberOfTrips);
+	ss = to_string(price) + "," + to_string(valid_duration) + "," + to_string(cashAmount) + ","+ name + "," + to_string(numberOfTrips)+"," + to_string(chosenZoneNum)+","+ to_string(isStageChoice);
 	/*for (int i = 0; i < 4; i++) {
 		ss += to_string(stagesPrices[i]) + ",";
 	}*/
