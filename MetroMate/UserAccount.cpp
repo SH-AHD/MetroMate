@@ -180,7 +180,7 @@ void UserAccount::displayAccount()
 
 }
 
-void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, SubscriptionDetails> subscription_plans, unordered_map<int, string> subscriptions_names, vector<pair<vector<string>, double>> zones)
+void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, SubscriptionDetails> subscription_plans, unordered_map<int, string> subscriptions_names, vector<pair<vector<string>, double>> zones, MetroMate metro)
 {
 
 
@@ -245,53 +245,44 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 
 		}
 		else {
-			//here will be nouran code
-			string firstDestination;
-			string targetDestination;
-			cout << "enter your first station" << endl;
-			cin >> firstDestination;
-			cout << "enter your target  station" << endl;
-			cin >> targetDestination;
+			cout << " Hello, " << Name << ".\n";
+			cout << " Here are the steps to save your ride details:\n -> choose the station you will ride from.\n";
+			cout << "-> choose the target station.\n";
+			cout << " we will show you possible path/s to your target, if they are more than one path,\n choose the one you want\n";
+			cout << " Station available right now:\n";
+			metro.displayStations();
+			cout << " Choose the station you will ride from:\n";
+			station* source = metro.chooseStation(); //DepartureStation 
+			//chrono::system_clock::time_point currentTime = chrono::system_clock::now();//CheckIn Time; 
+			source->chosen = true;
 
-			int answer;
+			cout << "\n\n";
+			cout << " Now choose the target station:\n";
+			station* target = metro.chooseStation();
 
+			cout << " A possible path to your target:\n";
+			metro.simpleDFS(source->name, source->lineNumber, target->name);
+			target->shortestPath = metro.shortestPath(source->name, target->name);
+			cout << " Choose the path you want:\n";
+			cout << "1- Normal path\n2- Shortest path\n";
+			int pathChosen = -1;
+			pathChosen = numberInRange(pathChosen, 1, 2);
 
-			//print all avaliable paths(will delete it after nouran)
-			for (auto it = availablePaths.begin(); it != availablePaths.end(); ++it) {
-				cout << "path " << index << " : ";
-
-				pair<station, int> front = it->front();
-				cout << front.first.name << " , ";
-				it->push(it->front());
-				it->pop();
-
-				// path must not have repeated values to make this code work
-				while (it->front().first.name != front.first.name && availablePaths.size() != 1) {
-					cout << it->front().first.name << " , ";
-					it->push(it->front());
-					it->pop();
-				}
-				index++;
+			rideDetails newLog;
+			queue<pair<string, int>> chosenPath;
+			if (pathChosen == 1) {
+				newLog.pathChosen = target->possiblePaths;
+				chosenPath = target->possiblePaths;
 			}
-
+			else {
+				newLog.shortestPath = target->shortestPath;
+				//chosenPath = target->shortestPath;
+			}
+			int answer;
 			cout << "\npress \n 1. if you want to subscripe by stages \n 2. if you want to subscripe by zones " << endl;
 			cin >> answer;
 			if (answer == 1) {
-
-				//making him choose
-				cout << "enter the index of the path you want " << endl;
-				cin >> index;
-				if (index - 1 < 0 || index - 1 >= availablePaths.size()) {
-					cout << "no index like this" << endl;
-				}
-				else {
-					auto it = availablePaths.begin();
-					advance(it, index - 1);//go to this index
-					queue <pair< station, int>> chosenPath = *it;
-					chosenSubscription.chosenPath = chosenPath;
-					cout << "your price is : " << chosenSubscription.calcPrice(chosenPath, 0, true) << " every " << chosenSubscription.valid_duration;
-
-				}
+				cout << "your price is : " << chosenSubscription.calcPrice(chosenPath, 0, true) << " every " << chosenSubscription.valid_duration;
 
 			}
 			else if (answer == 2) {
@@ -310,41 +301,31 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 				do {
 
 
-					cout << "enter the index of the path you want " << endl;
-					cin >> index;
-					if (index - 1 < 0 || index - 1 >= availablePaths.size()) {
-						cout << "no index like this" << endl;
-					}
-					else {
-						auto it = availablePaths.begin();
-						advance(it, index - 1);//go to this index
-						queue <pair< station, int>> chosenPath = *it;
-
-						queue <pair< station, int>> tmp = chosenPath;
-
-						while (!tmp.empty()) {
-							for (unsigned int j = 0; j < zones[zoneChoice].first.size(); j++) {
-								if (tmp.front().first.name != zones[zoneChoice].first[j]) {
-									stationInZone = false;
-								}
-								else {
-									stationInZone = true;
-									break;
-								}
-
+					queue<pair<string, int>> tmp = chosenPath;
+					while (!tmp.empty()) {
+						for (unsigned int j = 0; j < zones[zoneChoice].first.size(); j++) {
+							if (tmp.front().first != zones[zoneChoice].first[j]) {
+								stationInZone = false;
 							}
-							if (!stationInZone) {
-								cout << "the chosen path not exist in your zone please choose your path again" << endl;
+							else {
+								stationInZone = true;
 								break;
 							}
-							tmp.pop();
 
 						}
+						if (!stationInZone) {
+							cout << "the chosen path not exist in your zone please choose your zone again" << endl;
+							cin >> zoneChoice;
+							break;
+						}
+						tmp.pop();
+
+					}
 
 						if (stationInZone)
 							cout << "your price is : " << chosenSubscription.calcPrice(chosenPath, zoneChoice, false) << " every " << chosenSubscription.valid_duration;
 
-					}
+					
 				} while (!stationInZone);
 			}
 
@@ -394,22 +375,27 @@ void UserAccount::checkIn(MetroMate metro, UserAccount user, tm date) {
 		cout << "1- Normal path\n2- Shortest path\n";
 		int pathChosen = -1;
 		pathChosen = numberInRange(pathChosen, 1, 2);
+
 		rideDetails newLog;
+
 		if (pathChosen == 1) {
 			newLog.pathChosen = target->possiblePaths;
+			//calculate price
+			user.chosenSubscription.calcPrice(newLog.pathChosen, user.chosenSubscription.chosenZoneNum, user.chosenSubscription.isStageChoice);
+			user.chosenSubscription.cashWalletTicket(user);
 		}
 		else {
 			newLog.shortestPath = target->shortestPath;
+			//calculate price
+			user.chosenSubscription.calcPrice(newLog.pathChosen, user.chosenSubscription.chosenZoneNum, user.chosenSubscription.isStageChoice);
+			user.chosenSubscription.cashWalletTicket(user);
 		}
-		//calculate price
-		queue <pair< station, int>> chosenPath;//will put (= newLog.pathChosen) after nouran changes its datatype
-		user.chosenSubscription.calcPrice(chosenPath, user.chosenSubscription.chosenZoneNum, user.chosenSubscription.isStageChoice);
-		user.chosenSubscription.cashWalletTicket(user);
+		
 
 	}
 	else {
 
-		queue <pair< station, int>> tmpchosenPath = user.chosenSubscription.chosenPath;
+		queue <pair< string, int>> tmpchosenPath = user.chosenSubscription.chosenPath;
 		if (tmpchosenPath.empty()) {
 			cout << "your didn't choose a path ";
 			return;
@@ -417,7 +403,7 @@ void UserAccount::checkIn(MetroMate metro, UserAccount user, tm date) {
 		else {
 			cout << "your path is ";//display his path
 			while (!tmpchosenPath.empty()) {
-				cout << tmpchosenPath.front().first.name;
+				cout << tmpchosenPath.front().first;
 				tmpchosenPath.pop();
 			}
 		}
@@ -459,12 +445,7 @@ void UserAccount::checkIn(MetroMate metro, UserAccount user, tm date) {
 		user.chosenSubscription.numberOfTrips -= 1;
 		cout << "check-in done";
 
-
-		//if balance ...this is only in purchase
-		//balance-price
 	}
-
-	//subscribtion datils will complete here
 }
 
 void UserAccount::viewRideLogs() {                            

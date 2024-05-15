@@ -161,7 +161,7 @@ int main() {
 			UserAccount user(email, password, name, address, phone , balance);
 			user.Register(users, user);
 			currentUser = user;
-			currentUser.PurchaceSubscription(currentUser, subscription_plans, subscriptions_names, zones);
+			currentUser.PurchaceSubscription(currentUser, subscription_plans, subscriptions_names, zones,metro);
 			currentUser.displayAccount();
 			//	currentUser.updateInfo(currentUser);
 
@@ -364,7 +364,7 @@ void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDeta
 					break;
 				case 3:
 					//ubgrade
-					user.PurchaceSubscription(user, subscription_plans, subscriptions_names, zones);
+					user.PurchaceSubscription(user, subscription_plans, subscriptions_names, zones,metro);
 					break;
 				case 4:
 					user.chosenSubscription.putMoneyInWallet(user);
@@ -519,12 +519,12 @@ unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string
 						queueSize = stoi(attributes[startIndex]);
 						startIndex++;
 					}
-					queue <pair< station, int>> tmpQueue;
-					pair< station, int> tmpPair;
+					queue <pair< string, int>> tmpQueue;
+					pair< string, int> tmpPair;
 					for (int i = 0; i < queueSize; i++) {
 						string name = attributes[startIndex];
 
-						tmpPair.first = stationsList[name];
+						tmpPair.first = name;
 						//tmpPair.first.lineNumber = stoi(attributes[++startIndex]);
 
 						tmpPair.second = stoi(attributes[++startIndex]);
