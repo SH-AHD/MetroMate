@@ -41,6 +41,7 @@ vector<string> split(const string& str, char delimiter);
 void writeToSubscriptionFile(const unordered_map<string, SubscriptionDetails>& data, const string& filename);
 unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string& filename, unordered_map<int, string>& subscriptions_names, unordered_map<string, station>stationsList);
 unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& users);
+bool stringToBool(const std::string& text);
 
 //Line lines;
 
@@ -123,6 +124,7 @@ int main() {
 	//variables needed for register:
 	string name, email, address, password;
 	int phone;
+	double balance;
 	//for login:
 	bool isAdmin = false;
 	UserAccount currentUser;
@@ -154,7 +156,9 @@ int main() {
 			cin >> address;
 			cout << "Password:";
 			cin >> password;
-			UserAccount user(email, password, name, address, phone);
+			cout << "your balance:";
+			cin >> balance;
+			UserAccount user(email, password, name, address, phone , balance);
 			user.Register(users, user);
 			currentUser = user;
 			currentUser.PurchaceSubscription(currentUser, subscription_plans, subscriptions_names, zones);
@@ -167,7 +171,7 @@ int main() {
 		case 2:
 		{
 			int c;
-			cout << "forget password?\npress1\nif no press2\n";
+			cout << "forget password?\npress1\nif no?\n press2\n";
 			cin >> c;
 			if (c == 1)
 			{
@@ -215,8 +219,15 @@ int main() {
 
 
 	}
+
+	ifstream stationfile("stations.csv");
+	stationfile.clear();
 	tmpStation.writeData(stationsList);
+
+	ifstream usersfile("UsersData.txt");
+	usersfile.clear();
 	saveData(users);
+
 	ifstream file(SubscriptionFileName);
 	file.clear();
 	writeToSubscriptionFile(subscription_plans, SubscriptionFileName);
@@ -236,7 +247,9 @@ void saveData(unordered_map<string, UserAccount>& users)
 		const UserAccount& user = entry.second;
 
 		// Write user data to the file
-		outputFile << email << "," << user.Name << "," << user.Phone << "," << user.Address << "," << user.Password << "," << endl;
+		outputFile << email << "," << user.Name << "," << user.Phone << "," << user.Address << "," << user.Password << "," << user.balance;
+		//tm write
+		outputFile << "," << user.startDate.tm_sec << "," << user.startDate.tm_min << "," << user.startDate.tm_hour << "," << user.startDate.tm_mday << "," << user.startDate.tm_mon << "," << user.startDate.tm_year << "," << user.startDate.tm_isdst << endl;
 	}
 
 
@@ -268,6 +281,16 @@ unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& 
 				tmpuser.Phone = stoi(attributes[1]);
 				tmpuser.Address = attributes[2];
 				tmpuser.Password = attributes[3];
+				tmpuser.balance = stod(attributes[4]);
+				int startIndex = 5;
+				//tm read
+				tmpuser.startDate.tm_sec= stoi(attributes[startIndex++]);
+				tmpuser.startDate.tm_min = stoi(attributes[startIndex++]);
+				tmpuser.startDate.tm_hour = stoi(attributes[startIndex++]);
+				tmpuser.startDate.tm_mday = stoi(attributes[startIndex++]);
+				tmpuser.startDate.tm_mon = stoi(attributes[startIndex++]);
+				tmpuser.startDate.tm_year = stoi(attributes[startIndex++]);
+				tmpuser.startDate.tm_isdst = stoi(attributes[startIndex++]);
 			}
 			users.insert(make_pair(key, tmpuser));
 		}
@@ -325,7 +348,7 @@ void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDeta
 			{
 			case 1:
 				int manageChoice;
-				cout << "if you want to: \n view active subscription type 1 \n renew subscription type 2  \n upgrade subscription type 3";
+				cout << "if you want to: \n view active subscription type 1 \n renew subscription type 2  \n upgrade subscription type 3 \n put money in cash wallet type 4 ";
 				cin >> manageChoice;
 
 				switch (manageChoice)
@@ -343,7 +366,9 @@ void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDeta
 					//ubgrade
 					user.PurchaceSubscription(user, subscription_plans, subscriptions_names, zones);
 					break;
-
+				case 4:
+					user.chosenSubscription.putMoneyInWallet(user);
+					break;
 				default:
 					isUserLoop = false;
 					break;
@@ -438,11 +463,13 @@ unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string
 					details.cashAmount = (attributes.size() >= 3) ? stoi(attributes[2]) : 0; // Handle optional cashAmount
 					details.name = attributes[3];
 					details.numberOfTrips = stoi(attributes[4]);// Assuming numberOfTrips is last
+					details.chosenZoneNum = stoi(attributes[5]);
+					details.isStageChoice = stringToBool(attributes[6]);
 
 					int vectorSize = 0;
-					unsigned int startIndex = 6;
-					if (attributes.size() > 5) {
-						vectorSize = stoi(attributes[5]);
+					unsigned int startIndex = 8;
+					if (attributes.size() > 7) {
+						vectorSize = stoi(attributes[7]);
 					}
 
 
@@ -509,6 +536,7 @@ unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string
 					// Add the object to the hash table
 					data[key] = details;
 					subscriptions_names.insert(make_pair(data.size(), details.name));
+					cout << "subscribtion data read done";
 				}
 				catch (const invalid_argument& e) {
 					cerr << "Error: Non-numeric value in \"" << filename << "\"\n";
@@ -521,7 +549,21 @@ unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string
 
 	return data;
 }
+bool stringToBool(const std::string& text) {
+	std::string lowerText = text;
+	std::transform(lowerText.begin(), lowerText.end(), lowerText.begin(), ::tolower);  // Convert to lowercase
 
+	if (lowerText == "true" || lowerText == "t" || lowerText == "1" || lowerText == "yes") {
+		return true;
+	}
+	else if (lowerText == "false" || lowerText == "f" || lowerText == "0" || lowerText == "no") {
+		return false;
+	}
+	else {
+		// Handle invalid input (throw exception, return default value, etc.)
+		throw std::invalid_argument("Invalid string format for boolean conversion");
+	}
+}
 
 
 

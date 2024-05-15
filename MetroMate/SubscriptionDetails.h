@@ -13,6 +13,10 @@ public:
 	int valid_duration = 0;
 	int cashAmount = 0;//for cash wallet only(multiply of 10)
 	int numberOfTrips = 0;
+	int chosenZoneNum=0;//chosen zone number(new)
+	bool isStageChoice = true; //his subscription by zone or stage(new)
+
+
 	vector<pair<double, pair<int, int>>> availableStages;//<price,<min stations,max stations>>
 	vector<pair<vector<string>, double>> availableZones;//<<stations names>,zone price>
 	
@@ -31,6 +35,8 @@ public:
 	void Create(vector<pair<vector<string>, double>> zones, vector<pair<double, pair<int, int>>> stages);
 	void Modify(unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names);
 	void remove(unordered_map<string, SubscriptionDetails>& subscription_plans, unordered_map<int, string>& subscriptions_names);
+	void putMoneyInWallet(UserAccount user);
+	void cashWalletTicket(UserAccount user);
 
 	
 	string toString() const;

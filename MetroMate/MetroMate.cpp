@@ -36,7 +36,7 @@ void station::addTickets(tm date) {
 }
 void station::addIncome(UserAccount user, tm date) {
 	Date mapDate = convertTm(date);
-	if (user.chosenSubscription.name == "wallet") {
+	if (user.chosenSubscription.name == "Cash_wallet") {
 		if (valueExistsInMap(stationMap, mapDate)) {
 			stationMap[mapDate].totalIncome += user.chosenSubscription.price;
 		}
@@ -563,6 +563,9 @@ void MetroMate::editTrain(int editTrainid) {
 			cout << "Train \"" << editTrainid << "\" has been successfully modified." << endl;
 			break;
 		}
+		else {
+			cout << "Train " << editTrainid << " not found.\n";
+		}
 	}
 }
 
@@ -572,6 +575,9 @@ void MetroMate::removeTrain(int removedTrainid) {
 			cout << "Train \"" << removedTrainid << "\" has been successfully deleted." << endl;
 			trains.erase(it);
 			break;
+		}
+		else {
+			cout << "Train " << removedTrainid << " not found.\n";
 		}
 	}
 }
@@ -583,6 +589,7 @@ void MetroMate::addTripToTrainSchedule(int trainid, Schedule schedule) {
 			cout << "The trip  has been successfully added!\n";
 			break;
 		}
+		
 	}
 }
 
