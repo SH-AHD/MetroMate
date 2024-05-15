@@ -281,7 +281,7 @@ unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& 
 				tmpuser.Phone = stoi(attributes[1]);
 				tmpuser.Address = attributes[2];
 				tmpuser.Password = attributes[3];
-				tmpuser.balance = stod(attributes[4]);
+				tmpuser.balance = attributes.size()>4?stod(attributes[4]):0;
 				int startIndex = 5;
 				//tm read
 				tmpuser.startDate.tm_sec= stoi(attributes[startIndex++]);
