@@ -611,7 +611,7 @@ void Admin::HomePage(bool& isAdmin, unordered_map<string, SubscriptionDetails>& 
 						cin >> trainChoice;
 						if (trainChoice == 1) {
 
-							cout << "To add train you need to enter its information first \nplease,";
+						/*	cout << "To add train you need to enter its information first \nplease,";
 							
 							
 							train.setTrainInfo();
@@ -624,8 +624,24 @@ void Admin::HomePage(bool& isAdmin, unordered_map<string, SubscriptionDetails>& 
 								break;
 				}
 								
-}
-							
+}*/
+				
+							cout << "To add train you need to enter its information first \nplease,";
+
+							train.setTrainInfo();
+							for (int i = 0; i < metro.trains.size(); i++) {
+								cout << "loop";
+								if (train.getTrainID() == metro.trains[i].getTrainID()) {
+									cout << "\nThis train " << train.getTrainID() << " is already exist\n";
+								}
+								else {
+									metro.addTrain(train);
+									break;
+								}
+
+							}
+
+
 							//metro.addTrain(train);
 
 						}
@@ -705,21 +721,16 @@ void Admin::HomePage(bool& isAdmin, unordered_map<string, SubscriptionDetails>& 
 
 					}
 					else if (in == 2) {
-						/*cout << "\nDisplay Functions\n";
+						cout << "\nDisplay Functions\n";
 						cout << "1. In Case Train Breakdown\n";
 						cout << "2. Display Trains\n";
 						cout << "3. View information for a specific train\n";
 						cout << "4. View information for a specific train trip\n";
 						cout << "5. View information for train trips for specific date\n";
 						cout << "6. Back\n";
-						cout << "Enter your choice: ";*/
-
-						cout << "\nDisplay Functions\n";
-						cout << "1. In Case Train Breakdown\n";
-						cout << "2. Display Trains\n";
-						cout << "3. View information for a specific train\n";
-						cout << "4. Back\n";
 						cout << "Enter your choice: ";
+
+					
 
 						int displayChoice;
 						cin >> displayChoice;
@@ -764,47 +775,47 @@ void Admin::HomePage(bool& isAdmin, unordered_map<string, SubscriptionDetails>& 
 							}
 
 						}
-						//else if (displayChoice == 4) {
-						//	cout << "Enter the line ID:\n";
-						//	int lidDisplayTrip;
-						//	cin >> lidDisplayTrip;
-						//	cout << "Enter the train ID:\n";
-						//	int tidDisplayTrip;
-						//	cin >> tidDisplayTrip;
-						//	cout << "Enter trip date (DD-MM-YYYY):\n";
-						//	string dateDisplayTrip;
-						//	cin >> dateDisplayTrip;
-						//	string timeDisplayTrip;
-						//	do {
-						//		cout << "Enter trip departure time (HH:MM):\n";
-						//		
-						//		cin >> timeDisplayTrip;
-						//	} while (DateTime::timeInputString(timeDisplayTrip) == system_clock::time_point());
-						//	if (metro.MetroLines.find(lidDisplayTrip) != metro.MetroLines.end() && train.getTrainID() == tidDisplayTrip) {
-						//		train.displaySchedule(dateDisplayTrip, timeDisplayTrip);
-						//	}
-						//	else {
-						//		cout << "Line or train ID not found!\n";
-						//	}
-						//}
-						//else if (displayChoice == 5) {
-						//	cout << "Enter the line ID:\n";
-						//	int lidDisplayDate;
-						//	cin >> lidDisplayDate;
-						//	cout << "Enter the train ID:\n";
-						//	int tidDisplayDate;
-						//	cin >> tidDisplayDate;
-						//	//cout << "Enter trip date (DD-MM-YYYY):\n";
-						//	string dateDisplayDate = DateTime::inputDateString();;
-						//	//cin >> dateDisplayDate;
-						//	if (metro.MetroLines.find(lidDisplayDate) != metro.MetroLines.end() && train.getTrainID() == tidDisplayDate) {
-						//		train.displaySchedule(dateDisplayDate);
-						//	}
-						//	else {
-						//		cout << "Line or train ID not found!\n";
-						//	}
-						//}
 						else if (displayChoice == 4) {
+							cout << "Enter the line ID:\n";
+							int lidDisplayTrip;
+							cin >> lidDisplayTrip;
+							cout << "Enter the train ID:\n";
+							int tidDisplayTrip;
+							cin >> tidDisplayTrip;
+							cout << "Enter trip date (DD-MM-YYYY):\n";
+							string dateDisplayTrip;
+							cin >> dateDisplayTrip;
+							string timeDisplayTrip;
+							do {
+								cout << "Enter trip departure time (HH:MM):\n";
+								
+								cin >> timeDisplayTrip;
+							} while (DateTime::timeInputString(timeDisplayTrip) == system_clock::time_point());
+							if (metro.MetroLines.find(lidDisplayTrip) != metro.MetroLines.end() && train.getTrainID() == tidDisplayTrip) {
+								train.displaySchedule(dateDisplayTrip, timeDisplayTrip);
+							}
+							else {
+								cout << "Line or train ID not found!\n";
+							}
+						}
+						else if (displayChoice == 5) {
+							cout << "Enter the line ID:\n";
+							int lidDisplayDate;
+							cin >> lidDisplayDate;
+							cout << "Enter the train ID:\n";
+							int tidDisplayDate;
+							cin >> tidDisplayDate;
+							//cout << "Enter trip date (DD-MM-YYYY):\n";
+							string dateDisplayDate = DateTime::inputDateString();;
+							//cin >> dateDisplayDate;
+							if (metro.MetroLines.find(lidDisplayDate) != metro.MetroLines.end() && train.getTrainID() == tidDisplayDate) {
+								train.displaySchedule(dateDisplayDate);
+							}
+							else {
+								cout << "Line or train ID not found!\n";
+							}
+						}
+						else if (displayChoice == 6) {
 							break;
 						}
 						else {

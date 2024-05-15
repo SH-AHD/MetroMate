@@ -30,7 +30,7 @@ private:
 
 public:
     Schedule();
-
+    Schedule(string date, string departureStation, string destinationStation, string departureTime, string arrivalTime);
     string getDate();
     int getDelay();
     string getDepartureStation();

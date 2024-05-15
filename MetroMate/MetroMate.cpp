@@ -661,7 +661,7 @@ void MetroMate::deleteTripFromTrainSchedule(int trainID, string  date, string De
 
 
 size_t MetroMate::findScheduleIndex(Train train, string time, string date) {
-	for (size_t i = 0; i < train.getTrainSchedule().size(); ++i) {
+	for (size_t i = 0; i < train.getTrainSchedule().size();i++) {
 		if (train.getTrainSchedule()[i].getDate() == date && train.getTrainSchedule()[i].getDepartureTime() == DateTime::timeInputString(time)) {
 			return i; // Found the schedule with the specified station name
 
@@ -678,10 +678,12 @@ void MetroMate::simulateTrainBreakdown(int brokenTrainID, string time, string da
 			size_t scheduleIndex = findScheduleIndex(t, time, date);
 			if (scheduleIndex != std::string::npos) {
 				int newDelay = rand() % 26 + 5;//0->25 +5
-				t.getTrainSchedule()[scheduleIndex].setDelay(newDelay);
+				t.getTrainSchedule()[scheduleIndex-1].setDelay(newDelay);
 				t.adjustNextTripDepartureTime();
 				adjustNextTrainDepartureTime(t);
 				cout << "The train " << brokenTrainID << " breaks down and the amount of delay is " << newDelay << " \n";
+				cout << scheduleIndex;
+				t.getTrainSchedule()[scheduleIndex - 1].getDelay();
 			}
 			else {
 				cout << "Train " << brokenTrainID << "has no trips at this \"" << date << "  " << time << "\"." << endl;
