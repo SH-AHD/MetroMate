@@ -10,7 +10,7 @@
 #include"Admin.h"
 #include"Admin.cpp"
 
-#include <iostream>
+#include<iostream>
 #include <unordered_map>
 #include<vector>
 #include<deque>
@@ -40,7 +40,7 @@ void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDeta
 vector<string> split(const string& str, char delimiter);
 void writeToSubscriptionFile(const unordered_map<string, SubscriptionDetails>& data, const string& filename);
 unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string& filename, unordered_map<int, string>& subscriptions_names, unordered_map<string, station>stationsList);
-unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& users , unordered_map<string, SubscriptionDetails> subscription_plans);
+unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& users , unordered_map<string, SubscriptionDetails>& subscription_plans);
 void zonesWrite(vector<pair<vector<string>, double>> zones);
 vector<pair<vector<string>, double>> zonesRead();
 void stagesWrite(vector<pair<double, pair<int, int>>> stages);
@@ -288,8 +288,8 @@ void SaveRideLogs(list<rideDetails>& logs)
 
 
 
-list<rideDetails> ReadRideLogsFromFile(list<rideDetails>& logs) {
-	list<rideDetails> logs;
+list<rideDetails> ReadRideLogs(list<rideDetails>& logs) {
+	//list<rideDetails> logs;
 	ifstream file("RideLogs.txt");
 	if (file.is_open()) {
 		rideDetails ride;
@@ -399,9 +399,9 @@ void saveData(unordered_map<string, UserAccount>& users)
 
 
 
-unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& users) {
+unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& users, unordered_map<string, SubscriptionDetails>& subscription_plans) {
 	ifstream file("UsersData.txt");
-
+	
 	if (file.is_open()) {
 		string line;
 		//string name, email, phone, address, password;
