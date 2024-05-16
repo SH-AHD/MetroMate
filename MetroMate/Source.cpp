@@ -10,7 +10,7 @@
 #include"Admin.h"
 #include"Admin.cpp"
 
-#include <iostream>
+#include<iostream>
 #include <unordered_map>
 #include<vector>
 #include<deque>
@@ -27,8 +27,8 @@
 using namespace std;
 using namespace std::chrono;
 
-
-
+list<rideDetails> ReadRideLogs(list<rideDetails>& logs);
+void SaveRideLogs(list<rideDetails>& logs);
 
 void saveData(unordered_map<string, UserAccount>& users);
 //void ModifyUsers(bool& isAdmine, unordered_map<string, UserAccount>&users);
@@ -40,7 +40,7 @@ void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDeta
 vector<string> split(const string& str, char delimiter);
 void writeToSubscriptionFile(const unordered_map<string, SubscriptionDetails>& data, const string& filename);
 unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string& filename, unordered_map<int, string>& subscriptions_names, unordered_map<string, station>stationsList);
-unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& users , unordered_map<string, SubscriptionDetails> subscription_plans);
+unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& users , unordered_map<string, SubscriptionDetails>& subscription_plans);
 void zonesWrite(vector<pair<vector<string>, double>> zones);
 vector<pair<vector<string>, double>> zonesRead();
 void stagesWrite(vector<pair<double, pair<int, int>>> stages);
@@ -238,7 +238,7 @@ int main() {
 	ifstream usersfile("UsersData.txt");
 	usersfile.clear();
 	saveData(users);
-
+	//SaveRideLogs()
 	ifstream file(SubscriptionFileName);
 	file.clear();
 	writeToSubscriptionFile(subscription_plans, SubscriptionFileName);
@@ -253,6 +253,125 @@ int main() {
 
 	return 0;
 }
+
+void SaveRideLogs(list<rideDetails>& logs)
+{
+	ofstream file;
+	file.open("RideLogs.txt", std::ios::app);
+	if (file.is_open()) {
+		for (const auto& ride : logs) {
+			file << "Source Station: " << ride.sourceStation << "\n";
+			file << "Target Station: " << ride.targetStation << "\n";
+			file << "Line No 1: " << ride.lineNo1 << "\n";
+			file << "Line No 2: " << ride.lineNo2 << "\n";
+			file << "Fare: " << ride.fare << "\n";
+			file << "Path Chosen:\n";
+			queue<pair<string, int>> pathChosenCopy = ride.pathChosen;
+			while (!pathChosenCopy.empty()) {
+				file << pathChosenCopy.front().first << " - " << pathChosenCopy.front().second << "\n";
+				pathChosenCopy.pop();
+			}
+			file << "Shortest Path:\n";
+			queue<string> shortestPathCopy = ride.shortestPath;
+			while (!shortestPathCopy.empty()) {
+				file << shortestPathCopy.front() << "\n";
+				shortestPathCopy.pop();
+			}
+			file << "\n";
+		}
+		file.close();
+		cout << "Data written to file successfully.\n";
+	}
+	else {
+		cout << "Unable to open the file ridelogs.\n";
+	}
+}
+
+
+
+list<rideDetails> ReadRideLogs(list<rideDetails>& logs) {
+	//list<rideDetails> logs;
+	ifstream file("RideLogs.txt");
+	if (file.is_open()) {
+		rideDetails ride;
+		string line;
+		while (getline(file, line)) {
+			if (line.find("Source Station: ") != string::npos) {
+				ride.sourceStation = line.substr(line.find(": ") + 2);
+			}
+			else if (line.find("Target Station: ") != std::string::npos) {
+				ride.targetStation = line.substr(line.find(": ") + 2);
+			}
+			else if (line.find("Line No 1: ") != std::string::npos) {
+				ride.lineNo1 = std::stoi(line.substr(line.find(": ") + 2));
+			}
+			else if (line.find("Line No 2: ") != std::string::npos) {
+				ride.lineNo2 = std::stoi(line.substr(line.find(": ") + 2));
+			}
+			else if (line.find("Fare: ") != std::string::npos) {
+				ride.fare = std::stof(line.substr(line.find(": ") + 2));
+			}
+			else if (line == "Path Chosen:") {
+				string station;
+				int lineNo;
+				while (getline(file, line) && !line.empty()) {
+					station = line.substr(0, line.find(" - "));
+					lineNo = std::stoi(line.substr(line.find(" - ") + 3));
+					ride.pathChosen.push(std::make_pair(station, lineNo));
+				}
+			}
+			else if (line == "Shortest Path:") {
+				string station;
+				while (getline(file, line) && !line.empty()) {
+					ride.shortestPath.push(line);
+				}
+				logs.push_back(ride);
+				ride = rideDetails();
+			}
+		}
+		file.close();
+		cout << "Data read from file successfully.\n";
+	}
+	else {
+	    cout << "Unable to open the file.\n";
+	}
+	return logs;
+}
+
+void SaveRideLogs(const std::list<rideDetails>& logs) {
+	std::ofstream file;
+	file.open("RideLogs.txt", std::ios::app);
+	if (file.is_open()) {
+		for (const auto& ride : logs) {
+			file << "Source Station: " << ride.sourceStation << "\n";
+			file << "Target Station: " << ride.targetStation << "\n";
+			file << "Line No 1: " << ride.lineNo1 << "\n";
+			file << "Line No 2: " << ride.lineNo2 << "\n";
+			file << "Fare: " << ride.fare << "\n";
+			file << "Path Chosen:\n";
+			std::queue<pair<string, int>> pathChosenCopy = ride.pathChosen;
+			while (!pathChosenCopy.empty()) {
+				file << pathChosenCopy.front().first << " - " << pathChosenCopy.front().second << "\n";
+				pathChosenCopy.pop();
+			}
+			file << "Shortest Path:\n";
+			std::queue<string> shortestPathCopy = ride.shortestPath;
+			while (!shortestPathCopy.empty()) {
+				file << shortestPathCopy.front() << "\n";
+				shortestPathCopy.pop();
+			}
+			file << "\n";
+		}
+		file.close();
+		std::cout << "Data written to file successfully.\n";
+	}
+	else {
+		std::cout << "Unable to open the file ridelogs.\n";
+	}
+}
+
+
+
 
 
 void saveData(unordered_map<string, UserAccount>& users)
@@ -276,9 +395,14 @@ void saveData(unordered_map<string, UserAccount>& users)
 	outputFile.close();
 }
 
-unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& users, unordered_map<string, SubscriptionDetails> subscription_plans) {
-	ifstream file("UsersData.txt");
 
+
+
+
+
+unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& users, unordered_map<string, SubscriptionDetails>& subscription_plans) {
+	ifstream file("UsersData.txt");
+	
 	if (file.is_open()) {
 		string line;
 		//string name, email, phone, address, password;
