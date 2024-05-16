@@ -30,7 +30,7 @@ void SubscriptionDetails::calcStage(queue <pair< string, int>> chosenPath)
 {
 	int pathSize = chosenPath.size();
 	for (unsigned int i = 0; i < availableStages.size(); i++) {
-		if (pathSize > availableStages[i].second.first && pathSize < availableStages[i].second.first) {
+		if (pathSize >= availableStages[i].second.first && pathSize <= availableStages[i].second.first) {
 			chosenStage = availableStages[i];
 			break;
 		}

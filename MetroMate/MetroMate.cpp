@@ -394,7 +394,8 @@ station* MetroMate::chooseStation() {
 	line = numberInRange(line, 1, numberOfLines);
 	cout << " Station Number";
 	choice = numberInRange(choice, 1, MetroLines[line].size());
-	if (&MetroLines[line].at(choice).chosen) {
+	
+	if (MetroLines[line][choice].chosen) {
 		cout << " This station is already chosen before, please choose again!\n";
 		chooseStation();
 	}

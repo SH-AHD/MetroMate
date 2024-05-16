@@ -301,7 +301,7 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 			rideDetails newLog;
 			queue<pair<string, int>> chosenPath;
 			if (pathChosen == 1) {
-				newLog.pathChosen = target->possiblePaths;
+				newLog.pathChosen = target->possiblePaths;//possible paths size =0
 				chosenPath = target->possiblePaths;
 			}
 			else {
@@ -312,7 +312,7 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 			cout << "\npress \n 1. if you want to subscripe by stages \n 2. if you want to subscripe by zones " << endl;
 			cin >> answer;
 			if (answer == 1) {
-				cout << "your price is : " << chosenSubscription.calcPrice(chosenPath, 0, true) << " every " << chosenSubscription.valid_duration;
+				cout << "your price is : " << chosenSubscription.calcPrice(chosenPath, 0, true) << " every " << chosenSubscription.valid_duration<<" month";
 
 			}
 			else if (answer == 2) {
@@ -411,7 +411,7 @@ void UserAccount::checkIn(MetroMate metro, UserAccount user, tm date) {
 		rideDetails newLog;
 
 		if (pathChosen == 1) {
-			newLog.pathChosen = target->possiblePaths;
+			newLog.pathChosen = target->possiblePaths;//possible paths size =0
 			//calculate price
 			user.chosenSubscription.calcPrice(newLog.pathChosen, user.chosenSubscription.chosenZoneNum, user.chosenSubscription.isStageChoice);
 			user.chosenSubscription.cashWalletTicket(user);
