@@ -484,7 +484,7 @@ void UserAccount::checkIn(MetroMate metro, UserAccount user, tm date) {
 	}
 	metro.displayTrainETAForUser(departureStation ,datee,currentTime );
 
-
+	user.rideLog.push_back(newLog);
 
 
 }
