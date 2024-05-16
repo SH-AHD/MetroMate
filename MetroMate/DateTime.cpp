@@ -202,7 +202,19 @@ std::chrono::minutes DateTime::calculateTimeDifferenceMinutes(system_clock::time
 }
 
 
+string DateTime:: tm_to_string(const tm& time_data, const std::string& format_string = "%d-%m-%Y") {
 
+	char buffer[80]; // Adjust buffer size if needed for complex formats
+size_t result = strftime(buffer, sizeof(buffer), format_string.c_str(), &time_data);
+
+if (result != 0) {
+	return std::string(buffer);
+}
+else {
+	// Handle potential errors (e.g., invalid format string)
+	return "Error formatting time";
+}
+}
 
 string DateTime::inputDateString() {
 	cout << "Enter Date in the format (DD-MM-YYYY): ";

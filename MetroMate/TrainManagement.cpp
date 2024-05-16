@@ -550,7 +550,7 @@ void Train::displayTrainSchedule() {
 //
 
 
-int Train::getETAForTrip(string stationName, string checkindate, string checkinTime) {
+int Train::getETAForTrip(string stationName, string checkindate, chrono::system_clock::time_point currentTime) {
     // Sort the trainSchedule based on arrivalTime
     sort(trainSchedule.begin(), trainSchedule.end(), []( Schedule& a,  Schedule& b) {
         return a.getArrivalTime() < b.getArrivalTime();
@@ -560,10 +560,10 @@ int Train::getETAForTrip(string stationName, string checkindate, string checkinT
         // Check if the schedule matches the specified station, date, and arrival time condition
         if (schedule.getDate() == checkindate &&
             schedule.getDestinationStation() == stationName &&
-            schedule.getArrivalTime() >= DateTime::timeInputString(checkinTime))
+            schedule.getArrivalTime() >= currentTime)
         {
             // Calculate the time difference between the current time and the arrival time
-            auto arrtime = DateTime::calculateTimeDifferenceMinutes(schedule.getArrivalTime(), DateTime::timeInputString(checkinTime));
+            auto arrtime = DateTime::calculateTimeDifferenceMinutes(schedule.getArrivalTime(), currentTime);
             cout << "The train will arrive in " << arrtime.count() << " minutes.";
             return 1;
         }

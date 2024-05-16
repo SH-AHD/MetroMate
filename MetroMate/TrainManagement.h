@@ -90,7 +90,7 @@ public:
     vector<Schedule> getTrainSchedule();
     int getCurrentTripIndex();
     Schedule getTripInfo(Schedule s);
-    int getETAForTrip(string stationName, string date, string time);
+    int getETAForTrip(string stationName, string date, chrono::system_clock::time_point currentTime);
 
     void setTrainID(int trainID);
     void setStatus(string status);

@@ -125,7 +125,7 @@ public:
 	void adjustNextTrainDepartureTime(Train t);
 	void displaySpecificTrain(int lineID, int trainID);
 	void displayTrains(int lineID);
-	void displayTrainETAForUser(string stationName, string checkindate, string checkinTime);
+	void displayTrainETAForUser(string stationName, string checkindate, chrono::system_clock::time_point currentTime);
 
 
 

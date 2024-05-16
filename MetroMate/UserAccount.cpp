@@ -372,7 +372,9 @@ void UserAccount::PurchaceSubscription(UserAccount& user, unordered_map<string, 
 }
 
 void UserAccount::checkIn(MetroMate metro, UserAccount user, tm date) {
-
+	
+	string departureStation, datee;
+	chrono::system_clock::time_point currentTime;
 	//checking if he has cash wallet or card
 	if (user.chosenSubscription.name == "Cash_wallet") {
 		cout << " Hello, " << Name << ".\n";
@@ -383,9 +385,9 @@ void UserAccount::checkIn(MetroMate metro, UserAccount user, tm date) {
 		metro.displayStations();
 		cout << " Choose the station you will ride from:\n";
 		station* source = metro.chooseStation(); //DepartureStation 
-		//chrono::system_clock::time_point currentTime = chrono::system_clock::now();//CheckIn Time; 
+		 
 		source->chosen = true;
-
+		departureStation == source->getName();
 		//upgrading the station's info
 		source->addIncome(user, date);
 		source->addTickets(date);
@@ -474,8 +476,15 @@ void UserAccount::checkIn(MetroMate metro, UserAccount user, tm date) {
 		//done check in
 		user.chosenSubscription.numberOfTrips -= 1;
 		cout << "check-in done";
-
+	
+	 currentTime = chrono::system_clock::now();//CheckIn Time;
+		 datee= DateTime::tm_to_string(Date.current_date());
 	}
+	metro.displayTrainETAForUser(departureStation ,datee,currentTime );
+
+
+
+
 }
 
 void UserAccount::viewRideLogs() {

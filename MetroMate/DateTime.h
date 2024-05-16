@@ -30,4 +30,5 @@ public:
 	//void dateDay(string date);
 	static string inputDateString();
 	static void outputTimePoint(system_clock::time_point timePoint);
+	static string tm_to_string(const tm& time_data, const std::string& format_string = "%d-%m-%Y");
 };

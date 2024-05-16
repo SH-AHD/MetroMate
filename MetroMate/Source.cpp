@@ -49,19 +49,20 @@ bool stringToBool(const std::string& text);
 
 //Line lines;
 
-
+Train train;
+Schedule schedule;
 MetroMate metro;
 deque<Train> trains;
 unordered_map<string, UserAccount> users;
 int main() {
 
 
-	Train train(1, 1);
-	metro.addTrain(train);
-	Schedule schedule("4-4-2024","a","b","3:00","3:15");
-	train.addTripSchedule(schedule);
-	train.displayTrainSchedule();
-	cout << "===========\n";
+	/*Train t(1, 1);
+	metro.addTrain(t);
+	Schedule s("4-4-2024","a","b","3:00","3:15");
+	t.addTripSchedule(s);
+	t.displayTrainSchedule();
+	cout << "===========\n";*/
 	//temp data to metro graph
 	metro.numberOfLines = 2;
 	//entering data to graph manually

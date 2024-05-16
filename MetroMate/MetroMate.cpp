@@ -757,11 +757,11 @@ void MetroMate::displaySpecificTrain(int lineID, int trainID) {
 	}
 }
 
-void MetroMate::displayTrainETAForUser(string stationName, string checkindate, string checkinTime) {
+void MetroMate::displayTrainETAForUser(string stationName, string checkindate, chrono::system_clock::time_point currentTime) {
 	int sum = 0;
 	for (auto& train : trains) {
 		if (sum < 4) {
-			int i = train.getETAForTrip(stationName, checkindate, checkinTime);
+			int i = train.getETAForTrip(stationName, checkindate, currentTime);
 			sum + i;
 		}
 		else {
