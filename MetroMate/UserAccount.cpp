@@ -409,7 +409,7 @@ void UserAccount::checkIn(MetroMate metro, UserAccount user, tm date) {
 		rideDetails newLog;
 
 		if (pathChosen == 1) {
-			newLog.pathChosen = target->possiblePaths;
+			newLog.pathChosen = target->possiblePaths;//possible paths size =0
 			//calculate price
 			user.chosenSubscription.calcPrice(newLog.pathChosen, user.chosenSubscription.chosenZoneNum, user.chosenSubscription.isStageChoice);
 			user.chosenSubscription.cashWalletTicket(user);
