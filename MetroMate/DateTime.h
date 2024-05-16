@@ -1,11 +1,14 @@
 #pragma once
 #include<iostream>
 //for time
-#include <chrono>
+
 #include <ctime>
 #include <sstream> // Include for istringstream
 #include <iomanip> // Include for parse
 #include <chrono>  // Include for sys_days and weekday
+#include <iostream>
+#include <mutex>
+#include <string>
 
 
 
@@ -30,5 +33,5 @@ public:
 	//void dateDay(string date);
 	static string inputDateString();
 	static void outputTimePoint(system_clock::time_point timePoint);
-	static string tm_to_string(const tm& time_data, const std::string& format_string = "%d-%m-%Y");
+	static string get_current_date_string();
 };

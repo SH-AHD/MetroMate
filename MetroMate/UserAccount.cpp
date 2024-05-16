@@ -375,6 +375,7 @@ void UserAccount::checkIn(MetroMate metro, UserAccount user, tm date) {
 	
 	string departureStation, datee;
 	chrono::system_clock::time_point currentTime;
+	rideDetails newLog;
 	//checking if he has cash wallet or card
 	if (user.chosenSubscription.name == "Cash_wallet") {
 		cout << " Hello, " << Name << ".\n";
@@ -408,7 +409,7 @@ void UserAccount::checkIn(MetroMate metro, UserAccount user, tm date) {
 		int pathChosen = -1;
 		pathChosen = numberInRange(pathChosen, 1, 2);
 
-		rideDetails newLog;
+		
 
 		if (pathChosen == 1) {
 			newLog.pathChosen = target->possiblePaths;//possible paths size =0
@@ -478,7 +479,8 @@ void UserAccount::checkIn(MetroMate metro, UserAccount user, tm date) {
 		cout << "check-in done";
 	
 	 currentTime = chrono::system_clock::now();//CheckIn Time;
-		 datee= DateTime::tm_to_string(Date.current_date());
+	 datee = DateTime::get_current_date_string();
+	 newLog.rideDate = datee;
 	}
 	metro.displayTrainETAForUser(departureStation ,datee,currentTime );
 
@@ -493,7 +495,7 @@ void UserAccount::viewRideLogs() {
 		int i = 1;
 		for (logs = rideLog.begin(); logs != rideLog.end(); logs++) {
 			cout << " Log no." << i << " :\n";
-			cout << " Time: "; //will be edited
+			cout << " Time: " << logs->rideDate << ".\n";
 			cout << " From " << logs->sourceStation << " station to " << logs->targetStation << " station\n";
 			cout << " Path : \n";
 			queue< pair<string, int> > pathOFLog = logs->pathChosen;

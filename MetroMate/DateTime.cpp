@@ -201,19 +201,52 @@ std::chrono::minutes DateTime::calculateTimeDifferenceMinutes(system_clock::time
 	return minutes;
 }
 
+//
+//string DateTime:: tm_to_string(const tm& time_data, const std::string& format_string = "%d-%m-%Y") {
+//
+//	char buffer[80]; // Adjust buffer size if needed for complex formats
+//size_t result = strftime(buffer, sizeof(buffer), format_string.c_str(), &time_data);
+//
+//if (result != 0) {
+//	return std::string(buffer);
+//}
+//else {
+//	// Handle potential errors (e.g., invalid format string)
+//	return "Error formatting time";
+//}
+//}
 
-string DateTime:: tm_to_string(const tm& time_data, const std::string& format_string = "%d-%m-%Y") {
 
-	char buffer[80]; // Adjust buffer size if needed for complex formats
-size_t result = strftime(buffer, sizeof(buffer), format_string.c_str(), &time_data);
+string DateTime::get_current_date_string() {
+	/*"""
+		Gets the current date as a formatted string(YYYY - MM - DD).
 
-if (result != 0) {
-	return std::string(buffer);
-}
-else {
-	// Handle potential errors (e.g., invalid format string)
-	return "Error formatting time";
-}
+		Returns:
+	A string representing the current date in YYYY - MM - DD format.
+		"""*/
+
+
+	std::mutex time_mutex;
+		// 1. Get the current time point
+	std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+
+	// 2. Convert time point to time_t (seconds since epoch)
+	std::time_t tt = std::chrono::system_clock::to_time_t(now);
+
+	// 3. Lock the mutex for thread safety
+	std::lock_guard<std::mutex> lock(time_mutex);
+
+	// 4. Convert time_t to tm structure
+	tm localTime;
+	 // Thread-safe within the lock
+	errno_t err = localtime_s(&localTime, &tt);
+	// 5. Define format string (YYYY-MM-DD)
+	std::stringstream ss;
+	ss << std::setfill('0') << std::setw(4) << localTime.tm_year + 1900 << "-";
+	ss << std::setw(2) << localTime.tm_mon + 1 << "-";
+	ss << std::setw(2) << localTime.tm_mday;
+
+	return ss.str();
 }
 
 string DateTime::inputDateString() {

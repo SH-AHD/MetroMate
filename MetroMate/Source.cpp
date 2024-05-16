@@ -140,7 +140,7 @@ int main() {
 	while (outerLoop) {
 		cout << "welcome to the metro system" << endl;
 		cout << "---------------------------" << endl;
-		cout << "chose what you want to do:" << endl;
+		cout << "choose what you want to do:" << endl;
 		cout << "1.Rigester\n2.log in" << endl;
 		int firstChoice;
 		cin >> firstChoice;
@@ -492,7 +492,7 @@ void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDeta
 		bool isUserLoop = true;
 		while (isUserLoop) {
 			int answer;
-			cout << "press the number of the functionality you want \n 1- Manage Subscription \n 2- Check-In/Check-Out for Rides \n 3- View Ride History \n 4- View Estimated Time of Arrival (ETA) \n 5-Update Personal Information \n 6-logout\n";
+			cout << "press the number of the functionality you want \n 1- Manage Subscription \n 2- Check-In/Check-Out for Rides \n 3- View Ride History \n 4-Update Personal Information \n 5-logout\n";
 			cin >> answer;
 
 			//needed variables in manage subscribtion 
@@ -540,13 +540,10 @@ void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDeta
 			case 3:
 				break;
 			case 4:
-				
-			//	metro.displayTrainETAForUser(stationName, chickindate, checkintime);
-				break;
-			case 5:
+		
 				user = user.updateInfo(user.Email, users);
 				break;
-			case 6:
+			case 5:
 				user=user.LogOut(user);
 			default:
 				isUserLoop = false;

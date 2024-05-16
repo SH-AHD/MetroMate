@@ -26,6 +26,7 @@ struct rideDetails {
 	//date and time
 	queue<pair<string, int>> pathChosen;
 	queue<string> shortestPath;
+	string rideDate;
 };
 
 class UserAccount
