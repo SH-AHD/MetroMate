@@ -40,7 +40,7 @@ void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDeta
 vector<string> split(const string& str, char delimiter);
 void writeToSubscriptionFile(const unordered_map<string, SubscriptionDetails>& data, const string& filename);
 unordered_map<string, SubscriptionDetails> readFromSubscriptionFile(const string& filename, unordered_map<int, string>& subscriptions_names, unordered_map<string, station>stationsList);
-unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& users);
+unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& users , unordered_map<string, SubscriptionDetails> subscription_plans);
 void zonesWrite(vector<pair<vector<string>, double>> zones);
 vector<pair<vector<string>, double>> zonesRead();
 void stagesWrite(vector<pair<double, pair<int, int>>> stages);
@@ -69,36 +69,39 @@ int main() {
 	metro.noOfStationsInLine.push_back(3);
 	metro.noOfStationsInLine.push_back(3);
 
-	station A("a", 1);
-	station b("b", 1);
-	station c("c", 2);
-	station d("d", 1);
-	station e("e", 2);
-	station f("f", 2);
-	metro.MetroLines[1].push_back(A);
-	metro.MetroLines[1].push_back(b);
-	metro.MetroLines[2].push_back(c);
-	metro.MetroLines[1].push_back(d);
-	metro.MetroLines[2].push_back(e);
-	metro.MetroLines[2].push_back(f);
-	metro.Metromate["a"].push_back(make_pair(&b, 4));
-	metro.Metromate["a"].push_back(make_pair(&c, 5));
-	metro.Metromate["b"].push_back(make_pair(&A, 4));
-	metro.Metromate["b"].push_back(make_pair(&c, 11));
-	metro.Metromate["b"].push_back(make_pair(&e, 7));
-	metro.Metromate["b"].push_back(make_pair(&d, 9));
-	metro.Metromate["e"].push_back(make_pair(&c, 3));
-	metro.Metromate["e"].push_back(make_pair(&b, 7));
-	metro.Metromate["e"].push_back(make_pair(&d, 13));
-	metro.Metromate["e"].push_back(make_pair(&f, 6));
-	metro.Metromate["d"].push_back(make_pair(&b, 9));
-	metro.Metromate["d"].push_back(make_pair(&e, 13));
-	metro.Metromate["d"].push_back(make_pair(&f, 2));
-	metro.Metromate["c"].push_back(make_pair(&A, 5));
-	metro.Metromate["c"].push_back(make_pair(&b, 11));
-	metro.Metromate["c"].push_back(make_pair(&e, 3));
-	metro.Metromate["f"].push_back(make_pair(&d, 2));
-	metro.Metromate["f"].push_back(make_pair(&e, 6));
+	if (true) {
+		station A("a", 1);
+		station b("b", 1);
+		station c("c", 2);
+		station d("d", 1);
+		station e("e", 2);
+		station f("f", 2);
+		metro.MetroLines[1].push_back(A);
+		metro.MetroLines[1].push_back(b);
+		metro.MetroLines[2].push_back(c);
+		metro.MetroLines[1].push_back(d);
+		metro.MetroLines[2].push_back(e);
+		metro.MetroLines[2].push_back(f);
+		metro.Metromate["a"].push_back(make_pair(&b, 4));
+		metro.Metromate["a"].push_back(make_pair(&c, 5));
+		metro.Metromate["b"].push_back(make_pair(&A, 4));
+		metro.Metromate["b"].push_back(make_pair(&c, 11));
+		metro.Metromate["b"].push_back(make_pair(&e, 7));
+		metro.Metromate["b"].push_back(make_pair(&d, 9));
+		metro.Metromate["e"].push_back(make_pair(&c, 3));
+		metro.Metromate["e"].push_back(make_pair(&b, 7));
+		metro.Metromate["e"].push_back(make_pair(&d, 13));
+		metro.Metromate["e"].push_back(make_pair(&f, 6));
+		metro.Metromate["d"].push_back(make_pair(&b, 9));
+		metro.Metromate["d"].push_back(make_pair(&e, 13));
+		metro.Metromate["d"].push_back(make_pair(&f, 2));
+		metro.Metromate["c"].push_back(make_pair(&A, 5));
+		metro.Metromate["c"].push_back(make_pair(&b, 11));
+		metro.Metromate["c"].push_back(make_pair(&e, 3));
+		metro.Metromate["f"].push_back(make_pair(&d, 2));
+		metro.Metromate["f"].push_back(make_pair(&e, 6));
+	}
+	
 
 
 	station tmpStation;
@@ -107,7 +110,7 @@ int main() {
 	unordered_map<int, string> subscriptions_names;//to have id and name only
 	string SubscriptionFileName = "subscriptions.csv";
 
-	users = ReadData(users);
+	
 
 	Admin admin;
 
@@ -120,7 +123,7 @@ int main() {
 	stationsList = tmpStation.readData();
 
 	subscription_plans = readFromSubscriptionFile(SubscriptionFileName, subscriptions_names, stationsList);
-
+	users = ReadData(users, subscription_plans);
 
 	//stationslist = read station
 	//read metro ,add station
@@ -132,7 +135,6 @@ int main() {
 	//for login:
 	bool isAdmin = false;
 	UserAccount currentUser;
-
 	bool outerLoop = true;
 	while (outerLoop) {
 		cout << "welcome to the metro system" << endl;
@@ -143,6 +145,7 @@ int main() {
 		cin >> firstChoice;
 
 		bool registerSucess = false;
+		
 		switch (firstChoice)
 		{
 		case 1:
@@ -163,6 +166,7 @@ int main() {
 				cout << "your balance:";
 				cin >> balance;
 				UserAccount user(email, password, name, address, phone, balance);
+				
 			exist=user.Register(users, user);
 			if (exist == false) {
 				if (user.existMail(user, users))
@@ -172,7 +176,6 @@ int main() {
 			currentUser = user;
 			currentUser.PurchaceSubscription(currentUser, subscription_plans, subscriptions_names, zones,metro);
 			currentUser.displayAccount();
-
 
 			User(isAdmin, currentUser, subscription_plans, subscriptions_names, zones, users,metro,train,schedule);
 			break;
@@ -227,7 +230,6 @@ int main() {
 
 
 	}
-
 	ifstream stationfile("stations.csv");
 	stationfile.clear();
 	tmpStation.writeData(stationsList);
@@ -265,14 +267,15 @@ void saveData(unordered_map<string, UserAccount>& users)
 		// Write user data to the file
 		outputFile << email << "," << user.Name << "," << user.Phone << "," << user.Address << "," << user.Password << "," << user.balance;
 		//tm write
-		outputFile << "," << user.startDate.tm_sec << "," << user.startDate.tm_min << "," << user.startDate.tm_hour << "," << user.startDate.tm_mday << "," << user.startDate.tm_mon << "," << user.startDate.tm_year << "," << user.startDate.tm_isdst << endl;
+		outputFile << "," << user.startDate.tm_sec << "," << user.startDate.tm_min << "," << user.startDate.tm_hour << "," << user.startDate.tm_mday << "," << user.startDate.tm_mon << "," << user.startDate.tm_year << "," << user.startDate.tm_isdst;
+		outputFile << "," << user.chosenSubscription.name << endl;
 	}
 
 
 	outputFile.close();
 }
 
-unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& users) {
+unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& users, unordered_map<string, SubscriptionDetails> subscription_plans) {
 	ifstream file("UsersData.txt");
 
 	if (file.is_open()) {
@@ -307,6 +310,9 @@ unordered_map<string, UserAccount> ReadData(unordered_map<string, UserAccount>& 
 				tmpuser.startDate.tm_mon = stoi(attributes[startIndex++]);
 				tmpuser.startDate.tm_year = stoi(attributes[startIndex++]);
 				tmpuser.startDate.tm_isdst = stoi(attributes[startIndex++]);
+				//subs
+				string name = attributes[startIndex++];
+				tmpuser.chosenSubscription = subscription_plans[name];
 			}
 			users.insert(make_pair(key, tmpuser));
 		}
@@ -526,6 +532,9 @@ void User(bool isAdmin, UserAccount user, unordered_map<string, SubscriptionDeta
 				}
 				break;
 			case 2:
+				DateTime D;
+				tm date = D.current_date();
+				user.checkIn(metro, user, date);
 				break;
 			case 3:
 				break;
