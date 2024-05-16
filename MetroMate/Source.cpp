@@ -55,9 +55,7 @@ MetroMate metro;
 deque<Train> trains;
 unordered_map<string, UserAccount> users;
 int main() {
-
-
-	Train t(1, 1);
+	Train t(0, 1);
 	metro.addTrain(t);
 	Schedule s("4-4-2024","a","b","3:00","3:15");
 	t.addTripSchedule(s);

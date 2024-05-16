@@ -48,27 +48,7 @@ system_clock::time_point DateTime::timeInput() {
 	return time;
 }
 
-//system_clock::time_point DateTime::timeInputString(string timeStr) {
-//	// Initialize a tm struct with zeros
-//	tm timeStruct = {};
-//
-//	// Create a stringstream to parse the input
-//	istringstream ss(timeStr);
-//
-//	// Parse the input into the tm struct
-//	ss >> get_time(&timeStruct, "%H:%M:%S");
-//
-//	// Check if parsing was successful
-//	if (ss.fail()) {
-//		cerr << "Error: Invalid input format." << endl;
-//		// Return a default time if parsing fails
-//		return system_clock::time_point();
-//	}
-//
-//	// Convert the tm struct to a system_clock::time_point
-//	time_t t = mktime(&timeStruct);
-//	return system_clock::from_time_t(t);
-//}
+
 
 
 system_clock::time_point DateTime::timeInputString(string timeStr) {
@@ -126,21 +106,7 @@ system_clock::time_point DateTime::timeInputString(string timeStr) {
 	return system_clock::from_time_t(t);
 }
 
-//void DateTime:: displayTime(system_clock::time_point timePoint) {
-//	// Convert time_point to std::time_t
-//	time_t time = system_clock::to_time_t(timePoint);
-//
-//	// Declare a tm structure to store the local time
-//	tm tm = {};
-//
-//	// Convert std::time_t to std::tm using localtime
-//	localtime_s(&tm, &time); // Use localtime_s for safer multi-threading
-//
-//	// Output formatted time (hours, minutes, seconds)
-//	cout << setw(2) << setfill('0') << tm.tm_hour << ":"
-//		<< setw(2) << setfill('0') << tm.tm_min << ":"
-//		<< setw(2) << setfill('0') << tm.tm_sec << endl;
-//}
+
 
 
 long DateTime::calculateDateDifference(tm date1, tm date2) {
@@ -159,20 +125,6 @@ long DateTime::calculateDateDifference(tm date1, tm date2) {
 
 
 
-//void DateTime::dateDay(string date) {
-//	std::istringstream in{date}; // Corrected namespace to std::
-//	std::chrono::sys_days
-//		dd;      // Corrected namespace to std::chrono::
-//	in >> std::chrono::parse("%d/%m/%Y", dd);// Corrected namespace to std::chrono::
-//	std::cout << "Day of the week is " << std::get_weekday(dd) << '\n'; // Corrected namespace to std::chrono::
-//}
-
-//void DateTime::dateDay(string date) {
-//	istringstream in{ date };
-//	sys_days dd;
-//	in >> parse("%d/%m/%Y", dd);
-//	cout << "Day of the week is " << weekday{ dd } << '\n';
-//}
 
 long DateTime::calculateTimeDifferenceHours(system_clock::time_point time1, system_clock::time_point time2) {
 	auto duration = time2 - time1;
@@ -183,14 +135,7 @@ long DateTime::calculateTimeDifferenceHours(system_clock::time_point time1, syst
 	return hours;
 }
 
-//minutes DateTime::calculateTimeDifferenceMinutes(system_clock::time_point time1, system_clock::time_point time2) {
-//	auto duration = time2 - time1;
-//
-//	// Convert the duration to minutes
-//	auto minutes = std::chrono::duration_cast<std::chrono::minutes>(duration).count();
-//
-//	return minutes;
-//}
+
 
 std::chrono::minutes DateTime::calculateTimeDifferenceMinutes(system_clock::time_point time1, system_clock::time_point time2) {
 	auto duration = time2 - time1;
@@ -201,20 +146,7 @@ std::chrono::minutes DateTime::calculateTimeDifferenceMinutes(system_clock::time
 	return minutes;
 }
 
-//
-//string DateTime:: tm_to_string(const tm& time_data, const std::string& format_string = "%d-%m-%Y") {
-//
-//	char buffer[80]; // Adjust buffer size if needed for complex formats
-//size_t result = strftime(buffer, sizeof(buffer), format_string.c_str(), &time_data);
-//
-//if (result != 0) {
-//	return std::string(buffer);
-//}
-//else {
-//	// Handle potential errors (e.g., invalid format string)
-//	return "Error formatting time";
-//}
-//}
+
 
 
 string DateTime::get_current_date_string() {
@@ -284,44 +216,7 @@ string DateTime::inputDateString() {
 }
 
 
-//string DateTime::inputDateString(string inputDate) {
-//	//cout << "Enter a string in the format (DD-MM-YYYY): ";
-//	std::getline(cin, inputDate);
-//
-//	// Create a string stream to parse the input
-//	std::istringstream iss(inputDate);
-//
-//	int day, month, year;
-//	char delimiter;
-//
-//	// Attempt to extract the day, month, and year from the input string
-//	if (iss >> day >> delimiter >> month >> delimiter >> year) {
-//		// Check if the delimiter is correct and if the values are within valid ranges
-//		if (delimiter == '-' && day >= 1 && day <= 31 && month >= 1 && month <= 12 && year >= 0) {
-//			return inputDate;
-//		}
-//		else {
-//			cout << "Invalid input format." << endl;
-//		}
-//	}
-//	else {
-//		cout << "Error reading input." << endl;
-//	}
-//
-//	return "";
-//}
 
-//
-//void DateTime:: outputTimePoint(const std::chrono::system_clock::time_point& timePoint) {
-//	// Convert time_point to std::time_t
-//	time_t time = system_clock::to_time_t(timePoint);
-//
-//	// Convert std::time_t to std::tm
-//	tm tm = *localtime(&time);
-//
-//	// Output formatted time
-//	cout << put_time(&tm, "%d-%m-%Y %H:%M:%S");
-//}
 
 void DateTime::outputTimePoint(system_clock::time_point timePoint) {
 	// Convert time_point to std::time_t

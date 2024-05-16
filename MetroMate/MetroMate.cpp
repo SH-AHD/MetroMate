@@ -771,23 +771,6 @@ void MetroMate::displayTrainETAForUser(string stationName, string checkindate, c
 	}
 }
 
-//Station::Station(unordered_map<system_clock::time_point&, deque<Train>>& stationSchedule) {
-//    this->stationSchedule = stationSchedule;
-//}
-
-// Station::Station(unordered_map<system_clock::time_point, deque<Train>>& schedule)
-//     : stationSchedule(schedule) {
-
-// }
-
-// void Station::findTrips(system_clock::time_point tripTime) {
-//     for (auto& trainPair : stationSchedule) {
-//         if (trainPair.second.getTrainSchedule().getArrivalTime() == tripTime) {
-//             cout << trainPair.second.getTrainID();
-//         }
-//     }
-// }
-
 
 
 
