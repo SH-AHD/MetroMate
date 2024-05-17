@@ -343,7 +343,7 @@ void Admin::HomePage(bool& isAdmin, unordered_map<string, SubscriptionDetails>& 
 							cin >> tidAddTrip;
 							cout << "Enter trip details:\n";
 							
-							metro.addTripToTrainSchedule(tidAddTrip, train.setTripInfo());
+							metro.addTripToTrainSchedule(tidAddTrip, train.setTripInfo(metro));
 
 						}
 						else if (trainChoice == 5) {

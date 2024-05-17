@@ -387,7 +387,7 @@ void UserAccount::checkIn(MetroMate metro, UserAccount user, tm date) {
 		cout << " Choose the station you will ride from:\n";
 		station* source = metro.chooseStation(); //DepartureStation 
 		 
-		source->chosen = true;
+		
 		departureStation == source->getName();
 		//upgrading the station's info
 		source->addIncome(user, date);
@@ -400,7 +400,6 @@ void UserAccount::checkIn(MetroMate metro, UserAccount user, tm date) {
 
 		//upgrade the target's info
 		target->addPassenger(target->stationMap, date, user);
-
 		cout << " A possible path to your target:\n";
 		metro.simpleDFS(source->name, source->lineNumber, target->name);
 		target->shortestPath = metro.shortestPath(source->name, target->name);

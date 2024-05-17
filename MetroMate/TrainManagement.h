@@ -8,8 +8,8 @@
 #include <string>
 #include <algorithm>
 //#include "UserAccount.h"
-#include "MetroMate.h"
-
+//#include "MetroMate.h"
+class MetroMate;
 using namespace std;
 using namespace std::chrono;
 
@@ -106,7 +106,7 @@ public:
 
 
     void incrementTripIndex();
-    Schedule setTripInfo();
+    Schedule setTripInfo(MetroMate metro);
     void addTripSchedule(Schedule trip);
 
 

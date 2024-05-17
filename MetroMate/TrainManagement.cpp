@@ -126,21 +126,25 @@ int Train::calculateETA(string depTime, string arrTime) {
 }
 
 
-Schedule Train::setTripInfo() {
+Schedule Train::setTripInfo(MetroMate metro) {
 
     string date, departureStation, destinationStation, departureTime, arrivalTime;
     int delay = 0;
-    Schedule schedule;
+    Schedule schedule; 
+    
     // cout << "setTripInfo";
     /* cout << "Enter Date in the format (DD-MM-YYYY):";
      cin >> date;*/
     schedule.setDate(DateTime::inputDateString());
     cout << "=======================================\n";
     cout << "Enter Departure Station :\n";
-    cin >> departureStation;
+    metro.displayStations();
+    departureStation = (metro.chooseStation())->getName();
+
     schedule.setDepartureStation(departureStation);
     cout << "Enter Destination Station :\n";
-    cin >> destinationStation;
+    metro.displayStations();
+    destinationStation = (metro.chooseStation())->getName();
     schedule.setDestinationStation(destinationStation);
    
 
@@ -170,7 +174,7 @@ Schedule Train::setTripInfo() {
 void Train::addTripSchedule(Schedule trip) {
 
     trainSchedule.push_back(trip);
-    currentTripIndex++;
+    //currentTripIndex++;
 
 }
 void Train::setCurrentTripIndex(int index) { currentTripIndex = index; }
@@ -317,7 +321,7 @@ void Train::displayTrainSchedule() {
         DateTime::outputTimePoint(trainSchedule[i].getArrivalTime());
         cout << "\n";
         //if (schedule.getDelay() > 0)
-        cout << "Train Delay:" << trainSchedule[i].getDelay() << "\n";
+        //cout << "Train Delay:" << trainSchedule[i].getDelay() << "\n";
 
        
     }

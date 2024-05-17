@@ -59,6 +59,7 @@ int main() {
 	metro.addTrain(t);
 	Schedule s("4-4-2024","a","b","3:00","3:15");
 	t.addTripSchedule(s);
+
 	//t.displayTrainSchedule();
 	//cout << "===========\n";
 	//temp data to metro graph
@@ -848,3 +849,4 @@ bool stringToBool(const std::string& text) {
 
 
 
+ 
